@@ -1,0 +1,46 @@
+{
+  "Metadata": {
+    "title": "Daily Alibi",
+    "description": "A new murder mystery every day. Question AI suspects, examine the evidence, name the killer."
+  },
+  "Header": {
+    "brand": "Daily Alibi",
+    "language": "Language"
+  },
+  "Home": {
+    "tagline": "A new murder every morning. Twenty questions. One accusation.",
+    "todaysCase": "Today's case",
+    "openCase": "Open the case file"
+  },
+  "Case": {
+    "caseNumber": "Case #{number}",
+    "difficulty": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard"
+    },
+    "victim": "The victim",
+    "scene": "Scene of the crime",
+    "timeOfDeath": "Estimated time of death",
+    "timeWindow": "between {from} and {to}",
+    "suspects": "The suspects",
+    "statement": "Statement",
+    "evidence": "The evidence",
+    "evidenceHint": "Examining evidence is free. It costs none of your questions.",
+    "foundAt": "Found in: {place}",
+    "examine": "Examine",
+    "backToCase": "Back to the case file"
+  },
+  "EvidenceKind": {
+    "document": "Document",
+    "object": "Object",
+    "receipt": "Receipt",
+    "phone": "Telephone",
+    "photo": "Photograph",
+    "testimony": "Testimony"
+  },
+  "NotFound": {
+    "title": "Nothing here. The trail has gone cold.",
+    "home": "Back to the front page"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "Metadata": {
+    "title": "Daily Alibi",
+    "description": "Her gün yeni bir cinayet gizemi. Yapay zekâ şüphelileri sorgula, kanıtları incele, katili bul."
+  },
+  "Header": {
+    "brand": "Daily Alibi",
+    "language": "Dil"
+  },
+  "Home": {
+    "tagline": "Her sabah yeni bir cinayet. Yirmi soru. Tek suçlama.",
+    "todaysCase": "Bugünün davası",
+    "openCase": "Dava dosyasını aç"
+  },
+  "Case": {
+    "caseNumber": "Dava #{number}",
+    "difficulty": {
+      "easy": "Kolay",
+      "medium": "Orta",
+      "hard": "Zor"
+    },
+    "victim": "Kurban",
+    "scene": "Olay yeri",
+    "timeOfDeath": "Tahmini ölüm saati",
+    "timeWindow": "{from} ile {to} arası",
+    "suspects": "Şüpheliler",
+    "statement": "İfade",
+    "evidence": "Kanıtlar",
+    "evidenceHint": "Kanıt incelemek ücretsizdir; soru hakkından düşmez.",
+    "foundAt": "Bulunduğu yer: {place}",
+    "examine": "İncele",
+    "backToCase": "Dava dosyasına dön"
+  },
+  "EvidenceKind": {
+    "document": "Belge",
+    "object": "Nesne",
+    "receipt": "Fiş",
+    "phone": "Telefon",
+    "photo": "Fotoğraf",
+    "testimony": "Tanıklık"
+  },
+  "NotFound": {
+    "title": "Burada bir şey yok. İz soğumuş.",
+    "home": "Ana sayfaya dön"
+  }
+}
