@@ -1,0 +1,542 @@
+{
+  "caseNumber": 1,
+  "difficulty": "easy",
+  "public": {
+    "title": {
+      "en": "Death at Ashcombe Manor",
+      "tr": "Ashcombe Konağı'nda Ölüm"
+    },
+    "setting": {
+      "place": {
+        "en": "Ashcombe Manor, Gloucestershire",
+        "tr": "Ashcombe Konağı, Gloucestershire"
+      },
+      "date": "1934-11-17",
+      "summary": {
+        "en": "A wet November evening at a country house. After dinner the household scatters to separate rooms. At half past ten the secretary walks into the study and finds Sir Edmund Ashcombe dead at his desk, struck down with the fireplace poker.",
+        "tr": "Bir kır konağında yağmurlu bir kasım akşamı. Yemekten sonra ev halkı farklı odalara dağılır. Saat on buçukta sekreter çalışma odasına girer ve Sir Edmund Ashcombe'u masasının başında, şömine demiriyle vurulmuş halde ölü bulur."
+      }
+    },
+    "victim": {
+      "name": "Sir Edmund Ashcombe",
+      "description": {
+        "en": "64, retired shipping magnate and chairman of the village cottage hospital trust. Generous in public, unforgiving in private. Known to read every line of every account he signs.",
+        "tr": "64 yaşında, emekli armatör ve köy hastanesi vakfının başkanı. Herkesin önünde cömert, kapalı kapılar ardında affetmez biri. İmzaladığı her hesabın her satırını okumasıyla bilinir."
+      }
+    },
+    "crimeSceneId": "study",
+    "estimatedTimeOfDeath": { "from": "21:30", "to": "22:30" },
+    "locations": [
+      { "id": "study", "name": { "en": "Study", "tr": "Çalışma odası" } },
+      { "id": "library", "name": { "en": "Library", "tr": "Kütüphane" } },
+      { "id": "music-room", "name": { "en": "Music room", "tr": "Müzik odası" } },
+      { "id": "drawing-room", "name": { "en": "Drawing room", "tr": "Misafir salonu" } },
+      { "id": "hall", "name": { "en": "Main hall", "tr": "Ana hol" } },
+      { "id": "terrace", "name": { "en": "Terrace", "tr": "Teras" } },
+      { "id": "stables", "name": { "en": "Stables", "tr": "Ahırlar" } }
+    ],
+    "suspects": [
+      {
+        "id": "margaret-ashcombe",
+        "name": "Lady Margaret Ashcombe",
+        "role": { "en": "The victim's wife", "tr": "Kurbanın eşi" },
+        "profile": {
+          "en": "52. Elegant, reserved and rarely seen to raise her voice. Twenty-six years married; the last ten, the servants say, in separate wings of the house.",
+          "tr": "52 yaşında. Zarif, ölçülü ve sesini yükselttiği pek görülmemiş biri. Yirmi altı yıllık evli; hizmetçilere göre son on yılı konağın ayrı kanatlarında geçmiş."
+        },
+        "initialStatement": {
+          "en": "I spent the whole evening in the drawing room with my embroidery. Dr. Voss was playing Chopin next door, and I listened to her through the wall until poor Mr. Reed began shouting. I did not leave the room. Not once.",
+          "tr": "Bütün akşamı misafir salonunda nakışımla geçirdim. Dr. Voss yan odada Chopin çalıyordu; zavallı Bay Reed bağırmaya başlayana kadar duvarın ardından onu dinledim. Odadan çıkmadım. Bir kez bile."
+        }
+      },
+      {
+        "id": "julian-ashcombe",
+        "name": "Julian Ashcombe",
+        "role": { "en": "The victim's nephew and heir", "tr": "Kurbanın yeğeni ve varisi" },
+        "profile": {
+          "en": "29. Charming, restless, and recently down from London with no clear reason for the visit. Expected to inherit the bulk of the estate.",
+          "tr": "29 yaşında. Çekici, yerinde duramayan biri; belirgin bir sebep olmadan Londra'dan yeni gelmiş. Mirasın büyük kısmının ona kalması bekleniyor."
+        },
+        "initialStatement": {
+          "en": "After dinner I went out to the stables for a smoke and to look at my uncle's new mare. I didn't see him again all evening. I came in around twenty past ten and went straight up to bed.",
+          "tr": "Yemekten sonra bir sigara içmek ve amcamın yeni kısrağına bakmak için ahırlara çıktım. Bütün akşam onu bir daha görmedim. Saat onu yirmi geçe içeri girdim ve doğruca yatmaya çıktım."
+        }
+      },
+      {
+        "id": "helena-voss",
+        "name": "Dr. Helena Voss",
+        "role": { "en": "The family physician", "tr": "Ailenin doktoru" },
+        "profile": {
+          "en": "41. Composed, precise and well liked in the village. A frequent dinner guest at Ashcombe and a fine pianist. Sits on the board of the cottage hospital trust.",
+          "tr": "41 yaşında. Soğukkanlı, titiz ve köyde sevilen biri. Ashcombe'da sık sık yemeğe gelir, iyi piyano çalar. Köy hastanesi vakfının yönetim kurulunda."
+        },
+        "initialStatement": {
+          "en": "Lady Margaret asked for some music, so I went to the music room at a quarter to ten and played Chopin's nocturnes until I heard Mr. Reed cry out. I examined Sir Edmund at once, but there was nothing to be done.",
+          "tr": "Lady Margaret biraz müzik istedi; ben de ona çeyrek kala müzik odasına geçtim ve Bay Reed'in bağırdığını duyana kadar Chopin'in noktürnlerini çaldım. Sir Edmund'u hemen muayene ettim ama yapılacak bir şey yoktu."
+        }
+      },
+      {
+        "id": "thomas-reed",
+        "name": "Thomas Reed",
+        "role": { "en": "Private secretary", "tr": "Özel sekreter" },
+        "profile": {
+          "en": "35. Quiet, loyal and meticulous. Has kept Sir Edmund's papers for eight years and works in the library, which connects to the study by a single door.",
+          "tr": "35 yaşında. Sessiz, sadık ve titiz. Sekiz yıldır Sir Edmund'un evraklarıyla ilgileniyor; çalışma odasına tek bir kapıyla bağlanan kütüphanede çalışıyor."
+        },
+        "initialStatement": {
+          "en": "I was in the library typing papers for tomorrow's hospital board meeting. At half past ten I took them through to Sir Edmund and found him. I'm afraid I heard nothing useful. The typewriter is very loud.",
+          "tr": "Kütüphanede, yarınki hastane yönetim kurulu toplantısı için evrak yazıyordum. On buçukta onları Sir Edmund'a götürdüm ve onu öyle buldum. Korkarım işe yarar bir şey duymadım. Daktilo çok gürültülüdür."
+        }
+      }
+    ],
+    "evidence": [
+      {
+        "id": "burned-letter",
+        "kind": "document",
+        "title": { "en": "Half-burned letter", "tr": "Yarısı yanmış mektup" },
+        "description": {
+          "en": "Pulled from the study fireplace, in Sir Edmund's handwriting. Most of it is ash. What survives reads: \"...can no longer overlook the irregularities in the trust's accounts. Unless Dr. V— can account for the missing two thousand pounds before the board meets, I shall be obliged to...\"",
+          "tr": "Çalışma odasının şöminesinden çıkarılmış, Sir Edmund'un el yazısı. Büyük kısmı kül olmuş. Kalan kısım şöyle: \"...vakfın hesaplarındaki usulsüzlükleri artık görmezden gelemem. Dr. V— yönetim kurulu toplanmadan önce kayıp iki bin sterlinin hesabını veremezse, mecburen...\""
+        },
+        "foundAt": "study"
+      },
+      {
+        "id": "gramophone-records",
+        "kind": "object",
+        "title": { "en": "Records on the radiogram", "tr": "Radyogramdaki plaklar" },
+        "description": {
+          "en": "The music room's radiogram has an automatic record changer. Six records sit on the platter, already played: Chopin's nocturnes, about twenty-five minutes of music in all. The cabinet lid is still warm from the valves when the police arrive.",
+          "tr": "Müzik odasındaki radyogramın otomatik plak değiştiricisi var. Tablada çalınmış altı plak duruyor: Chopin'in noktürnleri, toplam yirmi beş dakika kadar müzik. Polis geldiğinde kabinin kapağı lambaların ısısıyla hâlâ sıcak."
+        },
+        "foundAt": "music-room"
+      },
+      {
+        "id": "muddy-footprints",
+        "kind": "object",
+        "title": { "en": "Muddy footprints", "tr": "Çamurlu ayak izleri" },
+        "description": {
+          "en": "A man's boot prints lead from the study's French window across the wet terrace toward the stables. The rain stopped at a quarter to ten, so the prints were made after that.",
+          "tr": "Bir erkek botunun izleri, çalışma odasının balkon kapısından ıslak terasın üzerinden ahırlara doğru gidiyor. Yağmur ona çeyrek kala dindiği için izler bu saatten sonra oluşmuş."
+        },
+        "foundAt": "terrace"
+      },
+      {
+        "id": "telephone-log",
+        "kind": "phone",
+        "title": { "en": "Telephone exchange record", "tr": "Telefon santrali kaydı" },
+        "description": {
+          "en": "The village exchange logged one call from the manor's only telephone, in the main hall that evening: a trunk call to a London number, Whitehall 4471, from 22:12 to 22:16.",
+          "tr": "Köy santrali, konağın ana holdeki tek telefonundan o akşam yapılan bir görüşmeyi kaydetmiş: Londra'da Whitehall 4471 numarasına bir şehirlerarası görüşme, 22:12 ile 22:16 arası."
+        },
+        "foundAt": "hall"
+      },
+      {
+        "id": "board-agenda",
+        "kind": "document",
+        "title": { "en": "Typed board agenda", "tr": "Daktiloyla yazılmış gündem" },
+        "description": {
+          "en": "Found in the typewriter in the library: the agenda for tomorrow's meeting of the Cottage Hospital Trust. Item 4 reads: \"Treasurer's accounts. Sir Edmund to report.\" The treasurer is listed as Dr. H. Voss.",
+          "tr": "Kütüphanedeki daktilonun içinde bulundu: Köy Hastanesi Vakfı'nın yarınki toplantısının gündemi. 4. madde: \"Sayman hesapları. Sir Edmund rapor sunacak.\" Sayman olarak Dr. H. Voss yazıyor."
+        },
+        "foundAt": "library"
+      }
+    ],
+    "motiveOptions": [
+      {
+        "id": "inheritance",
+        "label": { "en": "To inherit his fortune", "tr": "Servetini miras almak" }
+      },
+      {
+        "id": "exposure",
+        "label": {
+          "en": "To stop him exposing a financial crime",
+          "tr": "Bir mali suçu ifşa etmesini engellemek"
+        }
+      },
+      {
+        "id": "unhappy-marriage",
+        "label": { "en": "To escape an unhappy marriage", "tr": "Mutsuz bir evlilikten kurtulmak" }
+      },
+      {
+        "id": "jealousy",
+        "label": {
+          "en": "Jealousy over a love affair",
+          "tr": "Bir aşk ilişkisi yüzünden kıskançlık"
+        }
+      },
+      {
+        "id": "revenge",
+        "label": { "en": "Revenge for an old humiliation", "tr": "Eski bir aşağılanmanın intikamı" }
+      }
+    ]
+  },
+  "secret": {
+    "exactTimeOfDeath": "22:05",
+    "suspects": [
+      {
+        "suspectId": "margaret-ashcombe",
+        "personality": "Cool, formal and very proper. Answers in short, polished sentences and turns icy when pressed on private matters. Protective of the family's reputation above all.",
+        "alibi": {
+          "claimed": "In the drawing room all evening, embroidering and listening to Dr. Voss play the piano next door.",
+          "truth": "In the drawing room from 21:30, except 22:12-22:16 when she went to the main hall to telephone her London solicitor."
+        },
+        "knows": [
+          "The piano could be heard through the wall from about 21:45; it sounded especially lovely after about ten.",
+          "Julian arrived from London asking Edmund for money; Edmund was furious about it at dinner.",
+          "Edmund had been in a foul temper about 'the hospital business' all week.",
+          "While on the telephone in the hall at about 22:13 she saw Dr. Voss walk quickly from the east corridor (the study wing) toward the music room, looking flushed. She thought nothing of it at the time."
+        ],
+        "hides": [
+          {
+            "secret": "She telephoned her solicitor (Whitehall 4471) to ask about starting divorce proceedings.",
+            "revealWhen": "Confronted with the telephone exchange record, or asked directly whether anyone used the telephone."
+          },
+          {
+            "secret": "She saw Dr. Voss crossing the hall from the study wing at about 22:13.",
+            "revealWhen": "Only after admitting the telephone call, if asked what she saw or who she saw while in the hall."
+          }
+        ],
+        "lies": [
+          {
+            "topic": "Whether she left the drawing room",
+            "lie": "She never left the drawing room all evening.",
+            "truth": "She went to the main hall from 22:12 to 22:16 to make a telephone call."
+          }
+        ]
+      },
+      {
+        "suspectId": "julian-ashcombe",
+        "personality": "Glib, charming and defensive. Jokes when nervous, gets angry when cornered, then turns self-pitying. Genuinely shaken by his uncle's death.",
+        "alibi": {
+          "claimed": "At the stables smoking from after dinner until about 22:20; never saw his uncle.",
+          "truth": "In the study arguing with Edmund from 21:40 to 21:50, then left through the French window across the terrace to the stables, where he stayed until about 22:20."
+        },
+        "knows": [
+          "Edmund was alive and shouting at him when he left the study at 21:50.",
+          "Edmund said he had 'more important rot to deal with tonight' and waved a letter he was writing.",
+          "Edmund threatened to cut him out of the will at the next opportunity."
+        ],
+        "hides": [
+          {
+            "secret": "He owes £800 to a London bookmaker and came to beg his uncle for the money.",
+            "revealWhen": "Asked about money, debts or why he came down from London, and pressed a second time."
+          },
+          {
+            "secret": "He argued with Edmund in the study from 21:40 to 21:50.",
+            "revealWhen": "Confronted with the muddy footprints from the study's French window, or told that someone heard the argument."
+          }
+        ],
+        "lies": [
+          {
+            "topic": "Seeing his uncle after dinner",
+            "lie": "He did not see his uncle at all after dinner.",
+            "truth": "He argued with him in the study from 21:40 to 21:50."
+          }
+        ]
+      },
+      {
+        "suspectId": "helena-voss",
+        "personality": "Calm, articulate, warmly professional with a hint of condescension. Never raises her voice. Answers questions with questions when uncomfortable and steers talk toward Julian's debts.",
+        "alibi": {
+          "claimed": "Playing Chopin's nocturnes on the piano in the music room from 21:45 until she heard Mr. Reed cry out at 22:30.",
+          "truth": "Played the piano 21:45-21:55, then loaded six Chopin records onto the radiogram's automatic changer and slipped out. She went to the study at 21:58, killed Edmund at 22:05 with the poker, threw his letter into the fire, and returned through the main hall at 22:13. She played the piano again from 22:20."
+        },
+        "knows": [
+          "Edmund confronted her privately last week about £2,000 missing from the hospital trust; she had taken it to pay off her brother's debts.",
+          "Edmund planned to report her to the board tomorrow morning, which would end her career.",
+          "She killed Edmund with the poker at 22:05 after he refused to give her more time.",
+          "She threw his half-written letter to the board into the fire, but it did not burn completely."
+        ],
+        "hides": [
+          {
+            "secret": "She killed Sir Edmund.",
+            "revealWhen": "Never. She denies it to the end, but becomes visibly rattled if confronted with both the records and the burned letter."
+          },
+          {
+            "secret": "The £2,000 missing from the hospital trust and Edmund's threat to expose her.",
+            "revealWhen": "If shown the burned letter or the board agenda, she admits only to 'a bookkeeping muddle Edmund was making far too much of'."
+          },
+          {
+            "secret": "The 'piano' Lady Margaret heard between 21:55 and 22:20 was the radiogram.",
+            "revealWhen": "Never volunteered. If shown the records, she claims she put them on later to calm her nerves after finding the body."
+          }
+        ],
+        "lies": [
+          {
+            "topic": "Where she was between 21:45 and 22:30",
+            "lie": "At the piano in the music room the whole time.",
+            "truth": "She was in the study from 21:58 to about 22:11 while the radiogram played."
+          },
+          {
+            "topic": "Her relationship with Edmund",
+            "lie": "They were old friends and on the best of terms.",
+            "truth": "He had confronted her about the theft and planned to expose her."
+          }
+        ]
+      },
+      {
+        "suspectId": "thomas-reed",
+        "personality": "Polite, anxious and painstakingly precise about times. Deeply loyal to Lady Margaret. Speaks formally and apologises often.",
+        "alibi": {
+          "claimed": "In the library typing all evening.",
+          "truth": "In the library typing from 21:30 until he took the papers to the study at 22:30. This is true."
+        },
+        "knows": [
+          "At 21:00 Edmund asked him to type the agenda for tomorrow's hospital board, saying there would be 'an unpleasant item concerning the accounts'.",
+          "He heard raised men's voices from the study around 21:45 and recognised Julian's.",
+          "At about 22:03 he heard a woman's voice through the connecting door say 'No, Edmund, please', then a dull sound. He assumed it was Lady Margaret and that she would not want to be disturbed.",
+          "He found the body at 22:30 and noticed the fire had recently been stirred."
+        ],
+        "hides": [
+          {
+            "secret": "He heard a woman's voice in the study at about 22:03.",
+            "revealWhen": "Asked specifically what he heard around ten o'clock, or whether he heard a woman. He fears it was Lady Margaret and protects her until told she was elsewhere."
+          },
+          {
+            "secret": "He heard Julian arguing with Edmund around 21:45.",
+            "revealWhen": "Asked whether he heard any voices or arguments from the study."
+          }
+        ],
+        "lies": [
+          {
+            "topic": "Hearing anything from the study",
+            "lie": "The typewriter was too loud to hear anything.",
+            "truth": "He heard the argument with Julian and, later, a woman's voice."
+          }
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "evidenceId": "burned-letter",
+        "pointsTo": ["helena-voss"],
+        "explanation": {
+          "en": "Sir Edmund was writing to the board about money missing from the trust. \"Dr. V—\" is Dr. Voss, the trust's treasurer, as the board agenda confirms. This is her motive.",
+          "tr": "Sir Edmund, vakıftan kaybolan para hakkında yönetim kuruluna yazıyordu. \"Dr. V—\", gündemin de doğruladığı gibi vakfın saymanı Dr. Voss'tur. Bu, onun motifidir."
+        }
+      },
+      {
+        "evidenceId": "gramophone-records",
+        "pointsTo": ["helena-voss"],
+        "explanation": {
+          "en": "Twenty-five minutes of recorded Chopin: exactly what Lady Margaret heard \"through the wall\". The music was the radiogram, not Dr. Voss, so her alibi collapses.",
+          "tr": "Yirmi beş dakikalık kayıtlı Chopin: Lady Margaret'in \"duvarın ardından\" duyduğu şey tam olarak buydu. Müziği Dr. Voss değil radyogram çalıyordu, yani alibisi çöküyor."
+        }
+      },
+      {
+        "evidenceId": "muddy-footprints",
+        "pointsTo": ["julian-ashcombe"],
+        "explanation": {
+          "en": "Julian's prints: he really did argue with his uncle and leave by the French window. But he left at 21:50, and Sir Edmund was still alive at 22:03 when Mr. Reed heard a woman's voice.",
+          "tr": "İzler Julian'ın: amcasıyla gerçekten kavga edip balkon kapısından çıkmıştı. Ama 21:50'de çıktı; Bay Reed 22:03'te bir kadın sesi duyduğunda Sir Edmund hâlâ hayattaydı."
+        }
+      },
+      {
+        "evidenceId": "telephone-log",
+        "pointsTo": ["margaret-ashcombe"],
+        "explanation": {
+          "en": "Lady Margaret did leave the drawing room: she rang her solicitor about a divorce. From the hall at 22:13 she saw Dr. Voss hurrying back from the study wing.",
+          "tr": "Lady Margaret misafir salonundan çıkmıştı: boşanma için avukatını aradı. 22:13'te holden, Dr. Voss'un çalışma odasının olduğu kanattan aceleyle döndüğünü gördü."
+        }
+      },
+      {
+        "evidenceId": "board-agenda",
+        "pointsTo": ["helena-voss"],
+        "explanation": {
+          "en": "The agenda names Dr. Voss as treasurer and shows Sir Edmund was going to report on her accounts the next morning.",
+          "tr": "Gündem Dr. Voss'u sayman olarak gösteriyor ve Sir Edmund'un ertesi sabah onun hesapları hakkında rapor sunacağını ortaya koyuyor."
+        }
+      }
+    ],
+    "timeline": [
+      {
+        "at": "21:00",
+        "actorId": "victim",
+        "locationId": "study",
+        "event": {
+          "en": "Sir Edmund asks Reed to type the board agenda, warning of \"an unpleasant item concerning the accounts\".",
+          "tr": "Sir Edmund, Reed'den yönetim kurulu gündemini yazmasını ister ve \"hesaplarla ilgili tatsız bir madde\" olacağını söyler."
+        }
+      },
+      {
+        "at": "21:30",
+        "until": "22:30",
+        "actorId": "thomas-reed",
+        "locationId": "library",
+        "event": {
+          "en": "Reed types in the library, next door to the study.",
+          "tr": "Reed, çalışma odasının yanındaki kütüphanede daktilo yazar."
+        }
+      },
+      {
+        "at": "21:30",
+        "until": "22:12",
+        "actorId": "margaret-ashcombe",
+        "locationId": "drawing-room",
+        "event": {
+          "en": "Lady Margaret sits embroidering in the drawing room.",
+          "tr": "Lady Margaret misafir salonunda nakış işler."
+        }
+      },
+      {
+        "at": "21:40",
+        "until": "21:50",
+        "actorId": "julian-ashcombe",
+        "locationId": "study",
+        "event": {
+          "en": "Julian begs his uncle for money. Sir Edmund refuses and threatens to change his will.",
+          "tr": "Julian amcasından para ister. Sir Edmund reddeder ve vasiyetini değiştirmekle tehdit eder."
+        }
+      },
+      {
+        "at": "21:45",
+        "actorId": null,
+        "locationId": "terrace",
+        "event": { "en": "The rain stops.", "tr": "Yağmur diner." }
+      },
+      {
+        "at": "21:45",
+        "until": "21:55",
+        "actorId": "helena-voss",
+        "locationId": "music-room",
+        "event": {
+          "en": "Dr. Voss plays the piano so the house will hear her.",
+          "tr": "Dr. Voss, konaktakiler duysun diye piyano çalar."
+        }
+      },
+      {
+        "at": "21:50",
+        "actorId": "julian-ashcombe",
+        "locationId": "terrace",
+        "event": {
+          "en": "Julian storms out through the French window and crosses the wet terrace.",
+          "tr": "Julian öfkeyle balkon kapısından çıkar ve ıslak terası geçer."
+        }
+      },
+      {
+        "at": "21:55",
+        "until": "22:20",
+        "actorId": "julian-ashcombe",
+        "locationId": "stables",
+        "event": {
+          "en": "Julian smokes alone at the stables.",
+          "tr": "Julian ahırlarda tek başına sigara içer."
+        }
+      },
+      {
+        "at": "21:55",
+        "actorId": "helena-voss",
+        "locationId": "music-room",
+        "event": {
+          "en": "Dr. Voss loads six Chopin records onto the radiogram and slips out.",
+          "tr": "Dr. Voss radyograma altı Chopin plağı yerleştirir ve sessizce çıkar."
+        }
+      },
+      {
+        "at": "21:58",
+        "actorId": "helena-voss",
+        "locationId": "study",
+        "event": {
+          "en": "Dr. Voss enters the study and pleads with Sir Edmund for more time.",
+          "tr": "Dr. Voss çalışma odasına girer ve Sir Edmund'dan biraz daha zaman ister."
+        }
+      },
+      {
+        "at": "22:03",
+        "actorId": "helena-voss",
+        "locationId": "study",
+        "event": {
+          "en": "Through the connecting door, Reed hears a woman say \"No, Edmund, please\".",
+          "tr": "Reed, ara kapıdan bir kadının \"Hayır Edmund, lütfen\" dediğini duyar."
+        }
+      },
+      {
+        "at": "22:05",
+        "actorId": "helena-voss",
+        "locationId": "study",
+        "event": {
+          "en": "Dr. Voss strikes Sir Edmund with the fireplace poker. He dies almost at once.",
+          "tr": "Dr. Voss, Sir Edmund'a şömine demiriyle vurur. Sir Edmund neredeyse anında ölür."
+        }
+      },
+      {
+        "at": "22:08",
+        "actorId": "helena-voss",
+        "locationId": "study",
+        "event": {
+          "en": "She wipes the poker and throws his unfinished letter into the fire. It only half burns.",
+          "tr": "Demiri siler ve yarım kalan mektubu ateşe atar. Mektup ancak yarısına kadar yanar."
+        }
+      },
+      {
+        "at": "22:12",
+        "until": "22:16",
+        "actorId": "margaret-ashcombe",
+        "locationId": "hall",
+        "event": {
+          "en": "Lady Margaret telephones her London solicitor about a divorce.",
+          "tr": "Lady Margaret boşanma için Londra'daki avukatını telefonla arar."
+        }
+      },
+      {
+        "at": "22:13",
+        "actorId": "helena-voss",
+        "locationId": "hall",
+        "event": {
+          "en": "Dr. Voss hurries back across the hall. Lady Margaret, on the telephone, sees her.",
+          "tr": "Dr. Voss aceleyle holden geri geçer. Telefondaki Lady Margaret onu görür."
+        }
+      },
+      {
+        "at": "22:14",
+        "until": "22:30",
+        "actorId": "helena-voss",
+        "locationId": "music-room",
+        "event": {
+          "en": "Back in the music room, she lets the records finish, then plays the piano herself again.",
+          "tr": "Müzik odasına dönünce plakların bitmesini bekler, sonra yeniden kendisi piyano çalar."
+        }
+      },
+      {
+        "at": "22:16",
+        "actorId": "margaret-ashcombe",
+        "locationId": "drawing-room",
+        "event": {
+          "en": "Lady Margaret returns to the drawing room.",
+          "tr": "Lady Margaret misafir salonuna döner."
+        }
+      },
+      {
+        "at": "22:25",
+        "actorId": "julian-ashcombe",
+        "locationId": "hall",
+        "event": {
+          "en": "Julian comes in by the side door and goes up to bed.",
+          "tr": "Julian yan kapıdan içeri girer ve yatmaya çıkar."
+        }
+      },
+      {
+        "at": "22:30",
+        "actorId": "thomas-reed",
+        "locationId": "study",
+        "event": {
+          "en": "Reed takes the papers to the study and finds the body.",
+          "tr": "Reed evrakları çalışma odasına götürür ve cesedi bulur."
+        }
+      }
+    ],
+    "solution": {
+      "killerId": "helena-voss",
+      "motiveId": "exposure",
+      "method": {
+        "en": "Struck him with the study's fireplace poker, while a radiogram playing Chopin records in the music room gave her an alibi.",
+        "tr": "Müzik odasında Chopin plakları çalan radyogram ona alibi sağlarken, onu çalışma odasındaki şömine demiriyle vurdu."
+      },
+      "keyEvidenceIds": ["gramophone-records", "burned-letter"],
+      "trueStory": {
+        "en": "Dr. Helena Voss had quietly taken £2,000 from the cottage hospital trust to save her brother from ruin. Sir Edmund found the gap in the accounts and gave her one week. That evening he was writing to the board, and the agenda Mr. Reed was typing next door listed her accounts as item four.\n\nAt a quarter to ten Dr. Voss sat at the piano, making sure the house could hear her. At five to ten she stacked six Chopin records on the radiogram's automatic changer, enough music for twenty-five minutes, and slipped down the east corridor to the study. Julian had stormed out by the French window only minutes before. Sir Edmund refused her more time. At 22:03 Mr. Reed heard a woman say \"No, Edmund, please\"; at 22:05 she struck him with the poker. She wiped it and threw his unfinished letter into the fire, which did not take it all.\n\nAt 22:13, hurrying back across the hall, she was seen by Lady Margaret, who had crept out to telephone her solicitor about a divorce and so had every reason to say she never left her chair. The records played on, and the whole house believed Dr. Voss had been at the piano all evening.",
+        "tr": "Dr. Helena Voss, kardeşini iflastan kurtarmak için köy hastanesi vakfından sessizce iki bin sterlin almıştı. Sir Edmund hesaplardaki açığı fark etti ve ona bir hafta süre verdi. O akşam yönetim kuruluna mektup yazıyordu; Bay Reed'in yan odada yazdığı gündemin dördüncü maddesi de onun hesaplarıydı.\n\nOna çeyrek kala Dr. Voss, konaktakilerin duyduğundan emin olarak piyanonun başına oturdu. Ona beş kala radyogramın otomatik plak değiştiricisine yirmi beş dakikalık müzik edecek altı Chopin plağı dizdi ve doğu koridorundan çalışma odasına süzüldü. Julian birkaç dakika önce balkon kapısından öfkeyle çıkıp gitmişti. Sir Edmund ona ek süre vermeyi reddetti. 22:03'te Bay Reed bir kadının \"Hayır Edmund, lütfen\" dediğini duydu; 22:05'te Dr. Voss ona şömine demiriyle vurdu. Demiri sildi ve yarım kalan mektubu ateşe attı ama ateş mektubun hepsini yakmadı.\n\n22:13'te holden aceleyle geri dönerken Lady Margaret onu gördü. Lady Margaret boşanma için avukatını aramak üzere gizlice odasından çıkmıştı; bu yüzden yerinden hiç kalkmadığını söylemek için her türlü sebebi vardı. Plaklar çalmaya devam etti ve bütün konak, Dr. Voss'un akşam boyunca piyano başında olduğuna inandı."
+      }
+    }
+  }
+}
