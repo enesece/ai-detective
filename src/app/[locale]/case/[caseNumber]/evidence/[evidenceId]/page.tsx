@@ -1,0 +1,56 @@
+import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import { getAppLocale } from "@/i18n/locale";
+import { localize } from "@/lib/case/localize";
+import { getPublicCase, listCaseNumbers } from "@/server/cases/repository";
+import { parseCaseNumber } from "../../case-number";
+
+export function generateStaticParams() {
+  return listCaseNumbers().flatMap((n) => {
+    const publicCase = getPublicCase(n);
+    return (publicCase?.briefing.evidence ?? []).map((e) => ({
+      caseNumber: String(n),
+      evidenceId: e.id,
+    }));
+  });
+}
+
+export default async function EvidencePage({
+  params,
+}: PageProps<"/[locale]/case/[caseNumber]/evidence/[evidenceId]">) {
+  const { caseNumber: raw, evidenceId } = await params;
+  const caseNumber = parseCaseNumber(raw);
+  const publicCase = caseNumber === null ? null : getPublicCase(caseNumber);
+  const evidence = publicCase?.briefing.evidence.find((e) => e.id === evidenceId);
+  if (!publicCase || !evidence) notFound();
+
+  const t = await getTranslations("Case");
+  const tKind = await getTranslations("EvidenceKind");
+  const locale = await getAppLocale();
+  const place = publicCase.briefing.locations.find((l) => l.id === evidence.foundAt);
+
+  return (
+    <article className="pt-10">
+      <Link
+        href={`/case/${publicCase.caseNumber}`}
+        className="text-accent text-sm font-semibold hover:underline"
+      >
+        ← {t("backToCase")}
+      </Link>
+
+      <div className="border-rule bg-card mt-6 rounded-lg border p-6 sm:p-8">
+        <p className="text-muted text-xs font-semibold tracking-widest uppercase">
+          {tKind(evidence.kind)}
+          {place && ` · ${t("foundAt", { place: localize(place.name, locale) })}`}
+        </p>
+        <h1 className="font-display mt-2 text-3xl font-bold">{localize(evidence.title, locale)}</h1>
+        <p className="mt-6 text-lg leading-relaxed whitespace-pre-line">
+          {localize(evidence.description, locale)}
+        </p>
+      </div>
+
+      <p className="text-muted mt-4 text-sm">{t("evidenceHint")}</p>
+    </article>
+  );
+}
