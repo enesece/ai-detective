@@ -10,11 +10,19 @@ type Props = {
   notebook: Notebook;
   suspects: SuspectOption[];
   evidence: EvidenceOption[];
+  caseNumber: number;
   onTextChange: (text: string) => void;
   onUnpin: (target: PinTarget) => void;
 };
 
-export function NotebookPanel({ notebook, suspects, evidence, onTextChange, onUnpin }: Props) {
+export function NotebookPanel({
+  notebook,
+  suspects,
+  evidence,
+  caseNumber,
+  onTextChange,
+  onUnpin,
+}: Props) {
   const t = useTranslations("Notebook");
 
   return (
@@ -34,6 +42,7 @@ export function NotebookPanel({ notebook, suspects, evidence, onTextChange, onUn
           pins={notebook.pins}
           suspects={suspects}
           evidence={evidence}
+          caseNumber={caseNumber}
           onUnpin={onUnpin}
         />
       </div>

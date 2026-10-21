@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { hasLocale, useLocale, useTranslations } from "next-intl";
 import { NotebookPanel } from "@/components/notebook/NotebookPanel";
 import { useNotebook } from "@/components/notebook/useNotebook";
@@ -27,6 +27,15 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
   const { notebook, isPinned, togglePin, setText } = useNotebook(caseNumber);
   const [selectedId, setSelectedId] = useState(suspects[0]?.id ?? "");
   const [notebookOpen, setNotebookOpen] = useState(false);
+  const chatScrollRef = useRef<HTMLDivElement>(null);
+  const lastAnswer = exchanges.at(-1)?.answer;
+
+  // Keep the newest message in view. Scrolls only the chat box, never the page
+  // (scrollIntoView would scroll every scrollable ancestor, including the page).
+  useEffect(() => {
+    const box = chatScrollRef.current;
+    if (box) box.scrollTop = box.scrollHeight;
+  }, [exchanges.length, lastAnswer, selectedId]);
 
   const selected = suspects.find((s) => s.id === selectedId);
   if (!selected) return null;
@@ -49,7 +58,7 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
         />
       </aside>
 
-      <section className="border-rule bg-paper flex min-h-[28rem] min-w-0 flex-col rounded-lg border">
+      <section className="border-rule bg-paper flex h-[70dvh] min-h-[24rem] min-w-0 flex-col rounded-lg border">
         <header className="border-rule flex items-start justify-between gap-3 border-b px-4 py-3">
           <div>
             <h2 className="font-display text-xl font-bold">{selected.name}</h2>
@@ -67,7 +76,7 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
           </button>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-4">
+        <div ref={chatScrollRef} className="min-h-0 flex-1 overflow-y-auto p-4">
           <StatementCard
             suspect={selected}
             pinned={isPinned(statementTarget)}
@@ -106,12 +115,13 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
 
       <div
         id="notebook-panel"
-        className={`${notebookOpen ? "block" : "hidden"} lg:col-span-2 xl:col-span-1 xl:block`}
+        className={`${notebookOpen ? "block" : "hidden"} lg:col-span-2 xl:col-span-1 xl:block xl:h-[70dvh] xl:overflow-y-auto`}
       >
         <NotebookPanel
           notebook={notebook}
           suspects={suspects}
           evidence={evidence}
+          caseNumber={caseNumber}
           onTextChange={setText}
           onUnpin={togglePin}
         />

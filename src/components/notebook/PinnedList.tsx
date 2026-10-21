@@ -3,12 +3,14 @@
 import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import type { EvidenceOption, SuspectOption } from "@/components/interrogation/types";
+import { Link } from "@/i18n/navigation";
 import { pinKey, type PinnedItem, type PinTarget } from "@/lib/notebook/schema";
 
 type Props = {
   pins: PinnedItem[];
   suspects: SuspectOption[];
   evidence: EvidenceOption[];
+  caseNumber: number;
   onUnpin: (target: PinTarget) => void;
 };
 
@@ -16,7 +18,7 @@ type Props = {
  * Pins grouped by suspect (first statement, then answers in order) so a lie
  * sits right next to what the suspect said before. Evidence comes last.
  */
-export function PinnedList({ pins, suspects, evidence, onUnpin }: Props) {
+export function PinnedList({ pins, suspects, evidence, caseNumber, onUnpin }: Props) {
   const t = useTranslations("Notebook");
 
   if (pins.length === 0) {
@@ -70,7 +72,12 @@ export function PinnedList({ pins, suspects, evidence, onUnpin }: Props) {
                 label={null}
                 onRemove={() => onUnpin({ kind: "evidence", evidenceId: e.id })}
               >
-                {e.title}
+                <Link
+                  href={`/case/${caseNumber}/evidence/${e.id}`}
+                  className="text-accent font-semibold hover:underline"
+                >
+                  {e.title} →
+                </Link>
               </PinnedEntry>
             ))}
           </ul>
