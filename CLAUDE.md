@@ -140,7 +140,7 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 | 1 — Kurulum, şema, fixture dava, dava/kanıt ekranları                                     | ✅ Onaylandı                    | Supabase anahtarları ve Gemini anahtarı `.env.local`'de; GitHub/Vercel adımları Enes'te |
 | 2 — Sorgu, streaming, soru sayacı                                                         | ✅ Onaylandı                    | + not defteri, ipucu, suçlama/sonuç ara özellikleri                                     |
 | 3 — Tablolar/RLS, anonim giriş, kalıcılık, hız sınırı, Turnstile, çıktı filtresi, eval v1 | ✅ Onaylandı                    | Canlı: https://dailyalibi.vercel.app (Turnstile + Supabase CAPTCHA açık)               |
-| 4 — AI üretici + doğrulama, admin paneli, cron, ana sayfa, arşiv, cila                    | 🟢 4a bitti, onay bekliyor      | 4a üretici + doğrulama; 4b admin paneli; 4c cron, ana sayfa, arşiv, cila                |
+| 4 — AI üretici + doğrulama, admin paneli, cron, ana sayfa, arşiv, cila                    | 🟢 4a + 4b bitti, onay bekliyor | 4a üretici + doğrulama; 4b admin paneli; 4c cron, ana sayfa, arşiv, cila                |
 | 5 — README                                                                                | ⚪ Bekliyor                     |                                                                                         |
 
 ### Aşama 1'de yapılanlar
@@ -249,6 +249,17 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 - **Ölçümler:** flash üretim 187-242 sn (+onarım ~80 sn) → Vercel'in 300 sn sınırına sığmıyor (4c'de çözülecek). `gemini-3.8-flash` ücretsiz kotası **günde 20 istek, dakikada 5**. Lite üretim ~20 sn ama mantık hataları çok.
 - **Zorluk bulgusu:** elle yazdığımız dava #1 ve ilk üretilen davalar sadece brifingle çözülebiliyor ("çok kolay"). Kural: kolay davada uyarı, orta/zor davada ret. Prompt'a "tek kanıt katili tek başına göstermesin" kuralları eklendi + onarım turunda çözücünün gerekçesi veriliyor. Flash ile yeni prompt henüz denenmedi (kota).
 - DB'de deneme taslakları var (hepsi reddedilmiş/numarasız, oyunculara görünmez): Cold Commit in Cappadocia, Death at the Abbey of San Lorenzo, Blood at the Bosphorus Engagement.
+
+### Aşama 4b'de yapılanlar
+
+- **Admin kimliği:** Supabase'de e-posta + şifreli kullanıcı (enesece005@gmail.com), `app_metadata.role = "admin"` SQL ile verildi (kullanıcı değiştiremez). `src/server/admin/auth.ts` → `getAdmin()` / `requireAdmin()` (`getClaims` ile imza doğrulanır, anonim kullanıcı admin olamaz). Her admin sayfası (`guard.ts` → `adminOrRedirect`) ve her Server Action kendi kontrolünü yapar.
+- **Migration `admin_functions`** (Enes SQL Editor'de çalıştırdı): `approve_case(id, gün?)` (tek transaction: sıradaki numara + onay + isteğe bağlı takvim + inceleme "approved"; tablo kilidiyle aynı numara iki kez verilmez), `schedule_case`, `unschedule_day` (sadece ileri günler). Hepsi sadece `service_role`. Rollback'li transaction'da test edildi.
+- **Sayfalar** (`/[locale]/admin`, sadece İngilizce, `noindex`): Cases (pending/rejected/approved/all + "Generate" formu), dava detayı (Approve/Reject/Run checks again, son inceleme: 14 kontrol + çözücü gerekçeleri + onarım geçmişi, davanın tamamı EN/TR yan yana), Schedule (14 gün + havuz), Login (Turnstile token'lı `signInWithPassword`).
+- **Server Actions** (`src/server/admin/actions.ts`): her biri `requireAdmin` + Zod; değişiklikten sonra `updateTag("cases"/"schedule")` (Next 16: Server Action içinde anında önbellek yenileme). Üretim/yeniden kontrol sayfalarında `maxDuration = 300`; panelden üretimde 270 sn bütçe (onarım turuna genelde süre kalmaz).
+- Gizli veri sadece Server Component'lerde HTML'e dönüşür; Client Component'lere (ActionForm, LoginForm) sadece id'ler gider. Build + `check:leaks` temiz.
+- `SiteHeader`'daki `LocaleSwitcher` `<Suspense>` içine alındı (runtime parametreli sayfalarda `usePathname` prerender'ı engelliyordu).
+- Yerel test için `scripts/tmp/admin-cookie.mts` (git'e girmez): gizli anahtarla magic link üretip oturum çerezi yazar; Turnstile'ı tarayıcı olmadan aşmak için.
+- Yerelde admin girişi için `.env.local`'e gerçek Turnstile site key + Cloudflare'de `localhost` hostname gerekir (Supabase CAPTCHA açık).
 
 ### Notlar / alınan teknik kararlar
 
