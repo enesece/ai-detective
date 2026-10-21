@@ -14,3 +14,22 @@ export type ServerEnv = z.infer<typeof ServerEnvSchema>;
 export function getServerEnv(): ServerEnv {
   return ServerEnvSchema.parse(process.env);
 }
+
+const AiEnvSchema = z.object({
+  // Empty string counts as "not set" (that's how .env.example leaves it).
+  GEMINI_API_KEY: z
+    .string()
+    .optional()
+    .transform((v) => (v ? v : undefined)),
+  // "-latest" aliases follow Google's current model, so the default doesn't go stale.
+  GEMINI_MODEL: z
+    .string()
+    .optional()
+    .transform((v) => (v ? v : "gemini-flash-lite-latest")),
+});
+
+export type AiEnv = z.infer<typeof AiEnvSchema>;
+
+export function getAiEnv(): AiEnv {
+  return AiEnvSchema.parse(process.env);
+}
