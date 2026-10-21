@@ -37,10 +37,17 @@ async function InterrogateContent({
     statement: localize(s.initialStatement, locale),
     appearance: s.appearance,
   }));
-  const evidence: EvidenceOption[] = publicCase.briefing.evidence.map((e) => ({
-    id: e.id,
-    title: localize(e.title, locale),
-  }));
+  const tKind = await getTranslations("EvidenceKind");
+  const evidence: EvidenceOption[] = publicCase.briefing.evidence.map((e) => {
+    const place = publicCase.briefing.locations.find((l) => l.id === e.foundAt);
+    return {
+      id: e.id,
+      title: localize(e.title, locale),
+      kind: tKind(e.kind),
+      place: place ? localize(place.name, locale) : null,
+      description: localize(e.description, locale),
+    };
+  });
 
   return (
     <div className="pt-10">

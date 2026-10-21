@@ -105,7 +105,10 @@
     "remove": "Kaldır",
     "statementLabel": "İlk ifade",
     "evidenceGroup": "Kanıtlar",
-    "toggle": "Not defteri ({count})"
+    "toggle": "Not defteri ({count})",
+    "close": "Kapat",
+    "openEvidencePage": "Kanıt sayfasını aç",
+    "foundAt": "Bulunduğu yer: {place}"
   },
   "Hints": {
     "title": "İpuçları",

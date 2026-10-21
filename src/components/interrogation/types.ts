@@ -10,5 +10,13 @@ export type SuspectOption = {
   appearance?: Appearance;
 };
 
-/** Public evidence titles, so the notebook can show pinned evidence. */
-export type EvidenceOption = { id: string; title: string };
+/** Public evidence, translated, so the notebook can show a pinned item in a pop-up. */
+export type EvidenceOption = {
+  id: string;
+  title: string;
+  /** Translated kind, e.g. "Document". */
+  kind: string;
+  /** Translated place where it was found, if known. */
+  place: string | null;
+  description: string;
+};

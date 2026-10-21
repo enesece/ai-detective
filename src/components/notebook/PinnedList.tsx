@@ -1,10 +1,10 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import type { EvidenceOption, SuspectOption } from "@/components/interrogation/types";
-import { Link } from "@/i18n/navigation";
 import { pinKey, type PinnedItem, type PinTarget } from "@/lib/notebook/schema";
+import { EvidenceDialog } from "./EvidenceDialog";
 
 type Props = {
   pins: PinnedItem[];
@@ -20,6 +20,7 @@ type Props = {
  */
 export function PinnedList({ pins, suspects, evidence, caseNumber, onUnpin }: Props) {
   const t = useTranslations("Notebook");
+  const [openEvidenceId, setOpenEvidenceId] = useState<string | null>(null);
 
   if (pins.length === 0) {
     return <p className="text-muted text-sm italic">{t("empty")}</p>;
@@ -72,17 +73,25 @@ export function PinnedList({ pins, suspects, evidence, caseNumber, onUnpin }: Pr
                 label={null}
                 onRemove={() => onUnpin({ kind: "evidence", evidenceId: e.id })}
               >
-                <Link
-                  href={`/case/${caseNumber}/evidence/${e.id}`}
-                  className="text-accent font-bold hover:underline"
+                <button
+                  type="button"
+                  onClick={() => setOpenEvidenceId(e.id)}
+                  aria-haspopup="dialog"
+                  className="text-accent text-left font-bold hover:underline"
                 >
                   {e.title} →
-                </Link>
+                </button>
               </PinnedEntry>
             ))}
           </ul>
         </section>
       )}
+
+      <EvidenceDialog
+        evidence={evidence.find((e) => e.id === openEvidenceId) ?? null}
+        caseNumber={caseNumber}
+        onClose={() => setOpenEvidenceId(null)}
+      />
     </div>
   );
 }

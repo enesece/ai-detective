@@ -105,7 +105,10 @@
     "remove": "Remove",
     "statementLabel": "First statement",
     "evidenceGroup": "Evidence",
-    "toggle": "Notebook ({count})"
+    "toggle": "Notebook ({count})",
+    "close": "Close",
+    "openEvidencePage": "Open the evidence page",
+    "foundAt": "Found in: {place}"
   },
   "Hints": {
     "title": "Hints",
