@@ -9,14 +9,14 @@ import { localize } from "@/lib/case/localize";
 import { getPublicCase, listCaseNumbers } from "@/server/cases/repository";
 import { parseCaseNumber } from "../../case-number";
 
-export function generateStaticParams() {
-  return listCaseNumbers().flatMap((n) => {
-    const publicCase = getPublicCase(n);
-    return (publicCase?.briefing.evidence ?? []).map((e) => ({
-      caseNumber: String(n),
+export async function generateStaticParams() {
+  const cases = await Promise.all((await listCaseNumbers()).map((n) => getPublicCase(n)));
+  return cases.flatMap((c) =>
+    (c?.briefing.evidence ?? []).map((e) => ({
+      caseNumber: String(c?.caseNumber),
       evidenceId: e.id,
-    }));
-  });
+    })),
+  );
 }
 
 async function EvidenceContent({
@@ -26,7 +26,7 @@ async function EvidenceContent({
 }) {
   const { caseNumber: raw, evidenceId } = await params;
   const caseNumber = parseCaseNumber(raw);
-  const publicCase = caseNumber === null ? null : getPublicCase(caseNumber);
+  const publicCase = caseNumber === null ? null : await getPublicCase(caseNumber);
   const evidence = publicCase?.briefing.evidence.find((e) => e.id === evidenceId);
   if (!publicCase || !evidence) notFound();
 

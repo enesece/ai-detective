@@ -65,7 +65,8 @@
       "ai_unavailable": "The suspect is not answering right now. Your question was not counted; please try again.",
       "rate_limited": "Too many detectives are asking questions right now. Wait a minute and try again; your question was not counted.",
       "game_over": "This case is closed for you: you've already made your accusation.",
-      "no_hints_left": "No hints left."
+      "no_hints_left": "No hints left.",
+      "unauthenticated": "Your session expired. Please try again."
     },
     "initialStatement": "First statement",
     "accuse": "Make your accusation",

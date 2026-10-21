@@ -1,16 +1,15 @@
 import "server-only";
 
-import type { Locale } from "@/lib/case/schema";
-import type { Exchange, GameResult } from "@/lib/game/rules";
-import { QUESTION_LIMIT } from "@/lib/game/rules";
+import { z } from "zod";
+import { LOCALES, type Locale } from "@/lib/case/schema";
+import { GameResultSchema, QUESTION_LIMIT, type Exchange, type GameResult } from "@/lib/game/rules";
+import { createSupabaseAdminClient } from "@/server/supabase";
 
 /*
- * Server-side game state: question counter, conversation, hints and result.
- *
- * Kept in memory for now. That is safe from the browser (the client can't
- * touch it) but resets when the server restarts and isn't shared between
- * Vercel instances. Phase 3 replaces this file with a Supabase-backed store
- * implementing the same interface.
+ * Server-side game state in Supabase: question counter, conversation, hints
+ * and result. Every state change goes through a Postgres function (see
+ * supabase/migrations) that checks and updates in one statement, so parallel
+ * requests can't both pass a check. Only the service role may call them.
  */
 
 export type GameProgress = {
@@ -28,104 +27,172 @@ export type HintResult = { ok: true; hintsUsed: number } | Failure<"no_hints_lef
 export type FinishResult = { ok: true; result: GameResult } | Failure<"busy" | "game_over">;
 
 export interface GameStore {
-  progress(key: string): Promise<GameProgress>;
+  /** The player's game for a case, if they have started one. */
+  findGame(playerId: string, caseNumber: number): Promise<string | null>;
+  /** Like findGame, but starts the game on first use. Null if the case doesn't exist. */
+  openGame(playerId: string, caseNumber: number): Promise<string | null>;
+  progress(gameId: string): Promise<GameProgress>;
   /** Atomically checks the limit and counts the question before the AI is called. */
-  reserveQuestion(key: string): Promise<ReserveResult>;
+  reserveQuestion(gameId: string): Promise<ReserveResult>;
   /** Gives the question back when the AI produced no answer. */
-  refundQuestion(key: string): Promise<void>;
-  completeQuestion(key: string, exchange: Exchange): Promise<void>;
+  refundQuestion(gameId: string): Promise<void>;
+  completeQuestion(gameId: string, exchange: Exchange): Promise<void>;
   /** Latest exchanges with one suspect in one language (mixed-language history makes the model switch language). */
   recentExchanges(
-    key: string,
+    gameId: string,
     suspectId: string,
     locale: Locale,
     limit: number,
   ): Promise<Exchange[]>;
   /** Unlocks the next hint, if the case has one left. */
-  revealHint(key: string, available: number): Promise<HintResult>;
-  /** Records the single accusation. `decide` turns the final progress into the result. */
+  revealHint(gameId: string, available: number): Promise<HintResult>;
+  /** Records the single accusation. `decide` turns the final counters into the result. */
   finishGame(
-    key: string,
-    decide: (progress: Omit<GameProgress, "result" | "exchanges">) => GameResult,
+    gameId: string,
+    decide: (counters: { questionsUsed: number; hintsUsed: number }) => GameResult,
   ): Promise<FinishResult>;
 }
 
-type GameState = GameProgress & { busy: boolean };
+// What the counter functions return (validated: the database is outside our type system).
+const CounterRowsSchema = z.array(z.object({ used: z.number(), error: z.string().nullable() }));
+const MessageRowSchema = z.object({
+  suspect_id: z.string(),
+  question: z.string(),
+  answer: z.string(),
+  locale: z.enum(LOCALES),
+});
 
-// Survives hot reloads in dev, where modules are re-evaluated.
-const globalForStore = globalThis as typeof globalThis & { __gameStates?: Map<string, GameState> };
-const games = (globalForStore.__gameStates ??= new Map<string, GameState>());
-
-function stateFor(key: string): GameState {
-  let state = games.get(key);
-  if (!state) {
-    state = { questionsUsed: 0, exchanges: [], hintsUsed: 0, result: null, busy: false };
-    games.set(key, state);
-  }
-  return state;
+function fail(context: string, message: string): never {
+  throw new Error(`gameStore.${context}: ${message}`);
 }
 
-export function gameKey(sessionId: string, caseNumber: number): string {
-  return `${sessionId}:${caseNumber}`;
+function toExchange(row: unknown): Exchange {
+  const m = MessageRowSchema.parse(row);
+  return { suspectId: m.suspect_id, question: m.question, answer: m.answer, locale: m.locale };
 }
 
-// No `await` between a check and its update in these methods, so two parallel
-// requests can't both pass the same check.
 export const gameStore: GameStore = {
-  async progress(key) {
-    const state = games.get(key);
+  async findGame(playerId, caseNumber) {
+    const { data, error } = await createSupabaseAdminClient()
+      .from("games")
+      .select("id, cases!inner(case_number)")
+      .eq("player_id", playerId)
+      .eq("cases.case_number", caseNumber)
+      .maybeSingle();
+    if (error) fail("findGame", error.message);
+    return data?.id ?? null;
+  },
+
+  async openGame(playerId, caseNumber) {
+    const { data, error } = await createSupabaseAdminClient().rpc("start_game", {
+      p_player_id: playerId,
+      p_case_number: caseNumber,
+    });
+    if (error) fail("openGame", error.message);
+    return data ?? null;
+  },
+
+  async progress(gameId) {
+    const db = createSupabaseAdminClient();
+    const [game, messages] = await Promise.all([
+      db.from("games").select("questions_used, hints_used, result").eq("id", gameId).single(),
+      db
+        .from("messages")
+        .select("suspect_id, question, answer, locale")
+        .eq("game_id", gameId)
+        .order("id"),
+    ]);
+    if (game.error) fail("progress", game.error.message);
+    if (messages.error) fail("progress", messages.error.message);
     return {
-      questionsUsed: state?.questionsUsed ?? 0,
-      exchanges: state ? [...state.exchanges] : [],
-      hintsUsed: state?.hintsUsed ?? 0,
-      result: state?.result ?? null,
+      questionsUsed: game.data.questions_used,
+      hintsUsed: game.data.hints_used,
+      result: game.data.result === null ? null : GameResultSchema.parse(game.data.result),
+      exchanges: messages.data.map(toExchange),
     };
   },
 
-  async reserveQuestion(key) {
-    const state = stateFor(key);
-    if (state.result) return { ok: false, error: "game_over" };
-    if (state.busy) return { ok: false, error: "busy" };
-    if (state.questionsUsed >= QUESTION_LIMIT) return { ok: false, error: "limit_reached" };
-    state.busy = true;
-    state.questionsUsed += 1;
-    return { ok: true, questionsUsed: state.questionsUsed };
+  async reserveQuestion(gameId) {
+    const { data, error } = await createSupabaseAdminClient().rpc("reserve_question", {
+      p_game_id: gameId,
+      p_limit: QUESTION_LIMIT,
+    });
+    if (error) fail("reserveQuestion", error.message);
+    const [row] = CounterRowsSchema.parse(data);
+    if (!row) fail("reserveQuestion", "no result");
+    if (row.error === null) return { ok: true, questionsUsed: row.used };
+    if (row.error === "limit_reached" || row.error === "busy")
+      return { ok: false, error: row.error };
+    return { ok: false, error: "game_over" };
   },
 
-  async refundQuestion(key) {
-    const state = stateFor(key);
-    state.questionsUsed = Math.max(0, state.questionsUsed - 1);
-    state.busy = false;
+  async refundQuestion(gameId) {
+    const { error } = await createSupabaseAdminClient().rpc("refund_question", {
+      p_game_id: gameId,
+    });
+    if (error) fail("refundQuestion", error.message);
   },
 
-  async completeQuestion(key, exchange) {
-    const state = stateFor(key);
-    state.exchanges.push(exchange);
-    state.busy = false;
+  async completeQuestion(gameId, exchange) {
+    const { error } = await createSupabaseAdminClient().rpc("complete_question", {
+      p_game_id: gameId,
+      p_suspect_id: exchange.suspectId,
+      p_question: exchange.question,
+      p_answer: exchange.answer,
+      p_locale: exchange.locale,
+    });
+    if (error) fail("completeQuestion", error.message);
   },
 
-  async recentExchanges(key, suspectId, locale, limit) {
-    const state = games.get(key);
-    if (!state) return [];
-    return state.exchanges
-      .filter((e) => e.suspectId === suspectId && e.locale === locale)
-      .slice(-limit);
+  async recentExchanges(gameId, suspectId, locale, limit) {
+    const { data, error } = await createSupabaseAdminClient()
+      .from("messages")
+      .select("suspect_id, question, answer, locale")
+      .eq("game_id", gameId)
+      .eq("suspect_id", suspectId)
+      .eq("locale", locale)
+      .order("id", { ascending: false })
+      .limit(limit);
+    if (error) fail("recentExchanges", error.message);
+    return data.map(toExchange).reverse();
   },
 
-  async revealHint(key, available) {
-    const state = stateFor(key);
-    if (state.result) return { ok: false, error: "game_over" };
-    if (state.hintsUsed >= available) return { ok: false, error: "no_hints_left" };
-    state.hintsUsed += 1;
-    return { ok: true, hintsUsed: state.hintsUsed };
+  async revealHint(gameId, available) {
+    const { data, error } = await createSupabaseAdminClient().rpc("reveal_hint", {
+      p_game_id: gameId,
+      p_available: available,
+    });
+    if (error) fail("revealHint", error.message);
+    const [row] = CounterRowsSchema.parse(data);
+    if (!row) fail("revealHint", "no result");
+    if (row.error === null) return { ok: true, hintsUsed: row.used };
+    if (row.error === "no_hints_left") return { ok: false, error: "no_hints_left" };
+    return { ok: false, error: "game_over" };
   },
 
-  async finishGame(key, decide) {
-    const state = stateFor(key);
-    if (state.result) return { ok: false, error: "game_over" };
-    // Don't accept an accusation while an answer is still streaming.
-    if (state.busy) return { ok: false, error: "busy" };
-    state.result = decide({ questionsUsed: state.questionsUsed, hintsUsed: state.hintsUsed });
-    return { ok: true, result: state.result };
+  async finishGame(gameId, decide) {
+    const db = createSupabaseAdminClient();
+    const { data: game, error } = await db
+      .from("games")
+      .select("questions_used, hints_used, status")
+      .eq("id", gameId)
+      .single();
+    if (error) fail("finishGame", error.message);
+    if (game.status !== "playing") return { ok: false, error: "game_over" };
+
+    const result = decide({ questionsUsed: game.questions_used, hintsUsed: game.hints_used });
+    // The function only accepts it if the counters are still the ones we scored.
+    const { data: failure, error: rpcError } = await db.rpc("finish_game", {
+      p_game_id: gameId,
+      p_expected_questions: game.questions_used,
+      p_expected_hints: game.hints_used,
+      p_accusation: result.accusation,
+      p_result: result,
+      p_score: result.score.total,
+      p_solved: result.correct.killer,
+    });
+    if (rpcError) fail("finishGame", rpcError.message);
+    if (failure === null) return { ok: true, result };
+    return { ok: false, error: failure === "busy" ? "busy" : "game_over" };
   },
 };

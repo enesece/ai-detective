@@ -1,8 +1,8 @@
 import { getCaseSecret, getPublicCase } from "@/server/cases/repository";
 import { ChatModelError, getChatModel, type ChatModel } from "@/server/ai";
-import { gameKey, gameStore } from "@/server/interrogation/game-store";
+import { gameStore } from "@/server/interrogation/game-store";
 import { buildSuspectPrompt, formatQuestion } from "@/server/interrogation/prompt";
-import { getOrCreateSessionId } from "@/server/interrogation/session";
+import { getPlayerId } from "@/server/player";
 import {
   HISTORY_EXCHANGES,
   InterrogateRequestSchema,
@@ -25,8 +25,8 @@ export async function POST(request: Request): Promise<Response> {
   if (!parsed.success) return errorResponse("invalid_request", 400);
   const { caseNumber, suspectId, question, locale } = parsed.data;
 
-  const publicCase = getPublicCase(caseNumber);
-  const caseSecret = getCaseSecret(caseNumber);
+  const publicCase = await getPublicCase(caseNumber);
+  const caseSecret = await getCaseSecret(caseNumber);
   if (!publicCase || !caseSecret) return errorResponse("case_not_found", 404);
 
   const suspect = publicCase.briefing.suspects.find((s) => s.id === suspectId);
@@ -40,13 +40,16 @@ export async function POST(request: Request): Promise<Response> {
     return errorResponse("ai_unavailable", 503);
   }
 
-  const key = gameKey(await getOrCreateSessionId(), caseNumber);
-  const reservation = await gameStore.reserveQuestion(key);
+  const playerId = await getPlayerId();
+  if (!playerId) return errorResponse("unauthenticated", 401);
+  const gameId = await gameStore.openGame(playerId, caseNumber);
+  if (!gameId) return errorResponse("case_not_found", 404);
+  const reservation = await gameStore.reserveQuestion(gameId);
   if (!reservation.ok) {
     return errorResponse(reservation.error, reservation.error === "limit_reached" ? 403 : 409);
   }
 
-  const history = await gameStore.recentExchanges(key, suspectId, locale, HISTORY_EXCHANGES);
+  const history = await gameStore.recentExchanges(gameId, suspectId, locale, HISTORY_EXCHANGES);
   const chunks = model
     .streamChat({
       system: buildSuspectPrompt({
@@ -74,7 +77,7 @@ export async function POST(request: Request): Promise<Response> {
     first = await chunks.next();
   } catch (error) {
     console.error("[interrogate] model error:", error instanceof Error ? error.message : error);
-    await gameStore.refundQuestion(key);
+    await gameStore.refundQuestion(gameId);
     // 429 = the free tier's per-minute limit: tell the player to wait, not that it's broken.
     if (error instanceof ChatModelError && error.status === 429) {
       return errorResponse("rate_limited", 503);
@@ -88,8 +91,9 @@ export async function POST(request: Request): Promise<Response> {
     if (finished) return;
     finished = true;
     const text = answer.trim();
-    if (text) await gameStore.completeQuestion(key, { suspectId, question, answer: text, locale });
-    else await gameStore.refundQuestion(key);
+    if (text)
+      await gameStore.completeQuestion(gameId, { suspectId, question, answer: text, locale });
+    else await gameStore.refundQuestion(gameId);
   };
 
   const encoder = new TextEncoder();

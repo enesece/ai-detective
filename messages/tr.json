@@ -65,7 +65,8 @@
       "ai_unavailable": "Şüpheli şu an cevap vermiyor. Soru hakkından düşülmedi, tekrar dene.",
       "rate_limited": "Şu an çok fazla dedektif soru soruyor. Bir dakika bekleyip tekrar dene; soru hakkından düşülmedi.",
       "game_over": "Bu dava senin için kapandı: suçlamanı zaten yaptın.",
-      "no_hints_left": "İpucu kalmadı."
+      "no_hints_left": "İpucu kalmadı.",
+      "unauthenticated": "Oturumun sona erdi. Lütfen tekrar dene."
     },
     "initialStatement": "İlk ifade",
     "accuse": "Suçlamanı yap",

@@ -10,8 +10,8 @@ import { localize } from "@/lib/case/localize";
 import { getPublicCase, listCaseNumbers } from "@/server/cases/repository";
 import { parseCaseNumber } from "../case-number";
 
-export function generateStaticParams() {
-  return listCaseNumbers().map((n) => ({ caseNumber: String(n) }));
+export async function generateStaticParams() {
+  return (await listCaseNumbers()).map((n) => ({ caseNumber: String(n) }));
 }
 
 async function InterrogateContent({
@@ -21,7 +21,7 @@ async function InterrogateContent({
 }) {
   const { caseNumber: raw } = await params;
   const caseNumber = parseCaseNumber(raw);
-  const publicCase = caseNumber === null ? null : getPublicCase(caseNumber);
+  const publicCase = caseNumber === null ? null : await getPublicCase(caseNumber);
   if (!publicCase) notFound();
 
   const t = await getTranslations("Interrogation");

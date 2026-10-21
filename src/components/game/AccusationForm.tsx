@@ -1,5 +1,6 @@
 "use client";
 
+import { gameFetch } from "@/lib/supabase/session";
 import { useEffect, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
@@ -41,7 +42,7 @@ export function AccusationForm({ caseNumber, options }: Props) {
     setError(null);
     try {
       const body: AccuseRequest = { caseNumber, killerId, motiveId, evidenceId };
-      const res = await fetch("/api/accuse", {
+      const res = await gameFetch("/api/accuse", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),

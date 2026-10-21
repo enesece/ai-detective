@@ -2,16 +2,15 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getAppLocale } from "@/i18n/locale";
 import { localize } from "@/lib/case/localize";
-import { getPublicCase, listCaseNumbers } from "@/server/cases/repository";
+import { getPublicCase, getTodaysCaseNumber } from "@/server/cases/repository";
 
 export default async function HomePage() {
   const t = await getTranslations("Home");
   const tCase = await getTranslations("Case");
   const locale = await getAppLocale();
 
-  // Phase 1 has one fixture; daily scheduling arrives with the database.
-  const [todaysNumber] = listCaseNumbers();
-  const today = todaysNumber === undefined ? null : getPublicCase(todaysNumber);
+  const todaysNumber = await getTodaysCaseNumber();
+  const today = todaysNumber === null ? null : await getPublicCase(todaysNumber);
 
   return (
     <div className="mx-auto max-w-4xl pt-16">

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { LOCALES, type Locale, type LocalizedText } from "@/lib/case/schema";
+import { LOCALES, LocalizedTextSchema, type Locale, type LocalizedText } from "@/lib/case/schema";
 
 /** Game rules shared by the server (enforces them) and the client (displays them). */
 export const QUESTION_LIMIT = 20;
@@ -33,34 +33,39 @@ export type Accusation = Omit<AccuseRequest, "caseNumber">;
 /** One question and answer. `locale` is the language the answer was given in. */
 export type Exchange = { suspectId: string; question: string; answer: string; locale: Locale };
 
-export type ScoreBreakdown = {
-  killer: number;
-  motive: number;
-  evidence: number;
-  unusedQuestions: number;
-  hintPenalty: number;
-  total: number;
-};
+const ScoreBreakdownSchema = z.strictObject({
+  killer: z.number(),
+  motive: z.number(),
+  evidence: z.number(),
+  unusedQuestions: z.number(),
+  hintPenalty: z.number(),
+  total: z.number(),
+});
+export type ScoreBreakdown = z.infer<typeof ScoreBreakdownSchema>;
 
 /**
  * Sent to the player only after their one accusation. From then on the game is
- * over for them, so revealing the solution is safe.
+ * over for them, so revealing the solution is safe. A schema (not just a type)
+ * because it is stored in the database and validated when read back.
  */
-export type GameResult = {
-  accusation: Accusation;
-  correct: { killer: boolean; motive: boolean; evidence: boolean };
-  questionsUsed: number;
-  hintsUsed: number;
-  score: ScoreBreakdown;
-  solution: {
-    killerId: string;
-    motiveId: string;
-    keyEvidenceIds: string[];
-    method: LocalizedText;
-    trueStory: LocalizedText;
-    evidenceExplanations: { evidenceId: string; explanation: LocalizedText }[];
-  };
-};
+export const GameResultSchema = z.strictObject({
+  accusation: AccuseRequestSchema.omit({ caseNumber: true }),
+  correct: z.strictObject({ killer: z.boolean(), motive: z.boolean(), evidence: z.boolean() }),
+  questionsUsed: z.number().int().nonnegative(),
+  hintsUsed: z.number().int().nonnegative(),
+  score: ScoreBreakdownSchema,
+  solution: z.strictObject({
+    killerId: z.string(),
+    motiveId: z.string(),
+    keyEvidenceIds: z.array(z.string()),
+    method: LocalizedTextSchema,
+    trueStory: LocalizedTextSchema,
+    evidenceExplanations: z.array(
+      z.strictObject({ evidenceId: z.string(), explanation: LocalizedTextSchema }),
+    ),
+  }),
+});
+export type GameResult = z.infer<typeof GameResultSchema>;
 
 /** What GET /api/game/[caseNumber] returns: only the player's own progress. */
 export type GameSnapshot = {
@@ -87,6 +92,7 @@ export const GAME_ERRORS = [
   "rate_limited",
   "game_over",
   "no_hints_left",
+  "unauthenticated",
 ] as const;
 export type GameError = (typeof GAME_ERRORS)[number];
 

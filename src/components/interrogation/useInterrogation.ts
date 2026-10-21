@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Locale } from "@/lib/case/schema";
 import { toGameError } from "@/components/game/errors";
+import { gameFetch } from "@/lib/supabase/session";
 import type { LocalizedText } from "@/lib/case/schema";
 import {
   QUESTION_LIMIT,
@@ -36,7 +37,7 @@ export function useInterrogation(caseNumber: number, locale: Locale) {
   // Restore the server's state after a reload.
   useEffect(() => {
     let cancelled = false;
-    fetch(`/api/game/${caseNumber}`, { cache: "no-store" })
+    gameFetch(`/api/game/${caseNumber}`, { cache: "no-store" })
       .then((res) => (res.ok ? (res.json() as Promise<GameSnapshot>) : null))
       .then((snapshot) => {
         if (cancelled) return;
@@ -72,7 +73,7 @@ export function useInterrogation(caseNumber: number, locale: Locale) {
 
       const body: InterrogateRequest = { caseNumber, suspectId, question, locale };
       try {
-        const res = await fetch("/api/interrogate", {
+        const res = await gameFetch("/api/interrogate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
@@ -112,7 +113,7 @@ export function useInterrogation(caseNumber: number, locale: Locale) {
     setHintPending(true);
     try {
       const body: HintRequest = { caseNumber };
-      const res = await fetch("/api/hint", {
+      const res = await gameFetch("/api/hint", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),

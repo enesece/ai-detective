@@ -1,13 +1,7 @@
 // Generated from the Supabase schema (supabase/migrations). Do not edit by hand:
 // regenerate after every migration. Unused helper types were left out.
 
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options

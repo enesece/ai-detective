@@ -1,5 +1,6 @@
 "use client";
 
+import { gameFetch } from "@/lib/supabase/session";
 import { useEffect, useState } from "react";
 import type { GameSnapshot } from "@/lib/game/rules";
 
@@ -11,7 +12,7 @@ export function useGameSnapshot(caseNumber: number): State {
 
   useEffect(() => {
     let cancelled = false;
-    fetch(`/api/game/${caseNumber}`, { cache: "no-store" })
+    gameFetch(`/api/game/${caseNumber}`, { cache: "no-store" })
       .then((res) => (res.ok ? (res.json() as Promise<GameSnapshot>) : null))
       .catch(() => null)
       .then((snapshot) => {
