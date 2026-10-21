@@ -88,8 +88,16 @@ export async function getCaseSecret(caseNumber: number): Promise<CaseSecret | nu
   return data ? CaseSecretSchema.parse(data.secret) : null;
 }
 
-/** The case scheduled for today (or the latest past day), or null. */
-export async function getTodaysCaseNumber(): Promise<number | null> {
+/**
+ * The case scheduled for today, or the latest past day's if today is empty.
+ * `isToday` is computed here, inside the cache, because a prerendered page
+ * may not read the clock itself. The daily cron refreshes this tag.
+ */
+export async function getTodaysCase(): Promise<{
+  caseNumber: number;
+  publishDate: string;
+  isToday: boolean;
+} | null> {
   "use cache";
   cacheLife("minutes");
   cacheTag("schedule");
@@ -103,8 +111,11 @@ export async function getTodaysCaseNumber(): Promise<number | null> {
     .order("publish_date", { ascending: false })
     .limit(1)
     .maybeSingle();
-  if (error) throw new Error(`getTodaysCaseNumber: ${error.message}`);
-  return data?.cases.case_number ?? null;
+  if (error) throw new Error(`getTodaysCase: ${error.message}`);
+  const caseNumber = data?.cases.case_number;
+  return data && caseNumber != null
+    ? { caseNumber, publishDate: data.publish_date, isToday: data.publish_date === today }
+    : null;
 }
 
 export type ArchiveEntry = {

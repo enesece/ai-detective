@@ -14,14 +14,14 @@ export function LocaleSwitcher() {
   const router = useRouter();
 
   return (
-    <nav aria-label={t("language")} className="flex gap-1 text-sm">
+    <nav aria-label={t("language")} className="flex gap-1 font-sans text-[13px] tracking-[0.1em]">
       {routing.locales.map((locale) => (
         <button
           key={locale}
           type="button"
           onClick={() => router.replace(pathname, { locale })}
           aria-current={locale === current ? "true" : undefined}
-          className="rounded px-2 py-1 font-semibold text-muted hover:text-ink aria-[current]:bg-ink aria-[current]:text-paper"
+          className="border-ink min-h-11 min-w-11 border px-2 font-bold hover:bg-ink hover:text-paper aria-[current]:bg-ink aria-[current]:text-paper"
         >
           {LABELS[locale]}
         </button>

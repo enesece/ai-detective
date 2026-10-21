@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Lora, Playfair_Display } from "next/font/google";
+import { Abril_Fatface, Libre_Caslon_Text, Libre_Franklin } from "next/font/google";
 import { notFound } from "next/navigation";
 import { locale as rootLocale } from "next/root-params";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
@@ -8,15 +8,19 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+// latin-ext covers Turkish letters (ğ, ş, ı, İ).
+const abril = Abril_Fatface({
+  variable: "--font-abril",
+  weight: "400",
   subsets: ["latin", "latin-ext"],
 });
-
-const lora = Lora({
-  variable: "--font-lora",
+const caslon = Libre_Caslon_Text({
+  variable: "--font-caslon",
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
   subsets: ["latin", "latin-ext"],
 });
+const franklin = Libre_Franklin({ variable: "--font-franklin", subsets: ["latin", "latin-ext"] });
 
 // Cache Components needs at least one value per root param; this prerenders /en and /tr.
 export function generateStaticParams() {
@@ -33,12 +37,15 @@ export default async function LocaleLayout({ children }: LayoutProps<"/[locale]"
   if (!hasLocale(routing.locales, locale)) notFound();
 
   return (
-    <html lang={locale} className={`${playfair.variable} ${lora.variable} antialiased`}>
+    <html
+      lang={locale}
+      className={`${abril.variable} ${caslon.variable} ${franklin.variable} antialiased`}
+    >
       <body className="min-h-dvh">
         {/* Makes translations available to Client Components (e.g. LocaleSwitcher). */}
         <NextIntlClientProvider>
           <SiteHeader />
-          <main className="mx-auto w-full max-w-6xl px-4 pb-16">{children}</main>
+          <main className="mx-auto w-full max-w-6xl px-4 pb-20">{children}</main>
         </NextIntlClientProvider>
       </body>
     </html>

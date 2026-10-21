@@ -4,16 +4,17 @@
     "description": "A new murder mystery every day. Question AI suspects, examine the evidence, name the killer."
   },
   "Header": {
-    "brand": "Daily Alibi",
+    "brand": "The Daily Alibi",
     "language": "Language",
-    "archive": "Archive"
+    "archive": "Archive",
+    "today": "Today",
+    "nav": "Main"
   },
   "Home": {
     "tagline": "A new murder every morning. Twenty questions. One accusation.",
     "todaysCase": "Today's case",
-    "openCase": "Open the case file",
+    "openCase": "Take the case",
     "noCase": "No case today yet. Come back soon, or try one from the archive.",
-    "howToPlay": "How to play",
     "steps": {
       "read": "Read the case file and examine the evidence. That's free.",
       "ask": "Question the four suspects. You have 20 questions in total, so choose them well.",
@@ -21,7 +22,13 @@
       "accuse": "Name the killer, the motive and the key evidence. You get one accusation."
     },
     "daily": "A new case every day at midnight (UTC). Everyone gets the same one.",
-    "archiveLink": "Play past cases"
+    "edition": "Late Edition",
+    "questionsNote": "20 questions · one accusation",
+    "atAGlance": "At a glance",
+    "rules": "Rules of the game",
+    "fromArchive": "From the archive",
+    "allCases": "All past cases",
+    "latestCase": "Latest case"
   },
   "Case": {
     "caseNumber": "Case #{number}",
@@ -82,7 +89,9 @@
     "initialStatement": "First statement",
     "accuse": "Make your accusation",
     "seeResult": "See the result",
-    "caseClosed": "Case closed."
+    "caseClosed": "Case closed.",
+    "you": "You",
+    "interviewWith": "Interview with"
   },
   "Notebook": {
     "title": "Notebook",
@@ -142,7 +151,9 @@
     "scoreHints": "Hints",
     "total": "Total",
     "trueStory": "What really happened",
-    "evidenceExplained": "What the evidence was saying"
+    "evidenceExplained": "What the evidence was saying",
+    "stampSolved": "Case closed",
+    "stampUnsolved": "Unsolved"
   },
   "Player": {
     "solved": "Solved · {score} points",

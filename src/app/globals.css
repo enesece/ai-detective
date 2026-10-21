@@ -1,19 +1,32 @@
 @import "tailwindcss";
 
+/* "Evening Gazette": a 1930s newspaper page. Square corners, ink rules,
+   one deep green accent, headlines in a fat Didone. */
 @theme {
-  --color-paper: #f6f1e6;
-  --color-card: #fffdf8;
-  --color-ink: #1f1a17;
-  --color-muted: #6b5f55;
-  --color-rule: #ddd2bf;
-  --color-accent: #7a1f1f;
+  --color-paper: #f3eee3;
+  --color-card: #fbf8f1;
+  --color-tint: #d8cfbd;
+  --color-ink: #17140f;
+  --color-muted: #5b5246;
+  --color-rule: #c9bfab;
+  --color-accent: #1f4d43;
+  --color-accent-dark: #123029;
+  /* Errors and warnings stay red, so they never read as the brand accent. */
+  --color-alert: #8f1d14;
 
-  --font-display: var(--font-playfair), Georgia, serif;
-  --font-serif: var(--font-lora), Georgia, serif;
+  --font-display: var(--font-abril), Georgia, serif;
+  --font-serif: var(--font-caslon), Georgia, serif;
+  --font-sans: var(--font-franklin), "Helvetica Neue", Arial, sans-serif;
 }
 
 body {
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-serif);
+}
+
+/* Visible keyboard focus everywhere, in the accent color. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }

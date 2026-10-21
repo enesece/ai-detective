@@ -4,16 +4,17 @@
     "description": "Her gün yeni bir cinayet gizemi. Yapay zekâ şüphelileri sorgula, kanıtları incele, katili bul."
   },
   "Header": {
-    "brand": "Daily Alibi",
+    "brand": "The Daily Alibi",
     "language": "Dil",
-    "archive": "Arşiv"
+    "archive": "Arşiv",
+    "today": "Bugün",
+    "nav": "Ana menü"
   },
   "Home": {
     "tagline": "Her sabah yeni bir cinayet. Yirmi soru. Tek suçlama.",
     "todaysCase": "Bugünün davası",
-    "openCase": "Dava dosyasını aç",
+    "openCase": "Davayı üstlen",
     "noCase": "Bugünün davası henüz yayınlanmadı. Birazdan tekrar bak ya da arşivden bir dava seç.",
-    "howToPlay": "Nasıl oynanır",
     "steps": {
       "read": "Dava dosyasını oku, kanıtları incele. Bunlar ücretsiz.",
       "ask": "Dört şüpheliyi sorgula. Toplam 20 soru hakkın var, iyi seç.",
@@ -21,7 +22,13 @@
       "accuse": "Katili, motifi ve kilit kanıtı söyle. Tek suçlama hakkın var."
     },
     "daily": "Her gece yarısı (UTC) yeni bir dava. Herkese aynı dava gelir.",
-    "archiveLink": "Geçmiş davaları oyna"
+    "edition": "Akşam Baskısı",
+    "questionsNote": "20 soru · tek suçlama",
+    "atAGlance": "Kısaca",
+    "rules": "Oyunun kuralları",
+    "fromArchive": "Arşivden",
+    "allCases": "Tüm geçmiş davalar",
+    "latestCase": "Son dava"
   },
   "Case": {
     "caseNumber": "Dava #{number}",
@@ -82,7 +89,9 @@
     "initialStatement": "İlk ifade",
     "accuse": "Suçlamanı yap",
     "seeResult": "Sonucu gör",
-    "caseClosed": "Dava kapandı."
+    "caseClosed": "Dava kapandı.",
+    "you": "Siz",
+    "interviewWith": "Röportaj"
   },
   "Notebook": {
     "title": "Not defteri",
@@ -142,7 +151,9 @@
     "scoreHints": "İpuçları",
     "total": "Toplam",
     "trueStory": "Gerçekte ne oldu",
-    "evidenceExplained": "Kanıtlar ne anlatıyordu"
+    "evidenceExplained": "Kanıtlar ne anlatıyordu",
+    "stampSolved": "Dava kapandı",
+    "stampUnsolved": "Çözülemedi"
   },
   "Player": {
     "solved": "Çözüldü · {score} puan",
