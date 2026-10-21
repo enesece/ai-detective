@@ -1,5 +1,6 @@
 "use client";
 
+import { Portrait } from "@/components/ui/Portrait";
 import { buttonOutline, buttonPrimary, kicker, linkCaps } from "@/components/ui/styles";
 import { useEffect, useRef, useState } from "react";
 import { hasLocale, useLocale, useTranslations } from "next-intl";
@@ -85,10 +86,19 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
 
       <section className="border-ink bg-paper flex h-[70dvh] min-h-[24rem] min-w-0 flex-col border">
         <header className="border-ink flex flex-col items-start justify-between gap-3 border-b px-4 py-3 sm:flex-row">
-          <div>
-            <p className={`${kicker} text-muted`}>{t("interviewWith")}</p>
-            <h2 className="font-display text-2xl sm:text-3xl">{selected.name}</h2>
-            <p className="text-muted italic">{selected.role}</p>
+          <div className="flex items-center gap-4">
+            <Portrait
+              name={selected.name}
+              seed={selected.id}
+              appearance={selected.appearance}
+              crop="head"
+              className="h-16 w-16 shrink-0"
+            />
+            <div>
+              <p className={`${kicker} text-muted`}>{t("interviewWith")}</p>
+              <h2 className="font-display text-2xl sm:text-3xl">{selected.name}</h2>
+              <p className="text-muted italic">{selected.role}</p>
+            </div>
           </div>
           {/* Below xl the notebook is a panel you open; on wide screens it's always visible. */}
           <button

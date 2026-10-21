@@ -14,7 +14,9 @@ export async function SuspectCard({ suspect, locale }: Props) {
     <article className="flex flex-col">
       <Portrait
         name={suspect.name}
-        className="aspect-[5/4] w-full max-sm:aspect-auto max-sm:h-28"
+        seed={suspect.id}
+        appearance={suspect.appearance}
+        className="aspect-4/5 w-full max-sm:mx-auto max-sm:w-44"
       />
       <h3 className="mt-4 text-xl font-bold">{suspect.name}</h3>
       <p className={`${label} mt-1`}>{localize(suspect.role, locale)}</p>

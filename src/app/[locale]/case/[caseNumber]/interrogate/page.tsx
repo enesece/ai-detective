@@ -35,6 +35,7 @@ async function InterrogateContent({
     name: s.name,
     role: localize(s.role, locale),
     statement: localize(s.initialStatement, locale),
+    appearance: s.appearance,
   }));
   const evidence: EvidenceOption[] = publicCase.briefing.evidence.map((e) => ({
     id: e.id,

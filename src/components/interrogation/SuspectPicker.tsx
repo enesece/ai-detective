@@ -1,5 +1,6 @@
 "use client";
 
+import { Portrait } from "@/components/ui/Portrait";
 import { useTranslations } from "next-intl";
 import type { SuspectOption } from "./types";
 
@@ -32,14 +33,25 @@ export function SuspectPicker({ suspects, selectedId, askedCount, onSelect }: Pr
               selected ? "bg-ink text-paper" : "hover:bg-card"
             }`}
           >
-            <span className="block leading-tight font-bold">{s.name}</span>
-            <span className={`block text-sm italic ${selected ? "opacity-80" : "text-muted"}`}>
-              {s.role}
-            </span>
-            <span
-              className={`mt-1 block font-sans text-[11px] font-bold tracking-[0.15em] uppercase ${selected ? "opacity-80" : "text-muted"}`}
-            >
-              {t("askedCount", { count: askedCount(s.id) })}
+            <span className="flex items-start gap-3">
+              <Portrait
+                name=""
+                seed={s.id}
+                appearance={s.appearance}
+                crop="head"
+                className="h-11 w-11 shrink-0"
+              />
+              <span className="min-w-0">
+                <span className="block leading-tight font-bold">{s.name}</span>
+                <span className={`block text-sm italic ${selected ? "opacity-80" : "text-muted"}`}>
+                  {s.role}
+                </span>
+                <span
+                  className={`mt-1 block font-sans text-[11px] font-bold tracking-[0.15em] uppercase ${selected ? "opacity-80" : "text-muted"}`}
+                >
+                  {t("askedCount", { count: askedCount(s.id) })}
+                </span>
+              </span>
             </span>
           </button>
         );

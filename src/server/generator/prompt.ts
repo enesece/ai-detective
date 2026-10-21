@@ -74,6 +74,7 @@ WRITING
 - Evidence descriptions are what the detective observes, not conclusions. Never name the killer in public text.
 - trueStory: 1-2 short paragraphs. method: one or two sentences.
 - ids are short kebab-case slugs (e.g. "burned-letter"). Location ids are reused everywhere.
+- Give every suspect an "appearance": what a photograph would show, matching their age and profile and the era. Purely visual; it must never hint at guilt.
 - Original characters and plot; do not copy the example's story, names, method or clues.`;
 
 export function buildGeneratorPrompt(options: {

@@ -1,5 +1,7 @@
 "use client";
 
+import { Portrait } from "@/components/ui/Portrait";
+import type { Appearance } from "@/lib/case/schema";
 import { buttonInk, buttonPrimary } from "@/components/ui/styles";
 import { gameFetch } from "@/lib/supabase/session";
 import { useEffect, useState, type ReactNode } from "react";
@@ -86,6 +88,7 @@ export function AccusationForm({ caseNumber, options }: Props) {
             onSelect={() => setChoice({ ...choice, killerId: s.id })}
             title={s.name}
             subtitle={s.role}
+            portrait={{ seed: s.id, appearance: s.appearance }}
           />
         ))}
       </ChoiceGroup>
@@ -174,9 +177,10 @@ type ChoiceCardProps = {
   onSelect: () => void;
   title: string;
   subtitle?: string;
+  portrait?: { seed: string; appearance?: Appearance };
 };
 
-function ChoiceCard({ name, checked, onSelect, title, subtitle }: ChoiceCardProps) {
+function ChoiceCard({ name, checked, onSelect, title, subtitle, portrait }: ChoiceCardProps) {
   return (
     <label
       className={`has-[:focus-visible]:outline-accent cursor-pointer border p-3 transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 ${
@@ -184,12 +188,25 @@ function ChoiceCard({ name, checked, onSelect, title, subtitle }: ChoiceCardProp
       }`}
     >
       <input type="radio" name={name} checked={checked} onChange={onSelect} className="sr-only" />
-      <span className="block font-bold">{title}</span>
-      {subtitle && (
-        <span className={`block text-sm italic ${checked ? "opacity-80" : "text-muted"}`}>
-          {subtitle}
+      <span className="flex items-center gap-3">
+        {portrait && (
+          <Portrait
+            name=""
+            seed={portrait.seed}
+            appearance={portrait.appearance}
+            crop="head"
+            className="h-12 w-12 shrink-0"
+          />
+        )}
+        <span className="min-w-0">
+          <span className="block font-bold">{title}</span>
+          {subtitle && (
+            <span className={`block text-sm italic ${checked ? "opacity-80" : "text-muted"}`}>
+              {subtitle}
+            </span>
+          )}
         </span>
-      )}
+      </span>
     </label>
   );
 }

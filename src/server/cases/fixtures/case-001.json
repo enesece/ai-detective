@@ -95,6 +95,16 @@
         "initialStatement": {
           "en": "I spent the whole evening in the drawing room with my embroidery. Dr. Voss was playing Chopin next door, and I listened to her through the wall until poor Mr. Reed began shouting. I did not leave the room. Not once.",
           "tr": "Bütün akşamı misafir salonunda nakışımla geçirdim. Dr. Voss yan odada Chopin çalıyordu; zavallı Bay Reed bağırmaya başlayana kadar duvarın ardından onu dinledim. Odadan çıkmadım. Bir kez bile."
+        },
+        "appearance": {
+          "sex": "female",
+          "age": "middle",
+          "hair": "bun",
+          "hairColor": "dark",
+          "headwear": "none",
+          "glasses": false,
+          "facialHair": "none",
+          "attire": "dress"
         }
       },
       {
@@ -111,6 +121,16 @@
         "initialStatement": {
           "en": "After dinner I went out to the stables for a smoke and to look at my uncle's new mare. I didn't see him again all evening. I came in around twenty past ten and went straight up to bed.",
           "tr": "Yemekten sonra bir sigara içmek ve amcamın yeni kısrağına bakmak için ahırlara çıktım. Bütün akşam onu bir daha görmedim. Saat onu yirmi geçe içeri girdim ve doğruca yatmaya çıktım."
+        },
+        "appearance": {
+          "sex": "male",
+          "age": "young",
+          "hair": "short",
+          "hairColor": "fair",
+          "headwear": "none",
+          "glasses": false,
+          "facialHair": "none",
+          "attire": "coat"
         }
       },
       {
@@ -127,6 +147,16 @@
         "initialStatement": {
           "en": "Lady Margaret asked for some music, so I went to the music room at a quarter to ten and played Chopin's nocturnes until I heard Mr. Reed cry out. I examined Sir Edmund at once, but there was nothing to be done.",
           "tr": "Lady Margaret biraz müzik istedi; ben de ona çeyrek kala müzik odasına geçtim ve Bay Reed'in bağırdığını duyana kadar Chopin'in noktürnlerini çaldım. Sir Edmund'u hemen muayene ettim ama yapılacak bir şey yoktu."
+        },
+        "appearance": {
+          "sex": "female",
+          "age": "middle",
+          "hair": "short",
+          "hairColor": "dark",
+          "headwear": "none",
+          "glasses": true,
+          "facialHair": "none",
+          "attire": "coat"
         }
       },
       {
@@ -143,6 +173,16 @@
         "initialStatement": {
           "en": "I was in the library typing papers for tomorrow's hospital board meeting. At half past ten I took them through to Sir Edmund and found him. I'm afraid I heard nothing useful. The typewriter is very loud.",
           "tr": "Kütüphanede, yarınki hastane yönetim kurulu toplantısı için evrak yazıyordum. On buçukta onları Sir Edmund'a götürdüm ve onu öyle buldum. Korkarım işe yarar bir şey duymadım. Daktilo çok gürültülüdür."
+        },
+        "appearance": {
+          "sex": "male",
+          "age": "middle",
+          "hair": "short",
+          "hairColor": "dark",
+          "headwear": "none",
+          "glasses": true,
+          "facialHair": "moustache",
+          "attire": "suit"
         }
       }
     ],

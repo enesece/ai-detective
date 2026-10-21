@@ -1,4 +1,5 @@
 import type { CaseSecret, PublicBriefing } from "@/lib/case/schema";
+import { Portrait } from "@/components/ui/Portrait";
 import { Bilingual } from "./Bilingual";
 import { Section } from "./Section";
 
@@ -62,6 +63,13 @@ export function CaseContent({ briefing, secret }: Props) {
               key={s.id}
               className="border-rule space-y-2 border-t pt-3 first:border-t-0 first:pt-0"
             >
+              <Portrait
+                name={s.name}
+                seed={s.id}
+                appearance={s.appearance}
+                crop="head"
+                className="h-20 w-20"
+              />
               <h3 className="font-semibold">
                 {s.name}{" "}
                 {s.id === secret.solution.killerId && <span className="text-alert">(killer)</span>}
