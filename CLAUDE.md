@@ -272,6 +272,16 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 - **Mobil:** 375 px'te ana sayfa, sorgu, suçlama (TR) ve arşiv headless Chrome'la (375 px iframe) kontrol edildi; taşma yok. Not: headless Chrome penceresi 500 px'ten dar açılmıyor, bu yüzden iframe kullanıldı.
 - Canlıda panelden ilk üretim (Enes, "easy"): Vercel'de 177 sn, mantık kontrolleri temiz, "çok kolay" uyarısıyla onay bekliyor (The Blackout at Craigmhor Light).
 
+### Tasarım: "Evening Gazette" (Enes seçti, 3 yön arasından)
+
+- 1930'lar akşam gazetesi: Abril Fatface (manşet), Libre Caslon Text (metin), Libre Franklin (etiketler, büyük harf + harf aralığı); hepsi `next/font` ile, `latin-ext` (Türkçe). Renkler `globals.css` → `@theme`: paper `#f3eee3`, ink `#17140f`, accent koyu yeşil `#1f4d43`, hatalar için ayrı `alert` kırmızı. Köşeler kare, ayraçlar mürekkep çizgisi.
+- Ortak parçalar `src/components/ui/`: `styles.ts` (kicker, label, buttonPrimary/Ink/Outline, linkCaps), `SectionHeading`, `Portrait` (baş harfli yer tutucu).
+- Ana sayfa = gazete ön sayfası (büyük manşet + tarih/baskı satırı + ana haber + "Kısaca" + oyun kuralları + arşivden). Diğer sayfalarda ince üst şerit (`SiteHeader`, ana sayfada küçük logo gizlenir).
+- Şüpheliler "persons of interest" sütunları, kanıtlar gazete kupürü, sorgu basılı röportaj ("SİZ: … / REED: …"), sonuç ekranında "DAVA KAPANDI / ÇÖZÜLEMEDİ" damgası.
+- Mobil 375 ve 320 px'te kontrol edildi. Admin paneli yeni renkleri alır ama ayrıca elden geçirilmedi.
+- Not: Cache Components açıkken önceden üretilen sayfada `new Date()` okunamaz; "bugün mü" bilgisi önbellekli `getTodaysCase()` içinde hesaplanır.
+- Tasarım tuvali (3 yön): https://claude.ai/artifact/1qYw6hKZtBy3JAbCtdvwDa
+
 ### Notlar / alınan teknik kararlar
 
 - Next 16: `middleware.ts` → `proxy.ts`; `cacheComponents` açıkken her kök parametre için `generateStaticParams` zorunlu, `dynamicParams` kullanılamaz. Bulunamayan sayfalar stream sonrası 200 + `noindex` döner (Next'in belgelenmiş davranışı).
