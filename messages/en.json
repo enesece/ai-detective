@@ -131,14 +131,5 @@
     "total": "Total",
     "trueStory": "What really happened",
     "evidenceExplained": "What the evidence was saying"
-  },
-  "Share": {
-    "title": "Share your result",
-    "headline": "Daily Alibi · Case #{number}",
-    "killer": "Killer",
-    "motive": "Motive",
-    "evidence": "Evidence",
-    "copy": "Copy",
-    "copied": "Copied!"
   }
 }

@@ -131,14 +131,5 @@
     "total": "Toplam",
     "trueStory": "Gerçekte ne oldu",
     "evidenceExplained": "Kanıtlar ne anlatıyordu"
-  },
-  "Share": {
-    "title": "Sonucunu paylaş",
-    "headline": "Daily Alibi · Dava #{number}",
-    "killer": "Katil",
-    "motive": "Motif",
-    "evidence": "Kanıt",
-    "copy": "Kopyala",
-    "copied": "Kopyalandı!"
   }
 }

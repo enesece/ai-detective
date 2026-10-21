@@ -7,7 +7,6 @@ import { routing } from "@/i18n/routing";
 import { localize } from "@/lib/case/localize";
 import type { CaseOptions } from "@/lib/case/options";
 import type { ScoreBreakdown } from "@/lib/game/rules";
-import { ShareCard } from "./ShareCard";
 import { useGameSnapshot } from "./useGameSnapshot";
 
 type Props = { caseNumber: number; options: CaseOptions };
@@ -100,8 +99,6 @@ export function ResultView({ caseNumber, options }: Props) {
       </section>
 
       <ScoreTable score={score} />
-
-      <ShareCard caseNumber={caseNumber} result={result} />
 
       <section>
         <h2 className="font-display text-2xl font-bold">{t("trueStory")}</h2>
