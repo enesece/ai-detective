@@ -36,6 +36,23 @@ export const VICTIM_ACTOR_ID = "victim";
 /* PUBLIC: safe to send to the browser                                 */
 /* ------------------------------------------------------------------ */
 
+/**
+ * What a photograph of the suspect would show, for the drawn portrait.
+ * Visual only and public: it must never hint at who did it.
+ * Optional, so cases stored before portraits existed still parse.
+ */
+export const AppearanceSchema = z.strictObject({
+  sex: z.enum(["female", "male"]),
+  age: z.enum(["young", "middle", "old"]),
+  hair: z.enum(["short", "long", "bun", "curly", "bald"]),
+  hairColor: z.enum(["dark", "fair", "grey"]),
+  headwear: z.enum(["none", "hat", "cap"]),
+  glasses: z.boolean(),
+  facialHair: z.enum(["none", "moustache", "beard"]),
+  attire: z.enum(["suit", "dress", "uniform", "coat", "casual"]),
+});
+export type Appearance = z.infer<typeof AppearanceSchema>;
+
 export const PublicSuspectSchema = z.strictObject({
   id: Slug,
   /** Proper names are not translated. */
@@ -45,6 +62,7 @@ export const PublicSuspectSchema = z.strictObject({
   profile: LocalizedTextSchema,
   /** Written once per case, so reading it costs no AI call. */
   initialStatement: LocalizedTextSchema,
+  appearance: AppearanceSchema.optional(),
 });
 
 export const EVIDENCE_KINDS = [
