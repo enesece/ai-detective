@@ -4,6 +4,7 @@ import { getCaseSecret, getPublicCase } from "@/server/cases/repository";
 import { errorResponse, jsonResponse } from "@/server/http";
 import { gameStore } from "@/server/interrogation/game-store";
 import { getPlayerId } from "@/server/player";
+import { withinRateLimits } from "@/server/rate-limit";
 
 /*
  * POST /api/accuse   Body: { caseNumber, killerId, motiveId, evidenceId }
@@ -37,6 +38,9 @@ export async function POST(request: Request): Promise<Response> {
 
   const playerId = await getPlayerId();
   if (!playerId) return errorResponse("unauthenticated", 401);
+  if (!(await withinRateLimits("accuse", playerId, request))) {
+    return errorResponse("rate_limited", 429);
+  }
   const gameId = await gameStore.openGame(playerId, caseNumber);
   if (!gameId) return errorResponse("case_not_found", 404);
   const finished = await gameStore.finishGame(

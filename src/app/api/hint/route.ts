@@ -3,6 +3,7 @@ import { getCaseSecret } from "@/server/cases/repository";
 import { errorResponse, jsonResponse } from "@/server/http";
 import { gameStore } from "@/server/interrogation/game-store";
 import { getPlayerId } from "@/server/player";
+import { withinRateLimits } from "@/server/rate-limit";
 
 /*
  * POST /api/hint   Body: { caseNumber }
@@ -18,6 +19,9 @@ export async function POST(request: Request): Promise<Response> {
 
   const playerId = await getPlayerId();
   if (!playerId) return errorResponse("unauthenticated", 401);
+  if (!(await withinRateLimits("hint", playerId, request))) {
+    return errorResponse("rate_limited", 429);
+  }
   const gameId = await gameStore.openGame(playerId, parsed.data.caseNumber);
   if (!gameId) return errorResponse("case_not_found", 404);
   const revealed = await gameStore.revealHint(gameId, secret.hints.length);

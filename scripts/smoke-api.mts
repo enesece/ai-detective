@@ -79,13 +79,19 @@ const secret = await p.db.from("cases").select("secret");
 assert.ok(secret.error, "reading cases.secret must fail");
 const ownGame = await p.db.from("games").select("id, questions_used").single();
 assert.equal(ownGame.error, null);
-const bump = await p.db.from("games").update({ questions_used: 0 }).eq("id", ownGame.data!.id).select();
+const bump = await p.db
+  .from("games")
+  .update({ questions_used: 0 })
+  .eq("id", ownGame.data!.id)
+  .select();
 assert.ok(bump.error || bump.data?.length === 0, "resetting the counter must fail");
 const rpc = await p.db.rpc("reserve_question", { p_game_id: ownGame.data!.id, p_limit: 99 });
 assert.ok(rpc.error, "calling game functions must fail");
 step("blocked: read secret, reset counter, call game function");
 
-const note = await p.db.from("notes").upsert({ case_number: 1, text: "smoke", pins: [] }, { onConflict: "player_id,case_number" });
+const note = await p.db
+  .from("notes")
+  .upsert({ case_number: 1, text: "smoke", pins: [] }, { onConflict: "player_id,case_number" });
 assert.equal(note.error, null, note.error?.message);
 const other = await newPlayer();
 const peek = await other.db.from("notes").select("text");
@@ -107,9 +113,19 @@ assert.equal(res.status, 200, JSON.stringify(accused));
 assert.equal(accused.result.score.total, 230);
 step("accusation scored 230");
 
-res = await p.call("/api/accuse", { caseNumber: 1, killerId: "julian-ashcombe", motiveId: "inheritance", evidenceId: "muddy-footprints" });
+res = await p.call("/api/accuse", {
+  caseNumber: 1,
+  killerId: "julian-ashcombe",
+  motiveId: "inheritance",
+  evidenceId: "muddy-footprints",
+});
 assert.equal(res.status, 409);
-res = await p.call("/api/interrogate", { caseNumber: 1, suspectId: "thomas-reed", question: "hi", locale: "en" });
+res = await p.call("/api/interrogate", {
+  caseNumber: 1,
+  suspectId: "thomas-reed",
+  question: "hi",
+  locale: "en",
+});
 assert.equal(res.status, 409);
 step("second accusation and further questions rejected (game over)");
 
@@ -126,5 +142,20 @@ res = await fetch(`${APP}/api/interrogate`, {
 });
 assert.equal(res.status, 401);
 step("request without a session rejected (401)");
+
+// --- Rate limit -----------------------------------------------------------
+const spammer = await newPlayer();
+const codes: number[] = [];
+for (let i = 0; i < 12; i++)
+  codes.push((await spammer.call("/api/hint", { caseNumber: 1 })).status);
+assert.ok(
+  codes.slice(0, 10).every((c) => c !== 429),
+  `first 10 allowed: ${codes}`,
+);
+assert.ok(
+  codes.slice(10).every((c) => c === 429),
+  `11th and 12th limited: ${codes}`,
+);
+step(`rate limit: ${codes.join(" ")}`);
 
 console.log("✓ smoke test passed");

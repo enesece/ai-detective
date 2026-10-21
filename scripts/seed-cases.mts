@@ -16,7 +16,9 @@ if (!url || !secretKey) throw new Error("Set NEXT_PUBLIC_SUPABASE_URL and SUPABA
 const db = createClient<Database>(url, secretKey, { auth: { persistSession: false } });
 const today = new Date().toISOString().slice(0, 10);
 
-for (const file of readdirSync(FIXTURES_DIR).filter((f) => f.endsWith(".json")).sort()) {
+for (const file of readdirSync(FIXTURES_DIR)
+  .filter((f) => f.endsWith(".json"))
+  .sort()) {
   // Same validation the app uses: a broken fixture never reaches the database.
   const parsed = CaseSchema.parse(JSON.parse(readFileSync(join(FIXTURES_DIR, file), "utf8")));
 

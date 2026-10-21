@@ -3,6 +3,7 @@ import { ChatModelError, getChatModel, type ChatModel } from "@/server/ai";
 import { gameStore } from "@/server/interrogation/game-store";
 import { buildSuspectPrompt, formatQuestion } from "@/server/interrogation/prompt";
 import { getPlayerId } from "@/server/player";
+import { withinRateLimits } from "@/server/rate-limit";
 import {
   HISTORY_EXCHANGES,
   InterrogateRequestSchema,
@@ -42,6 +43,9 @@ export async function POST(request: Request): Promise<Response> {
 
   const playerId = await getPlayerId();
   if (!playerId) return errorResponse("unauthenticated", 401);
+  if (!(await withinRateLimits("ask", playerId, request))) {
+    return errorResponse("rate_limited", 429);
+  }
   const gameId = await gameStore.openGame(playerId, caseNumber);
   if (!gameId) return errorResponse("case_not_found", 404);
   const reservation = await gameStore.reserveQuestion(gameId);
