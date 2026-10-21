@@ -7,8 +7,8 @@ import {
   HISTORY_EXCHANGES,
   InterrogateRequestSchema,
   QUESTIONS_USED_HEADER,
-  type InterrogateError,
 } from "@/lib/game/rules";
+import { errorResponse } from "@/server/http";
 
 /*
  * POST /api/interrogate
@@ -19,10 +19,6 @@ import {
 
 const MAX_OUTPUT_TOKENS = 300;
 const TEMPERATURE = 0.8;
-
-function errorResponse(error: InterrogateError, status: number): Response {
-  return Response.json({ error }, { status, headers: { "Cache-Control": "no-store" } });
-}
 
 export async function POST(request: Request): Promise<Response> {
   const parsed = InterrogateRequestSchema.safeParse(await request.json().catch(() => null));

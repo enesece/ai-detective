@@ -147,6 +147,11 @@ export const CaseSecretSchema = z.strictObject({
   suspects: z.array(SuspectSecretSchema).length(4),
   evidence: z.array(EvidenceSecretSchema).min(3).max(5),
   timeline: z.array(TimelineEventSchema).min(5),
+  /**
+   * Hints, from a gentle nudge to nearly the answer. Unlocked one at a time
+   * (each costs points), so they live in the secret half.
+   */
+  hints: z.array(LocalizedTextSchema).min(1).max(3),
   solution: z.strictObject({
     killerId: Slug,
     /** -> motiveOptions[].id */

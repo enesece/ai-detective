@@ -3,21 +3,21 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Locale } from "@/lib/case/schema";
 import {
-  INTERROGATE_ERRORS,
+  GAME_ERRORS,
   QUESTION_LIMIT,
   QUESTIONS_USED_HEADER,
   type Exchange,
   type GameSnapshot,
-  type InterrogateError,
+  type GameError,
   type InterrogateRequest,
 } from "@/lib/game/rules";
 
 type Status = "loading" | "ready" | "asking";
 
-function toError(value: unknown): InterrogateError {
+function toError(value: unknown): GameError {
   const code =
     typeof value === "object" && value !== null && "error" in value ? value.error : undefined;
-  return INTERROGATE_ERRORS.find((e) => e === code) ?? "ai_unavailable";
+  return GAME_ERRORS.find((e) => e === code) ?? "ai_unavailable";
 }
 
 /**
@@ -29,7 +29,7 @@ export function useInterrogation(caseNumber: number, locale: Locale) {
   const [exchanges, setExchanges] = useState<Exchange[]>([]);
   const [questionsUsed, setQuestionsUsed] = useState(0);
   const [questionLimit, setQuestionLimit] = useState(QUESTION_LIMIT);
-  const [error, setError] = useState<InterrogateError | null>(null);
+  const [error, setError] = useState<GameError | null>(null);
 
   // Restore the server's state after a reload.
   useEffect(() => {

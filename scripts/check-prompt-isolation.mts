@@ -24,7 +24,10 @@ for (const file of readdirSync(FIXTURES_DIR).filter((f) => f.endsWith(".json")))
   const c = JSON.parse(readFileSync(join(FIXTURES_DIR, file), "utf8")) as CaseFile;
   const { killerId } = c.secret.solution;
   const publicText = new Set(strings(c.public));
-  const solutionText = strings(c.secret.solution).filter((s) => !publicText.has(s));
+  // The solution and the hints must never reach any suspect.
+  const solutionText = strings([c.secret.solution, c.secret.hints]).filter(
+    (s) => !publicText.has(s),
+  );
 
   for (const suspect of c.public.suspects) {
     const own = c.secret.suspects.find((s) => s.suspectId === suspect.id);
@@ -37,17 +40,26 @@ for (const file of readdirSync(FIXTURES_DIR).filter((f) => f.endsWith(".json")))
     const isKiller = suspect.id === killerId;
 
     for (const locale of ["en", "tr"] satisfies Locale[]) {
-      const prompt = buildSuspectPrompt({ briefing: c.public, suspect, secret: own, isKiller, locale });
+      const prompt = buildSuspectPrompt({
+        briefing: c.public,
+        suspect,
+        secret: own,
+        isKiller,
+        locale,
+      });
       prompts += 1;
       const where = `${file} / ${suspect.id} / ${locale}`;
 
       for (const s of othersText) {
-        if (prompt.includes(s)) failures.push(`${where}: contains another suspect's secret: "${s.slice(0, 50)}…"`);
+        if (prompt.includes(s))
+          failures.push(`${where}: contains another suspect's secret: "${s.slice(0, 50)}…"`);
       }
       for (const s of solutionText) {
-        if (prompt.includes(s)) failures.push(`${where}: contains solution text: "${s.slice(0, 50)}…"`);
+        if (prompt.includes(s))
+          failures.push(`${where}: contains solution text: "${s.slice(0, 50)}…"`);
       }
-      if (!isKiller && /you killed/i.test(prompt)) failures.push(`${where}: innocent suspect told they killed`);
+      if (!isKiller && /you killed/i.test(prompt))
+        failures.push(`${where}: innocent suspect told they killed`);
     }
   }
 }

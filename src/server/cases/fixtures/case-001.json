@@ -609,6 +609,20 @@
         }
       }
     ],
+    "hints": [
+      {
+        "en": "Not every sound in the house that night came from a person. Think about who could hear what, and when.",
+        "tr": "O gece konakta duyulan her ses bir insandan gelmiyordu. Kimin neyi, ne zaman duyabileceğini düşün."
+      },
+      {
+        "en": "Look closely at the records in the music room. Then ask Mr. Reed whose voice he heard from the study just after ten, and tell him where Lady Margaret says she was.",
+        "tr": "Müzik odasındaki plaklara dikkatle bak. Sonra Bay Reed'e saat ondan hemen sonra çalışma odasından kimin sesini duyduğunu sor ve Lady Margaret'in nerede olduğunu söylediğini anlat."
+      },
+      {
+        "en": "Lady Margaret did leave the drawing room: confront her with the telephone record and ask who she saw in the hall. Then read the burned letter and the board agenda together.",
+        "tr": "Lady Margaret misafir salonundan çıktı: onu telefon kaydıyla yüzleştir ve holde kimi gördüğünü sor. Sonra yanmış mektupla yönetim kurulu gündemini birlikte oku."
+      }
+    ],
     "solution": {
       "killerId": "helena-voss",
       "motiveId": "exposure",
