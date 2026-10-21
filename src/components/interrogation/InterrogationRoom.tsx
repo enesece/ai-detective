@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { hasLocale, useLocale, useTranslations } from "next-intl";
 import { NotebookPanel } from "@/components/notebook/NotebookPanel";
 import { useNotebook } from "@/components/notebook/useNotebook";
+import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { ChatLog } from "./ChatLog";
+import { HintBox } from "./HintBox";
 import { QuestionCounter } from "./QuestionCounter";
 import { QuestionForm } from "./QuestionForm";
 import { StatementCard } from "./StatementCard";
@@ -20,10 +22,17 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
   const tNotebook = useTranslations("Notebook");
   const rawLocale = useLocale();
   const locale = hasLocale(routing.locales, rawLocale) ? rawLocale : routing.defaultLocale;
-  const { status, exchanges, questionsUsed, questionLimit, error, ask } = useInterrogation(
-    caseNumber,
-    locale,
-  );
+  const {
+    status,
+    exchanges,
+    questionsUsed,
+    questionLimit,
+    error,
+    ask,
+    hints,
+    requestHint,
+    finished,
+  } = useInterrogation(caseNumber, locale);
   const { notebook, isPinned, togglePin, setText } = useNotebook(caseNumber);
   const [selectedId, setSelectedId] = useState(suspects[0]?.id ?? "");
   const [notebookOpen, setNotebookOpen] = useState(false);
@@ -50,6 +59,21 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
     <div className="grid gap-6 lg:grid-cols-[200px_1fr] xl:grid-cols-[200px_1fr_320px]">
       <aside className="space-y-4">
         <QuestionCounter used={questionsUsed} limit={questionLimit} />
+        {/* The accusation is open at any time, not only after all 20 questions. */}
+        <Link
+          href={finished ? `/case/${caseNumber}/result` : `/case/${caseNumber}/accuse`}
+          className="bg-accent text-paper block rounded-lg px-4 py-2.5 text-center font-semibold hover:opacity-90"
+        >
+          {finished ? t("seeResult") : t("accuse")}
+        </Link>
+        <HintBox
+          used={hints.used}
+          limit={status === "loading" ? null : hints.limit}
+          revealed={hints.revealed}
+          pending={hints.pending}
+          disabled={finished || status === "loading"}
+          onRequest={requestHint}
+        />
         <SuspectPicker
           suspects={suspects}
           selectedId={selected.id}
@@ -101,7 +125,17 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
               {t(`errors.${error}`)}
             </p>
           )}
-          {outOfQuestions ? (
+          {finished ? (
+            <p className="text-center">
+              <span className="text-muted italic">{t("caseClosed")} </span>
+              <Link
+                href={`/case/${caseNumber}/result`}
+                className="text-accent font-semibold hover:underline"
+              >
+                {t("seeResult")} →
+              </Link>
+            </p>
+          ) : outOfQuestions ? (
             <p className="text-muted text-center italic">{t("noQuestionsLeft")}</p>
           ) : (
             <QuestionForm

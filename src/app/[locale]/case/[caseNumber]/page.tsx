@@ -69,6 +69,12 @@ async function CaseContent({
         >
           {tInterrogation("startInterrogation")} →
         </Link>
+        <Link
+          href={`/case/${publicCase.caseNumber}/accuse`}
+          className="text-accent ml-4 inline-block font-semibold hover:underline"
+        >
+          {tInterrogation("accuse")}
+        </Link>
       </div>
     </article>
   );

@@ -63,9 +63,14 @@
       "limit_reached": "You have no questions left.",
       "busy": "Wait for the current answer first.",
       "ai_unavailable": "The suspect is not answering right now. Your question was not counted; please try again.",
-      "rate_limited": "Too many detectives are asking questions right now. Wait a minute and try again; your question was not counted."
+      "rate_limited": "Too many detectives are asking questions right now. Wait a minute and try again; your question was not counted.",
+      "game_over": "This case is closed for you: you've already made your accusation.",
+      "no_hints_left": "No hints left."
     },
-    "initialStatement": "First statement"
+    "initialStatement": "First statement",
+    "accuse": "Make your accusation",
+    "seeResult": "See the result",
+    "caseClosed": "Case closed."
   },
   "Notebook": {
     "title": "Notebook",
@@ -80,5 +85,60 @@
     "statementLabel": "First statement",
     "evidenceGroup": "Evidence",
     "toggle": "Notebook ({count})"
+  },
+  "Hints": {
+    "title": "Hints",
+    "get": "Get a hint ({left} left, −{penalty} pts)",
+    "confirm": "This hint costs {penalty} points from your final score. Take it?",
+    "yes": "Show hint",
+    "cancel": "Cancel",
+    "noneLeft": "No hints left.",
+    "getLoading": "Get a hint"
+  },
+  "Accusation": {
+    "title": "Make your accusation",
+    "back": "Back to the interrogation",
+    "progress": "You have used {questions} of {limit} questions and {hints, plural, =0 {no hints} one {# hint} other {# hints}}. Unused questions earn bonus points.",
+    "killer": "Who killed him?",
+    "motive": "Why?",
+    "evidence": "Which evidence proves it?",
+    "chooseAll": "Choose a killer, a motive and the key evidence",
+    "submit": "Accuse",
+    "confirm": "You only get one accusation. Once you accuse, the case closes. Are you sure?",
+    "confirmYes": "Yes, make the accusation",
+    "confirmNo": "Not yet"
+  },
+  "Result": {
+    "title": "The verdict",
+    "back": "Back to the interrogation",
+    "loading": "Opening the verdict…",
+    "notYet": "You haven't made your accusation yet.",
+    "goAccuse": "Make your accusation",
+    "solved": "Case solved",
+    "unsolved": "The killer walks free",
+    "summary": "{questions} questions · {hints, plural, =0 {no hints} one {# hint} other {# hints}}",
+    "killer": "Killer",
+    "motive": "Motive",
+    "evidence": "Key evidence",
+    "yourPick": "Your accusation",
+    "truth": "The truth",
+    "score": "Score",
+    "scoreKiller": "Right killer",
+    "scoreMotive": "Right motive",
+    "scoreEvidence": "Right evidence",
+    "scoreUnused": "Unused questions",
+    "scoreHints": "Hints",
+    "total": "Total",
+    "trueStory": "What really happened",
+    "evidenceExplained": "What the evidence was saying"
+  },
+  "Share": {
+    "title": "Share your result",
+    "headline": "Daily Alibi · Case #{number}",
+    "killer": "Killer",
+    "motive": "Motive",
+    "evidence": "Evidence",
+    "copy": "Copy",
+    "copied": "Copied!"
   }
 }
