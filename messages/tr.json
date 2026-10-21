@@ -42,5 +42,28 @@
   "NotFound": {
     "title": "Burada bir şey yok. İz soğumuş.",
     "home": "Ana sayfaya dön"
+  },
+  "Interrogation": {
+    "title": "Sorgu",
+    "intro": "Şüphelileri sorgula. Kime sorarsan sor, her soru yirmi hakkından birini kullanır.",
+    "chooseSuspect": "Bir şüpheli seç",
+    "questionsLeft": "{limit} sorudan {left} kaldı",
+    "askedCount": "{count, plural, =0 {Henüz sorgulanmadı} other {# soru}}",
+    "empty": "{name} ilk sorunu bekliyor.",
+    "askPlaceholder": "{name} için bir soru yaz…",
+    "ask": "Sor",
+    "thinking": "…",
+    "loading": "Sorgu odası açılıyor…",
+    "noQuestionsLeft": "Tüm soru haklarını kullandın. Suçlamanı yapma zamanı.",
+    "startInterrogation": "Sorguya başla",
+    "errors": {
+      "invalid_request": "Soru gönderilemedi. 280 karakterden kısa tut.",
+      "case_not_found": "Bu dava bulunamadı.",
+      "suspect_not_found": "Bu şüpheli bulunamadı.",
+      "limit_reached": "Soru hakkın kalmadı.",
+      "busy": "Önce mevcut cevabı bekle.",
+      "ai_unavailable": "Şüpheli şu an cevap vermiyor. Soru hakkından düşülmedi, tekrar dene.",
+      "rate_limited": "Şu an çok fazla dedektif soru soruyor. Bir dakika bekleyip tekrar dene; soru hakkından düşülmedi."
+    }
   }
 }

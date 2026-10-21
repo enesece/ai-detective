@@ -1,10 +1,13 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { PageFallback } from "@/components/ui/PageFallback";
 import { getTranslations } from "next-intl/server";
 import { CaseHeader } from "@/components/case/CaseHeader";
 import { EvidenceCard } from "@/components/case/EvidenceCard";
 import { SuspectCard } from "@/components/case/SuspectCard";
 import { VictimPanel } from "@/components/case/VictimPanel";
 import { getAppLocale } from "@/i18n/locale";
+import { Link } from "@/i18n/navigation";
 import { getPublicCase, listCaseNumbers } from "@/server/cases/repository";
 import { parseCaseNumber } from "./case-number";
 
@@ -13,13 +16,18 @@ export function generateStaticParams() {
   return listCaseNumbers().map((n) => ({ caseNumber: String(n) }));
 }
 
-export default async function CasePage({ params }: PageProps<"/[locale]/case/[caseNumber]">) {
+async function CaseContent({
+  params,
+}: {
+  params: PageProps<"/[locale]/case/[caseNumber]">["params"];
+}) {
   const { caseNumber: raw } = await params;
   const caseNumber = parseCaseNumber(raw);
   const publicCase = caseNumber === null ? null : getPublicCase(caseNumber);
   if (!publicCase) notFound();
 
   const t = await getTranslations("Case");
+  const tInterrogation = await getTranslations("Interrogation");
   const locale = await getAppLocale();
   const { briefing } = publicCase;
   const placeName = (id: string) => briefing.locations.find((l) => l.id === id)?.name;
@@ -53,6 +61,24 @@ export default async function CasePage({ params }: PageProps<"/[locale]/case/[ca
           ))}
         </div>
       </section>
+
+      <div className="border-rule mt-12 border-t pt-8 text-center">
+        <Link
+          href={`/case/${publicCase.caseNumber}/interrogate`}
+          className="bg-ink text-paper inline-block rounded-lg px-6 py-3 font-semibold hover:opacity-90"
+        >
+          {tInterrogation("startInterrogation")} →
+        </Link>
+      </div>
     </article>
+  );
+}
+
+// Reading `params` happens inside <Suspense>, so navigation can show the shell instantly.
+export default function CasePage({ params }: PageProps<"/[locale]/case/[caseNumber]">) {
+  return (
+    <Suspense fallback={<PageFallback />}>
+      <CaseContent params={params} />
+    </Suspense>
   );
 }

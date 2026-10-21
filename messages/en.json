@@ -42,5 +42,28 @@
   "NotFound": {
     "title": "Nothing here. The trail has gone cold.",
     "home": "Back to the front page"
+  },
+  "Interrogation": {
+    "title": "Interrogation",
+    "intro": "Question the suspects. Every question, to anyone, uses one of your twenty.",
+    "chooseSuspect": "Choose a suspect",
+    "questionsLeft": "{left} of {limit} questions left",
+    "askedCount": "{count, plural, =0 {Not questioned yet} one {# question} other {# questions}}",
+    "empty": "{name} is waiting for your first question.",
+    "askPlaceholder": "Ask {name} a question…",
+    "ask": "Ask",
+    "thinking": "…",
+    "loading": "Opening the interview room…",
+    "noQuestionsLeft": "You have used all your questions. Time to make your accusation.",
+    "startInterrogation": "Start the interrogation",
+    "errors": {
+      "invalid_request": "That question could not be sent. Keep it under 280 characters.",
+      "case_not_found": "This case could not be found.",
+      "suspect_not_found": "This suspect could not be found.",
+      "limit_reached": "You have no questions left.",
+      "busy": "Wait for the current answer first.",
+      "ai_unavailable": "The suspect is not answering right now. Your question was not counted; please try again.",
+      "rate_limited": "Too many detectives are asking questions right now. Wait a minute and try again; your question was not counted."
+    }
   }
 }
