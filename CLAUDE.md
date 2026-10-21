@@ -281,6 +281,8 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 - Mobil 375 ve 320 px'te kontrol edildi. Admin paneli yeni renkleri alır ama ayrıca elden geçirilmedi.
 - Not: Cache Components açıkken önceden üretilen sayfada `new Date()` okunamaz; "bugün mü" bilgisi önbellekli `getTodaysCase()` içinde hesaplanır.
 - Tasarım tuvali (3 yön): https://claude.ai/artifact/1qYw6hKZtBy3JAbCtdvwDa
+- Masaüstünde kök yazı boyutu %90 (≥640 px), telefonda %100: Tailwind rem kullandığı için her şey eşit küçülür.
+- **Şüpheli portreleri kodla çiziliyor** (`src/components/ui/Portrait.tsx`, SVG gazete gravürü): Gemini görsel modellerinin ücretsiz kotası yok (fatura gerekir), 0 $ hedefi için seçilmedi. Şüpheli şemasında isteğe bağlı, herkese açık `appearance` (cinsiyet, yaş, saç, saç rengi, şapka, gözlük, sakal/bıyık, kıyafet); yoksa `resolveAppearance()` (`src/lib/case/appearance.ts`) id'den sabit özellikler seçer. Dava #1 fixture'ında ve dava #2'de (SQL ile) dolduruldu; üretici prompt'u yeni davalarda ister. `crop="head"` küçük resimler için.
 
 ### Notlar / alınan teknik kararlar
 
