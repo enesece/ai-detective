@@ -174,14 +174,17 @@ const CaseShapeSchema = z.strictObject({
   secret: CaseSecretSchema,
 });
 
-type CaseShape = z.infer<typeof CaseShapeSchema>;
+/** A generated case before approval: no case number yet (given on approval). */
+const CaseDraftShapeSchema = CaseShapeSchema.omit({ caseNumber: true });
+
+type CaseContent = z.infer<typeof CaseDraftShapeSchema>;
 
 /**
  * Referential integrity only: every id points at something that exists.
  * Story logic (is the killer at the scene at the time of death? are there two
  * independent clues?) is a separate check, added in phase 4.
  */
-function checkReferences(c: CaseShape, ctx: z.RefinementCtx): void {
+function checkReferences(c: CaseContent, ctx: z.RefinementCtx): void {
   const issue = (path: (string | number)[], message: string) =>
     ctx.addIssue({ code: "custom", path, message });
 
@@ -284,8 +287,12 @@ function sameSet(ids: string[], expected: Set<string>): boolean {
 }
 
 export const CaseSchema = CaseShapeSchema.superRefine(checkReferences);
+export const CaseDraftSchema = CaseDraftShapeSchema.superRefine(checkReferences);
+/** The draft's shape without the cross-reference checks, e.g. for a JSON Schema. */
+export { CaseDraftShapeSchema };
 
 export type CaseFile = z.infer<typeof CaseSchema>;
+export type CaseDraft = z.infer<typeof CaseDraftSchema>;
 export type PublicBriefing = z.infer<typeof PublicBriefingSchema>;
 export type PublicSuspect = z.infer<typeof PublicSuspectSchema>;
 export type PublicEvidence = z.infer<typeof PublicEvidenceSchema>;

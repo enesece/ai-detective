@@ -139,8 +139,8 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 | ----------------------------------------------------------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------------- |
 | 1 — Kurulum, şema, fixture dava, dava/kanıt ekranları                                     | ✅ Onaylandı                    | Supabase anahtarları ve Gemini anahtarı `.env.local`'de; GitHub/Vercel adımları Enes'te |
 | 2 — Sorgu, streaming, soru sayacı                                                         | ✅ Onaylandı                    | + not defteri, ipucu, suçlama/sonuç ara özellikleri                                     |
-| 3 — Tablolar/RLS, anonim giriş, kalıcılık, hız sınırı, Turnstile, çıktı filtresi, eval v1 | 🟢 3a + 3b bitti, onay bekliyor | Canlı: https://dailyalibi.vercel.app (Turnstile + Supabase CAPTCHA açık)               |
-| 4 — AI üretici + doğrulama, admin paneli, cron, ana sayfa, arşiv, cila                    | ⚪ Bekliyor                     |                                                                                         |
+| 3 — Tablolar/RLS, anonim giriş, kalıcılık, hız sınırı, Turnstile, çıktı filtresi, eval v1 | ✅ Onaylandı                    | Canlı: https://dailyalibi.vercel.app (Turnstile + Supabase CAPTCHA açık)               |
+| 4 — AI üretici + doğrulama, admin paneli, cron, ana sayfa, arşiv, cila                    | 🟢 4a bitti, onay bekliyor      | 4a üretici + doğrulama; 4b admin paneli; 4c cron, ana sayfa, arşiv, cila                |
 | 5 — README                                                                                | ⚪ Bekliyor                     |                                                                                         |
 
 ### Aşama 1'de yapılanlar
@@ -228,6 +228,27 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 - Canlı: https://dailyalibi.vercel.app (Vercel, GitHub `main`'den otomatik deploy). Env değişkenleri Vercel'de; `NEXT_PUBLIC_*` olanlar "Config", gizliler "Sensitive". Build, dava listesi için Supabase'e bağlandığı için Supabase değişkenleri build sırasında da gerekli.
 - Turnstile widget'ı hostname: `dailyalibi.vercel.app`. Supabase CAPTCHA açık → yerelde yeni anonim giriş için gerçek site key + `localhost` hostname'i gerekir. Vercel preview adresleri listede değil, orada giriş başarısız olur.
 - Canlı kontroller (Enes elle + Claude dışarıdan): tam oyun akışı EN/TR, yenilemede kalıcılık, not defteri senkronu; 12 sayfa + 15 JS dosyasında 115 gizli metin, 0 sızıntı; oturumsuz `/api/interrogate` → 401; token'sız anonim giriş → `captcha_failed`; anon rolüyle `cases.secret` → permission denied.
+
+### Aşama 4 planı ve kararlar (Enes onayladı)
+
+- 4a üretici + doğrulama → onay → 4b admin paneli → onay → 4c cron, ana sayfa, arşiv, mobil, smoke testi (CAPTCHA'lı).
+- Üretici modeli `gemini-flash-latest` (düşünen model; offline olduğu için yavaşlık sorun değil). Admin girişi e-posta + şifre, admin rolü `app_metadata` ile. Admin paneli sadece İngilizce. Takvimde boş gün → cron onaylı havuzdan en eski davayı koyar.
+
+### Aşama 4a'da yapılanlar
+
+- **Yayın kapısı (güvenlik düzeltmesi):** ileri tarihe konmuş onaylı dava önceden okunup oynanabiliyordu. Artık "yayınlanmış" = onaylı + `daily_schedule.publish_date <= bugün (UTC)`: RLS politikası, `start_game` ve `repository.ts`'teki tüm okumalar bunu ister. Migration `drafts_and_publishing` (Enes SQL Editor'de elle çalıştırdı; MCP izni o sırada kapalıydı).
+- Taslakların dava numarası yok (`case_number` boş olabilir, onayda verilecek) → reddedilen taslaklar numaralarda boşluk bırakmaz.
+- AI modülüne `JsonModel` (structured output, akışsız) + `withRetry` (429/503'te bekleyip tekrar dener; günlük kota dolduysa beklemez). Gemini büyük şemada `minLength/minItems/maxItems`'ı reddediyor ("invalid argument") → Gemini'ye giden şemadan çıkarılıyor, Zod yine kontrol ediyor.
+- `src/server/generator/`:
+  - `prompt.ts`: kurallar + örnek dava (fixture) + rastgele tema + zorluk rehberi + mevcut başlıklar.
+  - `logic-checks.ts`: 14 kod kontrolü (katil ölüm anında olay yerinde, masumlar değil, kimse aynı anda iki yerde değil, katile giden ≥2 bağımsız ipucu, katil en çok işaret edilen, kilit kanıtlar katili gösteriyor, katil yalan söylüyor, ipucu zaman çizelgesiyle uyumlu, kurban ölümden sonra hareket etmiyor, TR çevrilmiş; uyarılar: yanıltıcı ipucu, masumların sırrı, 3 ipucu, masumların alibisi).
+  - `solver.ts`: kör çözücü. Görebildiği = açık brifing + masumların bildikleri/açılabilir sırları/yalanlarının doğrusu + katilin sadece iddia ettiği alibi ve yalanları. Çözüm, zaman çizelgesi, kanıt açıklamaları, ipuçları, katilin itirafı yok. `npm run check:solver` bunu test eder (negatif testle doğrulandı). Geçme şartı: katil en olası, ≥%50, ikinciden ≥20 puan önde; 2 tam çalıştırma.
+  - `pipeline.ts`: üret → zaman çizelgesini sırala → Zod → mantık → çözücü → (sorun varsa 1 onarım turu: hatalar + çözücünün gerekçesi modele geri verilir) → taslak + `case_reviews` (pending/rejected). Çözücü çökerse dava kaybolmaz, reddedilmiş olarak kaydedilir. `recheckDraft(id)` kayıtlı taslağı yeniden kontrol eder.
+- `npm run generate -- --difficulty=medium [--theme=...]`, `npm run generate -- --recheck=<id>`.
+- Çözücü `gemini-flash-lite-latest` (ayrı ve büyük kota; daha zayıf model bile çözebiliyorsa dava adil; ~3 sn).
+- **Ölçümler:** flash üretim 187-242 sn (+onarım ~80 sn) → Vercel'in 300 sn sınırına sığmıyor (4c'de çözülecek). `gemini-3.8-flash` ücretsiz kotası **günde 20 istek, dakikada 5**. Lite üretim ~20 sn ama mantık hataları çok.
+- **Zorluk bulgusu:** elle yazdığımız dava #1 ve ilk üretilen davalar sadece brifingle çözülebiliyor ("çok kolay"). Kural: kolay davada uyarı, orta/zor davada ret. Prompt'a "tek kanıt katili tek başına göstermesin" kuralları eklendi + onarım turunda çözücünün gerekçesi veriliyor. Flash ile yeni prompt henüz denenmedi (kota).
+- DB'de deneme taslakları var (hepsi reddedilmiş/numarasız, oyunculara görünmez): Cold Commit in Cappadocia, Death at the Abbey of San Lorenzo, Blood at the Bosphorus Engagement.
 
 ### Notlar / alınan teknik kararlar
 
