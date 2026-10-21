@@ -57,15 +57,15 @@ export async function approveCase(_prev: ActionState, form: FormData): Promise<A
 export async function rejectCase(_prev: ActionState, form: FormData): Promise<ActionState> {
   await requireAdmin();
   const id = CaseId.safeParse(form.get("caseId"));
-  const notes = z.string().trim().max(2000).safeParse(form.get("notes") ?? "");
+  const notes = z
+    .string()
+    .trim()
+    .max(2000)
+    .safeParse(form.get("notes") ?? "");
   if (!id.success || !notes.success) return { ok: false, message: "Invalid input." };
 
   const db = createSupabaseAdminClient();
-  const { data: draft } = await db
-    .from("cases")
-    .select("status")
-    .eq("id", id.data)
-    .maybeSingle();
+  const { data: draft } = await db.from("cases").select("status").eq("id", id.data).maybeSingle();
   if (draft?.status !== "draft") return { ok: false, message: "Only drafts can be rejected." };
 
   // A review row records the decision; the case itself stays a draft.
@@ -128,7 +128,11 @@ export async function generateCase(_prev: ActionState, form: FormData): Promise<
   await requireAdmin();
   const difficulty = Difficulty.safeParse(form.get("difficulty"));
   if (!difficulty.success) return { ok: false, message: "Pick a difficulty." };
-  const theme = z.string().trim().max(200).safeParse(form.get("theme") ?? "");
+  const theme = z
+    .string()
+    .trim()
+    .max(200)
+    .safeParse(form.get("theme") ?? "");
 
   try {
     const outcome = await runPipeline({
