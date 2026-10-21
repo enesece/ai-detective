@@ -64,6 +64,7 @@
       "busy": "Wait for the current answer first.",
       "ai_unavailable": "The suspect is not answering right now. Your question was not counted; please try again.",
       "rate_limited": "Too many detectives are asking questions right now. Wait a minute and try again; your question was not counted."
-    }
+    },
+    "initialStatement": "First statement"
   }
 }

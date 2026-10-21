@@ -64,6 +64,7 @@
       "busy": "Önce mevcut cevabı bekle.",
       "ai_unavailable": "Şüpheli şu an cevap vermiyor. Soru hakkından düşülmedi, tekrar dene.",
       "rate_limited": "Şu an çok fazla dedektif soru soruyor. Bir dakika bekleyip tekrar dene; soru hakkından düşülmedi."
-    }
+    },
+    "initialStatement": "İlk ifade"
   }
 }

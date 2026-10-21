@@ -33,6 +33,7 @@ async function InterrogateContent({
     id: s.id,
     name: s.name,
     role: localize(s.role, locale),
+    statement: localize(s.initialStatement, locale),
   }));
 
   return (

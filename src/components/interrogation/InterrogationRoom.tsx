@@ -7,6 +7,7 @@ import { routing } from "@/i18n/routing";
 import { ChatLog } from "./ChatLog";
 import { QuestionCounter } from "./QuestionCounter";
 import { QuestionForm } from "./QuestionForm";
+import { StatementCard } from "./StatementCard";
 import { SuspectPicker } from "./SuspectPicker";
 import type { SuspectOption } from "./types";
 import { useInterrogation } from "./useInterrogation";
@@ -48,6 +49,7 @@ export function InterrogationRoom({ caseNumber, suspects }: Props) {
         </header>
 
         <div className="flex-1 overflow-y-auto p-4">
+          <StatementCard suspect={selected} />
           {status === "loading" ? (
             <p className="text-muted py-10 text-center italic">{t("loading")}</p>
           ) : (
