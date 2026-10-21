@@ -135,13 +135,13 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 
 ## 3. Durum
 
-| Aşama                                                                                     | Durum        | Not                                                                                           |
-| ----------------------------------------------------------------------------------------- | ------------ | --------------------------------------------------------------------------------------------- |
-| 1 — Kurulum, şema, fixture dava, dava/kanıt ekranları                                     | ✅ Onaylandı | Supabase anahtarları ve Gemini anahtarı `.env.local`'de; GitHub/Vercel adımları Enes'te       |
-| 2 — Sorgu, streaming, soru sayacı                                                         | ✅ Onaylandı | + not defteri, ipucu, suçlama/sonuç ara özellikleri                                           |
-| 3 — Tablolar/RLS, anonim giriş, kalıcılık, hız sınırı, Turnstile, çıktı filtresi, eval v1 | 🟡 Başladı   | 3a: migration'lar yazıldı (`supabase/migrations/`), Supabase bağlantısı bekleniyor. 3b sonra. |
-| 4 — AI üretici + doğrulama, admin paneli, cron, ana sayfa, arşiv, cila                    | ⚪ Bekliyor  |                                                                                               |
-| 5 — README                                                                                | ⚪ Bekliyor  |                                                                                               |
+| Aşama                                                                                     | Durum                      | Not                                                                                     |
+| ----------------------------------------------------------------------------------------- | -------------------------- | --------------------------------------------------------------------------------------- |
+| 1 — Kurulum, şema, fixture dava, dava/kanıt ekranları                                     | ✅ Onaylandı               | Supabase anahtarları ve Gemini anahtarı `.env.local`'de; GitHub/Vercel adımları Enes'te |
+| 2 — Sorgu, streaming, soru sayacı                                                         | ✅ Onaylandı               | + not defteri, ipucu, suçlama/sonuç ara özellikleri                                     |
+| 3 — Tablolar/RLS, anonim giriş, kalıcılık, hız sınırı, Turnstile, çıktı filtresi, eval v1 | 🟡 3a bitti, onay bekliyor | 3b (hız sınırı, Turnstile, çıktı filtresi, injection eval) sırada                       |
+| 4 — AI üretici + doğrulama, admin paneli, cron, ana sayfa, arşiv, cila                    | ⚪ Bekliyor                |                                                                                         |
+| 5 — README                                                                                | ⚪ Bekliyor                |                                                                                         |
 
 ### Aşama 1'de yapılanlar
 
@@ -201,6 +201,19 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 - Şema: `cases.secret` tarayıcı rollerine sütun bazlı yetkiyle kapalı; `games`/`messages` yalnızca sunucu fonksiyonlarıyla yazılır (`start_game`, `reserve_question`, `refund_question`, `complete_question`, `reveal_hint`, `finish_game`; execute sadece `service_role`); `notes` (not defteri) RLS ile tarayıcıdan doğrudan; `daily_schedule` gelecek günleri gizler; `profiles` yeni kullanıcıda trigger ile oluşur, seri `finish_game`'de güncellenir.
 - Sunucuda kimlik: `getClaims()`; oturum yenileme `proxy.ts` içinde (next-intl ile birlikte).
 - Paylaşım kartı kaldırıldı (Enes'in isteği).
+
+### Aşama 3a'da yapılanlar
+
+- Migration'lar uygulandı (`core_schema`, `game_functions`, `notes_case_number_index`). Supabase güvenlik denetiminde sadece beklenen INFO'lar (case_reviews'ta politika yok, yeni indeksler kullanılmamış).
+- `npm run db:seed`: fixture'ları Zod ile doğrulayıp `cases`'e upsert eder, takvimde olmayanı bugüne koyar.
+- `src/lib/supabase/database.types.ts`: Supabase'den üretilen tipler (her migration'dan sonra yeniden üret).
+- `repository.ts` Supabase'den okur: public kısım `'use cache'` (saatlik), secret her istekte taze ve hiç cache'lenmez. `getTodaysCaseNumber()` ana sayfa için.
+- Kimlik: `src/server/player.ts` (`getClaims`), `src/lib/supabase/proxy.ts` + `src/proxy.ts` (next-intl + oturum yenileme, `/api` dahil), tarayıcıda `ensureSession()`/`gameFetch()` (`src/lib/supabase/session.ts`). `dd_session` çerezi kaldırıldı. Oturumsuz → 401 `unauthenticated`.
+- `game-store.ts` Supabase RPC'leri üzerinden; DB'den gelen her değer Zod ile doğrulanır (`GameResultSchema`).
+- Not defteri `notes` tablosuna senkron (RLS ile özel); localStorage hızlı yerel kopya.
+- `npm run smoke`: çalışan uygulamaya karşı anonim oyuncuyla tam oyun + aynı kimlikle hile denemeleri (gizli veri okuma, sayaç sıfırlama, RPC çağırma, başkasının notu). Geçti.
+- `.env.local`'deki Supabase URL'sindeki `hhttps://` yazım hatası düzeltildi.
+- Not: smoke testi her çalıştığında 2 anonim kullanıcı oluşturur. Temizlik: `delete from auth.users where is_anonymous and created_at < now() - interval '30 days';`
 
 ### Notlar / alınan teknik kararlar
 
