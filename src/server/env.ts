@@ -26,6 +26,19 @@ const AiEnvSchema = z.object({
     .string()
     .optional()
     .transform((v) => (v ? v : "gemini-flash-lite-latest")),
+  // Case generation runs offline, so it can use a slower model that reasons
+  // before answering (a "thinking" model): fewer broken plots.
+  GEMINI_GENERATOR_MODEL: z
+    .string()
+    .optional()
+    .transform((v) => (v ? v : "gemini-flash-latest")),
+  // The blind solver that checks a generated case. A lighter model on purpose:
+  // if even it can name the killer from the full facts, the case is fair. It
+  // also has its own, larger free quota (the thinking model gets ~20 calls a day).
+  GEMINI_SOLVER_MODEL: z
+    .string()
+    .optional()
+    .transform((v) => (v ? v : "gemini-flash-lite-latest")),
 });
 
 export type AiEnv = z.infer<typeof AiEnvSchema>;
