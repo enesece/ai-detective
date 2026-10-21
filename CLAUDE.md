@@ -140,7 +140,7 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 | 1 — Kurulum, şema, fixture dava, dava/kanıt ekranları                                     | ✅ Onaylandı                    | Supabase anahtarları ve Gemini anahtarı `.env.local`'de; GitHub/Vercel adımları Enes'te |
 | 2 — Sorgu, streaming, soru sayacı                                                         | ✅ Onaylandı                    | + not defteri, ipucu, suçlama/sonuç ara özellikleri                                     |
 | 3 — Tablolar/RLS, anonim giriş, kalıcılık, hız sınırı, Turnstile, çıktı filtresi, eval v1 | ✅ Onaylandı                    | Canlı: https://dailyalibi.vercel.app (Turnstile + Supabase CAPTCHA açık)               |
-| 4 — AI üretici + doğrulama, admin paneli, cron, ana sayfa, arşiv, cila                    | 🟢 4a + 4b bitti, onay bekliyor | 4a üretici + doğrulama; 4b admin paneli; 4c cron, ana sayfa, arşiv, cila                |
+| 4 — AI üretici + doğrulama, admin paneli, cron, ana sayfa, arşiv, cila                    | 🟢 4a + 4b + 4c bitti, onay bekliyor | 4a üretici + doğrulama; 4b admin paneli; 4c cron, ana sayfa, arşiv, cila                |
 | 5 — README                                                                                | ⚪ Bekliyor                     |                                                                                         |
 
 ### Aşama 1'de yapılanlar
@@ -232,7 +232,7 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 ### Aşama 4 planı ve kararlar (Enes onayladı)
 
 - 4a üretici + doğrulama → onay → 4b admin paneli → onay → 4c cron, ana sayfa, arşiv, mobil, smoke testi (CAPTCHA'lı).
-- Üretici modeli `gemini-flash-latest` (düşünen model; offline olduğu için yavaşlık sorun değil). Admin girişi e-posta + şifre, admin rolü `app_metadata` ile. Admin paneli sadece İngilizce. Takvimde boş gün → cron onaylı havuzdan en eski davayı koyar.
+- Üretici modeli `gemini-flash-latest` (düşünen model; offline olduğu için yavaşlık sorun değil). Admin girişi e-posta + şifre, admin rolü `app_metadata` ile. Admin paneli sadece İngilizce. Takvimde boş gün → cron onaylı havuzdan en eski davayı koyar. **Dava üretimi otomatik değil, sadece elle** (panelden ya da `npm run generate`); cron sadece yayın yapar.
 
 ### Aşama 4a'da yapılanlar
 
@@ -260,6 +260,17 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 - `SiteHeader`'daki `LocaleSwitcher` `<Suspense>` içine alındı (runtime parametreli sayfalarda `usePathname` prerender'ı engelliyordu).
 - Yerel test için `scripts/tmp/admin-cookie.mts` (git'e girmez): gizli anahtarla magic link üretip oturum çerezi yazar; Turnstile'ı tarayıcı olmadan aşmak için.
 - Yerelde admin girişi için `.env.local`'e gerçek Turnstile site key + Cloudflare'de `localhost` hostname gerekir (Supabase CAPTCHA açık).
+
+### Aşama 4c'de yapılanlar
+
+- **Günlük yayın cron'u:** `vercel.json` → `GET /api/cron/publish` her gün 00:05 UTC (Hobby: günde 1 kez, saat içinde herhangi bir dakika, tekrar denemez). `CRON_SECRET` Bearer başlığı sabit zamanlı karşılaştırmayla kontrol edilir. `ensureTodayHasCase()` (`src/server/cases/publish.ts`): bugün boşsa takvimde olmayan en eski onaylı davayı koyar; iki kez çalışması zararsız. Sonra `revalidateTag("schedule"/"cases", { expire: 0 })`.
+- **Ana sayfa:** bugünün davası (özet + zorluk), nasıl oynanır (4 adım), oyuncunun serisi ve bugünkü durumu (`TodayStatus`).
+- **Arşiv** `/[locale]/archive`: yayınlanmış tüm davalar (`listPublishedCases`, önbellekli) + oyuncunun kendi sonucu (çözüldü/çözülemedi/devam ediyor). Üst bilgide "Arşiv" bağlantısı.
+- Oyuncu verisi (`usePlayerRecord`) tarayıcıda RLS ile kendi satırlarından okunur; sadece `result->correct->killer` seçilir (çözüm metni değil). Oturumu olmayan ziyaretçi için sorgu yok, sırf sayfaya bakan biri için anonim kullanıcı açılmaz. Gösterilen seri: son çözüm bugün/dün değilse 0.
+- **Seri hatası düzeltmesi** (migration `streak_today_only`): `finish_game` seriyi artık sadece günün davası için günceller; arşivden eski dava çözmek `last_solved_date`'i geri götürüyordu.
+- **Smoke testi CAPTCHA açıkken çalışır:** oyuncular gizli anahtarla oluşturulan geçici e-posta kullanıcıları (tek kullanımlık giriş bağlantısı), test sonunda silinir. `SMOKE_CAPTCHA_TOKEN` kaldırıldı. Seri beklentisi dava #1 günün davası mı ona göre.
+- **Mobil:** 375 px'te ana sayfa, sorgu, suçlama (TR) ve arşiv headless Chrome'la (375 px iframe) kontrol edildi; taşma yok. Not: headless Chrome penceresi 500 px'ten dar açılmıyor, bu yüzden iframe kullanıldı.
+- Canlıda panelden ilk üretim (Enes, "easy"): Vercel'de 177 sn, mantık kontrolleri temiz, "çok kolay" uyarısıyla onay bekliyor (The Blackout at Craigmhor Light).
 
 ### Notlar / alınan teknik kararlar
 
