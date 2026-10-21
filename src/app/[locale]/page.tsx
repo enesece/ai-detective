@@ -14,7 +14,7 @@ export default async function HomePage() {
   const today = todaysNumber === undefined ? null : getPublicCase(todaysNumber);
 
   return (
-    <div className="pt-16">
+    <div className="mx-auto max-w-4xl pt-16">
       <p className="font-display max-w-xl text-3xl leading-snug sm:text-4xl">{t("tagline")}</p>
 
       {today && (

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { PageFallback } from "@/components/ui/PageFallback";
 import { getTranslations } from "next-intl/server";
 import { InterrogationRoom } from "@/components/interrogation/InterrogationRoom";
-import type { SuspectOption } from "@/components/interrogation/types";
+import type { EvidenceOption, SuspectOption } from "@/components/interrogation/types";
 import { Link } from "@/i18n/navigation";
 import { getAppLocale } from "@/i18n/locale";
 import { localize } from "@/lib/case/localize";
@@ -35,6 +35,10 @@ async function InterrogateContent({
     role: localize(s.role, locale),
     statement: localize(s.initialStatement, locale),
   }));
+  const evidence: EvidenceOption[] = publicCase.briefing.evidence.map((e) => ({
+    id: e.id,
+    title: localize(e.title, locale),
+  }));
 
   return (
     <div className="pt-10">
@@ -46,7 +50,11 @@ async function InterrogateContent({
       </Link>
       <h1 className="font-display mt-4 text-3xl font-bold">{t("title")}</h1>
       <p className="text-muted mt-1 mb-6">{t("intro")}</p>
-      <InterrogationRoom caseNumber={publicCase.caseNumber} suspects={suspects} />
+      <InterrogationRoom
+        caseNumber={publicCase.caseNumber}
+        suspects={suspects}
+        evidence={evidence}
+      />
     </div>
   );
 }

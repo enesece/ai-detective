@@ -66,5 +66,19 @@
       "rate_limited": "Too many detectives are asking questions right now. Wait a minute and try again; your question was not counted."
     },
     "initialStatement": "First statement"
+  },
+  "Notebook": {
+    "title": "Notebook",
+    "notesLabel": "Your notes",
+    "placeholder": "Suspicions, contradictions, times…",
+    "savedLocally": "Saved in this browser.",
+    "pinnedGroup": "Pinned",
+    "empty": "Pin statements, answers and evidence to compare them side by side here.",
+    "pin": "Pin",
+    "pinned": "Pinned",
+    "remove": "Remove",
+    "statementLabel": "First statement",
+    "evidenceGroup": "Evidence",
+    "toggle": "Notebook ({count})"
   }
 }

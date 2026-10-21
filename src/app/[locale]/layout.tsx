@@ -38,7 +38,7 @@ export default async function LocaleLayout({ children }: LayoutProps<"/[locale]"
         {/* Makes translations available to Client Components (e.g. LocaleSwitcher). */}
         <NextIntlClientProvider>
           <SiteHeader />
-          <main className="mx-auto w-full max-w-4xl px-4 pb-16">{children}</main>
+          <main className="mx-auto w-full max-w-6xl px-4 pb-16">{children}</main>
         </NextIntlClientProvider>
       </body>
     </html>

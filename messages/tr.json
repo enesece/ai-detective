@@ -66,5 +66,19 @@
       "rate_limited": "Şu an çok fazla dedektif soru soruyor. Bir dakika bekleyip tekrar dene; soru hakkından düşülmedi."
     },
     "initialStatement": "İlk ifade"
+  },
+  "Notebook": {
+    "title": "Not defteri",
+    "notesLabel": "Notların",
+    "placeholder": "Şüpheler, çelişkiler, saatler…",
+    "savedLocally": "Bu tarayıcıda kaydedilir.",
+    "pinnedGroup": "İşaretlenenler",
+    "empty": "İfadeleri, cevapları ve kanıtları işaretle; burada yan yana karşılaştır.",
+    "pin": "İşaretle",
+    "pinned": "İşaretlendi",
+    "remove": "Kaldır",
+    "statementLabel": "İlk ifade",
+    "evidenceGroup": "Kanıtlar",
+    "toggle": "Not defteri ({count})"
   }
 }

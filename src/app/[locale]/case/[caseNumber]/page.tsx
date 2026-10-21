@@ -33,7 +33,7 @@ async function CaseContent({
   const placeName = (id: string) => briefing.locations.find((l) => l.id === id)?.name;
 
   return (
-    <article>
+    <article className="mx-auto max-w-4xl">
       <CaseHeader publicCase={publicCase} locale={locale} />
       <VictimPanel briefing={briefing} locale={locale} />
 
