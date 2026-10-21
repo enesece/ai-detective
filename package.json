@@ -13,7 +13,8 @@
     "check:prompts": "node --conditions=react-server --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-prompt-isolation.mts",
     "db:seed": "tsx --env-file=.env.local scripts/seed-cases.mts",
     "smoke": "tsx --env-file=.env.local scripts/smoke-api.mts",
-    "check:guard": "tsx scripts/check-guard.mts"
+    "check:guard": "tsx scripts/check-guard.mts",
+    "eval": "tsx --conditions=react-server --env-file=.env.local scripts/eval-injection.mts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

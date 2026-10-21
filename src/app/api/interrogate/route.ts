@@ -2,6 +2,10 @@ import { getCaseSecret, getPublicCase } from "@/server/cases/repository";
 import { ChatModelError, getChatModel, type ChatModel } from "@/server/ai";
 import { gameStore } from "@/server/interrogation/game-store";
 import { createGuardedStream } from "@/server/interrogation/guarded-stream";
+import {
+  SUSPECT_MAX_OUTPUT_TOKENS,
+  SUSPECT_TEMPERATURE,
+} from "@/server/interrogation/model-settings";
 import { buildSuspectPrompt, formatQuestion } from "@/server/interrogation/prompt";
 import { getPlayerId } from "@/server/player";
 import { withinRateLimits } from "@/server/rate-limit";
@@ -18,9 +22,6 @@ import { errorResponse } from "@/server/http";
  * Streams the suspect's answer as plain text. The server loads the case itself
  * and counts the question; the client only sends what the player typed.
  */
-
-const MAX_OUTPUT_TOKENS = 300;
-const TEMPERATURE = 0.8;
 
 export async function POST(request: Request): Promise<Response> {
   const parsed = InterrogateRequestSchema.safeParse(await request.json().catch(() => null));
@@ -70,8 +71,8 @@ export async function POST(request: Request): Promise<Response> {
         { role: "model" as const, text: e.answer },
       ]),
       message: formatQuestion(question, locale),
-      maxOutputTokens: MAX_OUTPUT_TOKENS,
-      temperature: TEMPERATURE,
+      maxOutputTokens: SUSPECT_MAX_OUTPUT_TOKENS,
+      temperature: SUSPECT_TEMPERATURE,
       signal: request.signal, // stop paying for tokens if the player leaves
     })
     [Symbol.asyncIterator]();

@@ -25,7 +25,7 @@ export function createGuardedStream({
   locale,
   onFinish,
   onBlocked,
-}: Options): ReadableStream<Uint8Array> {
+}: Options): ReadableStream<Uint8Array<ArrayBuffer>> {
   const encoder = new TextEncoder();
   let pending: IteratorResult<string> | null = first;
   let answer = "";
@@ -38,7 +38,7 @@ export function createGuardedStream({
     await onFinish(answer.trim());
   };
 
-  return new ReadableStream<Uint8Array>({
+  return new ReadableStream<Uint8Array<ArrayBuffer>>({
     // Loops until it has enqueued something or closed: a pull that returns
     // without enqueuing isn't always called again, which would stall the
     // stream while short chunks sit in the holdback.
