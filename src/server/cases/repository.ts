@@ -106,3 +106,41 @@ export async function getTodaysCaseNumber(): Promise<number | null> {
   if (error) throw new Error(`getTodaysCaseNumber: ${error.message}`);
   return data?.cases.case_number ?? null;
 }
+
+export type ArchiveEntry = {
+  caseNumber: number;
+  publishDate: string;
+  difficulty: Difficulty;
+  title: PublicBriefingTitle;
+  place: PublicBriefingTitle;
+};
+type PublicBriefingTitle = PublicCase["briefing"]["title"];
+
+/** Every published case, newest day first. Public fields only. */
+export async function listPublishedCases(): Promise<ArchiveEntry[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("cases", "schedule");
+
+  const { data, error } = await createSupabaseAdminClient()
+    .from("daily_schedule")
+    .select("publish_date, cases!inner(case_number, difficulty, status, public_briefing)")
+    .lte("publish_date", utcToday())
+    .eq("cases.status", "approved")
+    .order("publish_date", { ascending: false });
+  if (error) throw new Error(`listPublishedCases: ${error.message}`);
+
+  return data.flatMap((row) => {
+    const briefing = PublicBriefingSchema.safeParse(row.cases.public_briefing);
+    if (!briefing.success || row.cases.case_number === null) return [];
+    return [
+      {
+        caseNumber: row.cases.case_number,
+        publishDate: row.publish_date,
+        difficulty: toDifficulty(row.cases.difficulty),
+        title: briefing.data.title,
+        place: briefing.data.setting.place,
+      },
+    ];
+  });
+}

@@ -5,12 +5,23 @@
   },
   "Header": {
     "brand": "Daily Alibi",
-    "language": "Dil"
+    "language": "Dil",
+    "archive": "Arşiv"
   },
   "Home": {
     "tagline": "Her sabah yeni bir cinayet. Yirmi soru. Tek suçlama.",
     "todaysCase": "Bugünün davası",
-    "openCase": "Dava dosyasını aç"
+    "openCase": "Dava dosyasını aç",
+    "noCase": "Bugünün davası henüz yayınlanmadı. Birazdan tekrar bak ya da arşivden bir dava seç.",
+    "howToPlay": "Nasıl oynanır",
+    "steps": {
+      "read": "Dava dosyasını oku, kanıtları incele. Bunlar ücretsiz.",
+      "ask": "Dört şüpheliyi sorgula. Toplam 20 soru hakkın var, iyi seç.",
+      "note": "Çelişkileri yakalamak için ifadeleri ve cevapları not defterine işaretle.",
+      "accuse": "Katili, motifi ve kilit kanıtı söyle. Tek suçlama hakkın var."
+    },
+    "daily": "Her gece yarısı (UTC) yeni bir dava. Herkese aynı dava gelir.",
+    "archiveLink": "Geçmiş davaları oyna"
   },
   "Case": {
     "caseNumber": "Dava #{number}",
@@ -132,5 +143,17 @@
     "total": "Toplam",
     "trueStory": "Gerçekte ne oldu",
     "evidenceExplained": "Kanıtlar ne anlatıyordu"
+  },
+  "Player": {
+    "solved": "Çözüldü · {score} puan",
+    "unsolved": "Çözülemedi",
+    "inProgress": "Devam ediyor",
+    "streak": "{count} günlük seri",
+    "bestStreak": "En iyi: {count}"
+  },
+  "Archive": {
+    "title": "Dava arşivi",
+    "intro": "Bugüne kadarki tüm davalar. Geçmiş davalar seriye sayılmaz.",
+    "empty": "Henüz dava yok."
   }
 }

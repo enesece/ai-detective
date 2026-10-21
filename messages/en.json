@@ -5,12 +5,23 @@
   },
   "Header": {
     "brand": "Daily Alibi",
-    "language": "Language"
+    "language": "Language",
+    "archive": "Archive"
   },
   "Home": {
     "tagline": "A new murder every morning. Twenty questions. One accusation.",
     "todaysCase": "Today's case",
-    "openCase": "Open the case file"
+    "openCase": "Open the case file",
+    "noCase": "No case today yet. Come back soon, or try one from the archive.",
+    "howToPlay": "How to play",
+    "steps": {
+      "read": "Read the case file and examine the evidence. That's free.",
+      "ask": "Question the four suspects. You have 20 questions in total, so choose them well.",
+      "note": "Pin statements and answers in your notebook to catch contradictions.",
+      "accuse": "Name the killer, the motive and the key evidence. You get one accusation."
+    },
+    "daily": "A new case every day at midnight (UTC). Everyone gets the same one.",
+    "archiveLink": "Play past cases"
   },
   "Case": {
     "caseNumber": "Case #{number}",
@@ -132,5 +143,17 @@
     "total": "Total",
     "trueStory": "What really happened",
     "evidenceExplained": "What the evidence was saying"
+  },
+  "Player": {
+    "solved": "Solved · {score} points",
+    "unsolved": "Not solved",
+    "inProgress": "In progress",
+    "streak": "{count, plural, one {# day streak} other {# day streak}}",
+    "bestStreak": "Best: {count}"
+  },
+  "Archive": {
+    "title": "Case archive",
+    "intro": "Every case so far. Past cases don't count towards your streak.",
+    "empty": "No cases yet."
   }
 }

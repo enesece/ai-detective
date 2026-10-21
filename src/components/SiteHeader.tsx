@@ -8,9 +8,14 @@ export async function SiteHeader() {
 
   return (
     <header className="border-rule mx-auto flex w-full max-w-6xl items-center justify-between border-b px-4 py-4">
-      <Link href="/" className="font-display text-xl font-bold tracking-tight">
-        {t("brand")}
-      </Link>
+      <div className="flex items-center gap-5">
+        <Link href="/" className="font-display text-xl font-bold tracking-tight">
+          {t("brand")}
+        </Link>
+        <Link href="/archive" className="text-muted hover:text-ink text-sm font-semibold">
+          {t("archive")}
+        </Link>
+      </div>
       {/* It reads the URL (usePathname), which pages with runtime-only params
           (e.g. /admin/cases/[id]) can't know while prerendering. */}
       <Suspense fallback={<span className="h-7 w-16" aria-hidden />}>
