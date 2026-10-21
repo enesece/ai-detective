@@ -139,7 +139,7 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 | ----------------------------------------------------------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------------- |
 | 1 — Kurulum, şema, fixture dava, dava/kanıt ekranları                                     | ✅ Onaylandı                    | Supabase anahtarları ve Gemini anahtarı `.env.local`'de; GitHub/Vercel adımları Enes'te |
 | 2 — Sorgu, streaming, soru sayacı                                                         | ✅ Onaylandı                    | + not defteri, ipucu, suçlama/sonuç ara özellikleri                                     |
-| 3 — Tablolar/RLS, anonim giriş, kalıcılık, hız sınırı, Turnstile, çıktı filtresi, eval v1 | 🟢 3a + 3b bitti, onay bekliyor | Turnstile kodu hazır; anahtarlar deploy'da girilecek                                    |
+| 3 — Tablolar/RLS, anonim giriş, kalıcılık, hız sınırı, Turnstile, çıktı filtresi, eval v1 | 🟢 3a + 3b bitti, onay bekliyor | Canlı: https://dailyalibi.vercel.app (Turnstile + Supabase CAPTCHA açık)               |
 | 4 — AI üretici + doğrulama, admin paneli, cron, ana sayfa, arşiv, cila                    | ⚪ Bekliyor                     |                                                                                         |
 | 5 — README                                                                                | ⚪ Bekliyor                     |                                                                                         |
 
@@ -222,6 +222,12 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 - **Injection eval** (`eval/attacks.json`, `scripts/eval-injection.mts`, `npm run eval`): 40 saldırı, 10 kategori, EN+TR; oyunun gerçek prompt'u ve ayarlarıyla (API'yi atlayarak). İlk sonuç (gemini-flash-lite): **model tek başına 40/40, filtreyle 40/40, doğru dil 40/40**. Cevaplar elle de okundu. Sınırlar: tek tur, tek dava, kalıp tabanlı hakem. Sonuç: `eval/results/latest.json`.
 - **Turnstile** (`src/lib/turnstile.ts`, paket yok): anonim girişte görünmez kontrol, token Supabase'e `captchaToken` olarak gider. `NEXT_PUBLIC_TURNSTILE_SITE_KEY` boşsa devre dışı. Enes'in deploy'da yapacağı: Cloudflare'de Turnstile widget'ı oluştur (domain + localhost), site key'i Vercel env'e, secret key'i Supabase → Authentication → Attack Protection → CAPTCHA (Turnstile) alanına gir.
 - Supabase güvenlik denetimi: "anonim erişim politikaları" uyarıları bilinçli (oyuncular anonim, politikalar sadece kendi satırı). "Sızdırılmış şifre koruması" kalıcı hesap eklenince açılmalı.
+
+### Deploy (21 Ekim 2026)
+
+- Canlı: https://dailyalibi.vercel.app (Vercel, GitHub `main`'den otomatik deploy). Env değişkenleri Vercel'de; `NEXT_PUBLIC_*` olanlar "Config", gizliler "Sensitive". Build, dava listesi için Supabase'e bağlandığı için Supabase değişkenleri build sırasında da gerekli.
+- Turnstile widget'ı hostname: `dailyalibi.vercel.app`. Supabase CAPTCHA açık → yerelde yeni anonim giriş için gerçek site key + `localhost` hostname'i gerekir. Vercel preview adresleri listede değil, orada giriş başarısız olur.
+- Canlı kontroller (Enes elle + Claude dışarıdan): tam oyun akışı EN/TR, yenilemede kalıcılık, not defteri senkronu; 12 sayfa + 15 JS dosyasında 115 gizli metin, 0 sızıntı; oturumsuz `/api/interrogate` → 401; token'sız anonim giriş → `captcha_failed`; anon rolüyle `cases.secret` → permission denied.
 
 ### Notlar / alınan teknik kararlar
 
