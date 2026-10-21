@@ -135,13 +135,13 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 
 ## 3. Durum
 
-| Aşama                                                                                     | Durum                      | Not                                                                                     |
-| ----------------------------------------------------------------------------------------- | -------------------------- | --------------------------------------------------------------------------------------- |
-| 1 — Kurulum, şema, fixture dava, dava/kanıt ekranları                                     | ✅ Onaylandı               | Supabase anahtarları ve Gemini anahtarı `.env.local`'de; GitHub/Vercel adımları Enes'te |
-| 2 — Sorgu, streaming, soru sayacı                                                         | ✅ Onaylandı               | + not defteri, ipucu, suçlama/sonuç ara özellikleri                                     |
-| 3 — Tablolar/RLS, anonim giriş, kalıcılık, hız sınırı, Turnstile, çıktı filtresi, eval v1 | 🟡 3a bitti, onay bekliyor | 3b (hız sınırı, Turnstile, çıktı filtresi, injection eval) sırada                       |
-| 4 — AI üretici + doğrulama, admin paneli, cron, ana sayfa, arşiv, cila                    | ⚪ Bekliyor                |                                                                                         |
-| 5 — README                                                                                | ⚪ Bekliyor                |                                                                                         |
+| Aşama                                                                                     | Durum                           | Not                                                                                     |
+| ----------------------------------------------------------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------------- |
+| 1 — Kurulum, şema, fixture dava, dava/kanıt ekranları                                     | ✅ Onaylandı                    | Supabase anahtarları ve Gemini anahtarı `.env.local`'de; GitHub/Vercel adımları Enes'te |
+| 2 — Sorgu, streaming, soru sayacı                                                         | ✅ Onaylandı                    | + not defteri, ipucu, suçlama/sonuç ara özellikleri                                     |
+| 3 — Tablolar/RLS, anonim giriş, kalıcılık, hız sınırı, Turnstile, çıktı filtresi, eval v1 | 🟢 3a + 3b bitti, onay bekliyor | Turnstile kodu hazır; anahtarlar deploy'da girilecek                                    |
+| 4 — AI üretici + doğrulama, admin paneli, cron, ana sayfa, arşiv, cila                    | ⚪ Bekliyor                     |                                                                                         |
+| 5 — README                                                                                | ⚪ Bekliyor                     |                                                                                         |
 
 ### Aşama 1'de yapılanlar
 
@@ -214,6 +214,14 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 - `npm run smoke`: çalışan uygulamaya karşı anonim oyuncuyla tam oyun + aynı kimlikle hile denemeleri (gizli veri okuma, sayaç sıfırlama, RPC çağırma, başkasının notu). Geçti.
 - `.env.local`'deki Supabase URL'sindeki `hhttps://` yazım hatası düzeltildi.
 - Not: smoke testi her çalıştığında 2 anonim kullanıcı oluşturur. Temizlik: `delete from auth.users where is_anonymous and created_at < now() - interval '30 days';`
+
+### Aşama 3b'de yapılanlar
+
+- **Hız sınırı** (`rate_limits` tablosu + `check_rate_limits` fonksiyonu, migration `rate_limits`; `src/server/rate-limit.ts`): dakikada oyuncu başına soru 8 / ipucu 10 / suçlama 10, IP başına 30/40/40; tüm uygulama için günlük AI çağrısı `AI_DAILY_LIMIT` (varsayılan 1000). IP'ler sunucu anahtarıyla HMAC'lenmiş saklanır. Aşılınca 429 `rate_limited`. Limiter hata verirse açık bırakır (oyunun 20 soru sınırı yine geçerli).
+- **Çıktı filtresi** (`answer-guard.ts` + `guarded-stream.ts`): karakterden çıkma, prompt'u tekrarlama ve (katil için) itiraf, EN+TR kalıplarla. Akış 40 karakter geride tutulur; ihlalde model durur, gönderilmemiş kısım karakterde kalan bir cümleyle değişir, kaydedilen = oyuncunun gördüğü. `npm run check:guard` (14 ifade + 4 akış senaryosu). Bu sırada bulunan hata: hiçbir şey göndermeyen `pull()` akışı kilitleyebiliyordu → döngüyle düzeltildi.
+- **Injection eval** (`eval/attacks.json`, `scripts/eval-injection.mts`, `npm run eval`): 40 saldırı, 10 kategori, EN+TR; oyunun gerçek prompt'u ve ayarlarıyla (API'yi atlayarak). İlk sonuç (gemini-flash-lite): **model tek başına 40/40, filtreyle 40/40, doğru dil 40/40**. Cevaplar elle de okundu. Sınırlar: tek tur, tek dava, kalıp tabanlı hakem. Sonuç: `eval/results/latest.json`.
+- **Turnstile** (`src/lib/turnstile.ts`, paket yok): anonim girişte görünmez kontrol, token Supabase'e `captchaToken` olarak gider. `NEXT_PUBLIC_TURNSTILE_SITE_KEY` boşsa devre dışı. Enes'in deploy'da yapacağı: Cloudflare'de Turnstile widget'ı oluştur (domain + localhost), site key'i Vercel env'e, secret key'i Supabase → Authentication → Attack Protection → CAPTCHA (Turnstile) alanına gir.
+- Supabase güvenlik denetimi: "anonim erişim politikaları" uyarıları bilinçli (oyuncular anonim, politikalar sadece kendi satırı). "Sızdırılmış şifre koruması" kalıcı hesap eklenince açılmalı.
 
 ### Notlar / alınan teknik kararlar
 
