@@ -1,6 +1,7 @@
 import { getCaseSecret, getPublicCase } from "@/server/cases/repository";
 import { ChatModelError, getChatModel, type ChatModel } from "@/server/ai";
 import { gameStore } from "@/server/interrogation/game-store";
+import { createGuardedStream } from "@/server/interrogation/guarded-stream";
 import { buildSuspectPrompt, formatQuestion } from "@/server/interrogation/prompt";
 import { getPlayerId } from "@/server/player";
 import { withinRateLimits } from "@/server/rate-limit";
@@ -53,6 +54,7 @@ export async function POST(request: Request): Promise<Response> {
     return errorResponse(reservation.error, reservation.error === "limit_reached" ? 403 : 409);
   }
 
+  const isKiller = caseSecret.solution.killerId === suspectId;
   const history = await gameStore.recentExchanges(gameId, suspectId, locale, HISTORY_EXCHANGES);
   const chunks = model
     .streamChat({
@@ -60,7 +62,7 @@ export async function POST(request: Request): Promise<Response> {
         briefing: publicCase.briefing,
         suspect,
         secret: suspectSecret,
-        isKiller: caseSecret.solution.killerId === suspectId,
+        isKiller,
         locale,
       }),
       history: history.flatMap((e) => [
@@ -89,40 +91,17 @@ export async function POST(request: Request): Promise<Response> {
     return errorResponse("ai_unavailable", 502);
   }
 
-  let answer = "";
-  let finished = false;
-  const finish = async () => {
-    if (finished) return;
-    finished = true;
-    const text = answer.trim();
-    if (text)
-      await gameStore.completeQuestion(gameId, { suspectId, question, answer: text, locale });
-    else await gameStore.refundQuestion(gameId);
-  };
-
-  const encoder = new TextEncoder();
-  let pending: IteratorResult<string> | null = first;
-
-  const stream = new ReadableStream<Uint8Array>({
-    async pull(controller) {
-      try {
-        const result = pending ?? (await chunks.next());
-        pending = null;
-        if (result.done) {
-          await finish();
-          controller.close();
-          return;
-        }
-        answer += result.value;
-        controller.enqueue(encoder.encode(result.value));
-      } catch (error) {
-        await finish();
-        controller.error(error);
-      }
-    },
-    async cancel() {
-      await chunks.return?.();
-      await finish();
+  const stream = createGuardedStream({
+    chunks,
+    first,
+    isKiller,
+    locale,
+    onBlocked: (violation) =>
+      console.warn(`[guard] blocked ${violation} from ${suspectId} (case ${caseNumber})`),
+    // Save what the player actually received; nothing at all means the question is refunded.
+    onFinish: async (answer) => {
+      if (answer) await gameStore.completeQuestion(gameId, { suspectId, question, answer, locale });
+      else await gameStore.refundQuestion(gameId);
     },
   });
 

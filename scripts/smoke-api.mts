@@ -146,16 +146,15 @@ step("request without a session rejected (401)");
 // --- Rate limit -----------------------------------------------------------
 const spammer = await newPlayer();
 const codes: number[] = [];
-for (let i = 0; i < 12; i++)
+// 25 requests: even if they straddle a minute boundary (fixed windows reset),
+// one window gets more than the per-player limit of 10.
+for (let i = 0; i < 25; i++)
   codes.push((await spammer.call("/api/hint", { caseNumber: 1 })).status);
 assert.ok(
   codes.slice(0, 10).every((c) => c !== 429),
   `first 10 allowed: ${codes}`,
 );
-assert.ok(
-  codes.slice(10).every((c) => c === 429),
-  `11th and 12th limited: ${codes}`,
-);
+assert.ok(codes.includes(429), `some requests limited: ${codes}`);
 step(`rate limit: ${codes.join(" ")}`);
 
 console.log("✓ smoke test passed");
