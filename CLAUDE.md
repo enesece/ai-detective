@@ -135,13 +135,13 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 
 ## 3. Durum
 
-| Aşama                                                                                     | Durum                       | Not                                                                                     |
-| ----------------------------------------------------------------------------------------- | --------------------------- | --------------------------------------------------------------------------------------- |
-| 1 — Kurulum, şema, fixture dava, dava/kanıt ekranları                                     | ✅ Onaylandı                | Supabase anahtarları ve Gemini anahtarı `.env.local`'de; GitHub/Vercel adımları Enes'te |
-| 2 — Sorgu, streaming, soru sayacı                                                         | 🟢 Kod tamam, onay bekliyor | Sayaç şimdilik bellekte; Aşama 3'te Supabase'e taşınacak                                |
-| 3 — Tablolar/RLS, anonim giriş, suçlama, puan, paylaşım, not defteri, hız sınırı, eval v1 | ⚪ Bekliyor                 |                                                                                         |
-| 4 — AI üretici + doğrulama, admin paneli, cron, ana sayfa, arşiv, cila                    | ⚪ Bekliyor                 |                                                                                         |
-| 5 — README                                                                                | ⚪ Bekliyor                 |                                                                                         |
+| Aşama                                                                                     | Durum        | Not                                                                                           |
+| ----------------------------------------------------------------------------------------- | ------------ | --------------------------------------------------------------------------------------------- |
+| 1 — Kurulum, şema, fixture dava, dava/kanıt ekranları                                     | ✅ Onaylandı | Supabase anahtarları ve Gemini anahtarı `.env.local`'de; GitHub/Vercel adımları Enes'te       |
+| 2 — Sorgu, streaming, soru sayacı                                                         | ✅ Onaylandı | + not defteri, ipucu, suçlama/sonuç ara özellikleri                                           |
+| 3 — Tablolar/RLS, anonim giriş, kalıcılık, hız sınırı, Turnstile, çıktı filtresi, eval v1 | 🟡 Başladı   | 3a: migration'lar yazıldı (`supabase/migrations/`), Supabase bağlantısı bekleniyor. 3b sonra. |
+| 4 — AI üretici + doğrulama, admin paneli, cron, ana sayfa, arşiv, cila                    | ⚪ Bekliyor  |                                                                                               |
+| 5 — README                                                                                | ⚪ Bekliyor  |                                                                                               |
 
 ### Aşama 1'de yapılanlar
 
@@ -192,6 +192,15 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 - Hata kodları `GAME_ERRORS` / `GameError` (eski adı `InterrogateError`).
 - Sohbet artık sadece kendi kutusunda kayıyor (sabit yükseklik, `scrollTop`; `scrollIntoView` tüm sayfayı kaydırıyordu). Not defterindeki kanıtlar kanıt sayfasına link.
 - Bilinen sınır: suçlama sonrası çözüm görüldüğü için, çerezi silen biri aynı davayı yeniden oynayabilir (Wordle'daki gibi doğal bir sınır; Aşama 3'te anonim giriş + hız sınırı ile hafifletilecek).
+
+### Aşama 3 planı ve kararlar
+
+- 3a (kalıcılık + kimlik) → onay → 3b (hız sınırı, Turnstile, çıktı filtresi, injection eval).
+- Migration'lar Claude'un Supabase bağlantısıyla uygulanacak (Enes bağlantıyı projenin olduğu hesapla yeniden yetkilendirecek). Proje ref: `teyynpxdasdpidvvevwk`.
+- Eval için `tsx` devDependency onaylandı.
+- Şema: `cases.secret` tarayıcı rollerine sütun bazlı yetkiyle kapalı; `games`/`messages` yalnızca sunucu fonksiyonlarıyla yazılır (`start_game`, `reserve_question`, `refund_question`, `complete_question`, `reveal_hint`, `finish_game`; execute sadece `service_role`); `notes` (not defteri) RLS ile tarayıcıdan doğrudan; `daily_schedule` gelecek günleri gizler; `profiles` yeni kullanıcıda trigger ile oluşur, seri `finish_game`'de güncellenir.
+- Sunucuda kimlik: `getClaims()`; oturum yenileme `proxy.ts` içinde (next-intl ile birlikte).
+- Paylaşım kartı kaldırıldı (Enes'in isteği).
 
 ### Notlar / alınan teknik kararlar
 
