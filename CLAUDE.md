@@ -182,6 +182,17 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 - Yerleşim: xl'de 3 sütun (şüpheliler | sohbet | not defteri); daha dar ekranda "Not defteri (n)" düğmesiyle açılır. Genel içerik genişliği `max-w-6xl`; metin sayfaları `max-w-4xl` kalır.
 - Kanıt detay sayfasında da işaretleme düğmesi var.
 
+### Ara özellikler 2: ipucu, suçlama, sonuç (Enes'in isteğiyle, Aşama 3'ün bir kısmı öne çekildi)
+
+- **Suçlama her an yapılabilir** (20 soru dolmadan da): `/[locale]/case/[n]/accuse`, katil + motif + kilit kanıt, onaylı tek hak. `POST /api/accuse` sunucuda kontrol eder, puanlar, oyunu kapatır; çözüm ancak bundan sonra tarayıcıya gider. Kapanan oyunda soru/ipucu/suçlama `game_over` döner.
+- **İpuçları davaya yazılı, kademeli** (`secret.hints`, 1-3 adet, EN+TR): genel yön → nereye bakılmalı → çözüme çok yakın. `POST /api/hint` sıradakini açar; sadece açılanlar gönderilir. AI çağrısı yok. `check:prompts` ipuçlarının hiçbir şüpheli prompt'una girmediğini de kontrol eder.
+- **Puanlama** (`src/lib/game/scoring.ts`, saf fonksiyon): doğru katil 100, motif +30, kanıt +20, kullanılmayan soru başına +5, ipucu başına −15; yanlış katil = 0. Maks 250.
+- **Sonuç ekranı** `/[locale]/case/[n]/result`: seçim vs gerçek tablosu, puan dökümü, yöntem + gerçek hikâye, her kanıtın açıklaması (🔑 kilit kanıtlar), spoiler'sız paylaşım metni + Kopyala. Görsel paylaşım kartı henüz yok.
+- Oyun durumu (`game-store.ts`) artık `hintsUsed` ve `result` da tutuyor; `GET /api/game/[n]` → `toSnapshot()` sadece açılmış ipuçlarını ekler. Hâlâ bellekte; Aşama 3'te Supabase.
+- Hata kodları `GAME_ERRORS` / `GameError` (eski adı `InterrogateError`).
+- Sohbet artık sadece kendi kutusunda kayıyor (sabit yükseklik, `scrollTop`; `scrollIntoView` tüm sayfayı kaydırıyordu). Not defterindeki kanıtlar kanıt sayfasına link.
+- Bilinen sınır: suçlama sonrası çözüm görüldüğü için, çerezi silen biri aynı davayı yeniden oynayabilir (Wordle'daki gibi doğal bir sınır; Aşama 3'te anonim giriş + hız sınırı ile hafifletilecek).
+
 ### Notlar / alınan teknik kararlar
 
 - Next 16: `middleware.ts` → `proxy.ts`; `cacheComponents` açıkken her kök parametre için `generateStaticParams` zorunlu, `dynamicParams` kullanılamaz. Bulunamayan sayfalar stream sonrası 200 + `noindex` döner (Next'in belgelenmiş davranışı).
