@@ -23,7 +23,10 @@ async function newPlayer() {
       setAll: (toSet) => toSet.forEach(({ name, value }) => jar.set(name, value)),
     },
   });
-  const { data, error } = await auth.auth.signInAnonymously();
+  // With CAPTCHA on and Cloudflare's test secret, any token passes (e.g. XXXX.DUMMY.TOKEN.XXXX).
+  const { data, error } = await auth.auth.signInAnonymously({
+    options: { captchaToken: process.env.SMOKE_CAPTCHA_TOKEN },
+  });
   if (error || !data.session) throw new Error(`sign-in failed: ${error?.message}`);
   const cookie = () => [...jar].map(([n, v]) => `${n}=${v}`).join("; ");
   const call = (path: string, body?: unknown) =>

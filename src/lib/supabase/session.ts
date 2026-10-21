@@ -1,3 +1,4 @@
+import { getTurnstileToken } from "@/lib/turnstile";
 import { createSupabaseBrowserClient } from "./browser";
 
 /*
@@ -9,7 +10,13 @@ import { createSupabaseBrowserClient } from "./browser";
 let signingIn: Promise<void> | null = null;
 
 async function signInAnonymously(): Promise<void> {
-  const { error } = await createSupabaseBrowserClient().auth.signInAnonymously();
+  // With CAPTCHA enabled in Supabase, anonymous sign-up needs a Turnstile token.
+  // Without a site key (local dev) the check is skipped.
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  const captchaToken = siteKey ? await getTurnstileToken(siteKey) : undefined;
+  const { error } = await createSupabaseBrowserClient().auth.signInAnonymously({
+    options: { captchaToken },
+  });
   if (error) throw error;
 }
 
