@@ -16,7 +16,7 @@ export async function CaseHeader({ publicCase, locale }: Props) {
         {t("caseNumber", { number: publicCase.caseNumber })} ·{" "}
         {t(`difficulty.${publicCase.difficulty}`)}
       </p>
-      <h1 className="font-display mt-3 text-5xl leading-[1.02] sm:text-6xl">
+      <h1 className="font-display mt-3 text-4xl leading-[1.02] sm:text-5xl">
         {localize(briefing.title, locale)}
       </h1>
       <p className="text-muted mt-3 text-xl italic">

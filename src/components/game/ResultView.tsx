@@ -107,9 +107,7 @@ export function ResultView({ caseNumber, options }: Props) {
       <ScoreTable score={score} />
 
       <section>
-        <h2 className="font-display border-ink border-b pb-2 text-3xl sm:text-4xl">
-          {t("trueStory")}
-        </h2>
+        <h2 className="font-display border-ink border-b pb-2 text-3xl">{t("trueStory")}</h2>
         <p className="text-muted mt-3 text-lg italic">{localize(solution.method, locale)}</p>
         <div className="first-letter:font-display mt-4 space-y-4 text-lg leading-relaxed whitespace-pre-line first-letter:float-left first-letter:pt-1 first-letter:pr-2 first-letter:text-6xl first-letter:leading-[0.8] md:columns-2 md:gap-8">
           {localize(solution.trueStory, locale)}
@@ -117,9 +115,7 @@ export function ResultView({ caseNumber, options }: Props) {
       </section>
 
       <section>
-        <h2 className="font-display border-ink border-b pb-2 text-3xl sm:text-4xl">
-          {t("evidenceExplained")}
-        </h2>
+        <h2 className="font-display border-ink border-b pb-2 text-3xl">{t("evidenceExplained")}</h2>
         <ul className="mt-4 space-y-3">
           {solution.evidenceExplanations.map((e) => (
             <li key={e.evidenceId} className="border-ink bg-card border-t-[3px] p-4">

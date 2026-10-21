@@ -25,6 +25,16 @@ body {
   font-family: var(--font-serif);
 }
 
+/* Desktop/tablet reads ~90%, like browser zoom: Tailwind sizes text and
+   spacing in rem, so this scales the whole UI evenly. Phones stay at 100%:
+   body text stays readable and touch targets stay at least 44px.
+   A percentage, so a visitor's own browser font setting still applies. */
+@media (min-width: 640px) {
+  html {
+    font-size: 90%;
+  }
+}
+
 /* Visible keyboard focus everywhere, in the accent color. */
 :focus-visible {
   outline: 2px solid var(--color-accent);

@@ -6,7 +6,7 @@ type Props = { children: ReactNode; aside?: ReactNode; id?: string };
 export function SectionHeading({ children, aside, id }: Props) {
   return (
     <div className="border-ink mb-6 flex flex-wrap items-end justify-between gap-x-6 gap-y-1 border-b pb-2">
-      <h2 id={id} className="font-display text-3xl font-normal sm:text-4xl">
+      <h2 id={id} className="font-display text-3xl font-normal">
         {children}
       </h2>
       {aside && <p className="text-muted pb-1 text-sm">{aside}</p>}

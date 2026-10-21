@@ -30,7 +30,7 @@ export default async function HomePage() {
     <div className="pt-6">
       {/* Masthead */}
       <header className="border-ink border-t-[3px] text-center">
-        <h1 className="font-display pt-4 text-5xl leading-none sm:text-7xl lg:text-8xl">
+        <h1 className="font-display pt-4 text-5xl leading-none sm:text-6xl lg:text-7xl">
           {tHeader("brand")}
         </h1>
         <p className="text-muted mt-3 text-lg italic">{t("tagline")}</p>
@@ -50,7 +50,7 @@ export default async function HomePage() {
               {tCase("caseNumber", { number: today.caseNumber })} ·{" "}
               {tCase(`difficulty.${today.difficulty}`)}
             </p>
-            <h2 className="font-display mt-3 text-5xl leading-[1.02] sm:text-6xl">
+            <h2 className="font-display mt-3 text-4xl leading-[1.02] sm:text-5xl">
               {localize(today.briefing.title, locale)}
             </h2>
             <p className="text-muted mt-3 text-xl italic">
@@ -99,7 +99,7 @@ export default async function HomePage() {
 
       {/* Rules of the game, as four newspaper columns */}
       <section aria-labelledby="rules-h" className="border-ink border-b py-10">
-        <h2 id="rules-h" className="font-display text-center text-3xl sm:text-4xl">
+        <h2 id="rules-h" className="font-display text-center text-3xl">
           {t("rules")}
         </h2>
         <ol className="divide-rule mt-8 grid sm:grid-cols-2 lg:grid-cols-4 lg:divide-x">

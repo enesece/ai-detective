@@ -30,7 +30,7 @@ export default async function ArchivePage() {
 
   return (
     <div className="mx-auto max-w-4xl pt-10">
-      <h1 className="font-display text-5xl sm:text-6xl">{t("title")}</h1>
+      <h1 className="font-display text-4xl sm:text-5xl">{t("title")}</h1>
       <p className="text-muted mt-2 mb-8 text-lg italic">{t("intro")}</p>
       {rows.length === 0 ? <p>{t("empty")}</p> : <ArchiveList rows={rows} />}
     </div>
