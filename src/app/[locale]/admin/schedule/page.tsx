@@ -38,7 +38,7 @@ async function ScheduleContent() {
                 )}
               </>
             ) : (
-              <span className="text-accent flex-1 text-sm">
+              <span className="text-alert flex-1 text-sm">
                 Empty: the daily job will use the oldest case in the pool.
               </span>
             )}

@@ -1,5 +1,6 @@
 "use client";
 
+import { label } from "@/components/ui/styles";
 import { useTranslations } from "next-intl";
 import type { EvidenceOption, SuspectOption } from "@/components/interrogation/types";
 import type { Notebook, PinTarget } from "@/lib/notebook/schema";
@@ -26,18 +27,13 @@ export function NotebookPanel({
   const t = useTranslations("Notebook");
 
   return (
-    <section
-      aria-labelledby="notebook-title"
-      className="border-rule bg-paper space-y-5 rounded-lg border p-4"
-    >
-      <h3 id="notebook-title" className="font-display text-xl font-bold">
+    <section aria-labelledby="notebook-title" className="border-ink bg-paper space-y-5 border p-4">
+      <h3 id="notebook-title" className="font-display border-ink border-b pb-2 text-2xl">
         {t("title")}
       </h3>
       <NoteEditor text={notebook.text} onChange={onTextChange} />
       <div>
-        <p className="text-muted mb-2 text-xs font-semibold tracking-widest uppercase">
-          {t("pinnedGroup")}
-        </p>
+        <p className={`${label} mb-2`}>{t("pinnedGroup")}</p>
         <PinnedList
           pins={notebook.pins}
           suspects={suspects}

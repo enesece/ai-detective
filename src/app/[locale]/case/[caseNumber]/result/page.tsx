@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ResultView } from "@/components/game/ResultView";
 import { PageFallback } from "@/components/ui/PageFallback";
+import { kicker, linkCaps } from "@/components/ui/styles";
 import { Link } from "@/i18n/navigation";
 import { getAppLocale } from "@/i18n/locale";
 import { localize } from "@/lib/case/localize";
@@ -30,17 +31,14 @@ async function ResultContent({
 
   return (
     <div className="mx-auto max-w-4xl pt-10">
-      <Link
-        href={`/case/${publicCase.caseNumber}/interrogate`}
-        className="text-accent text-sm font-semibold hover:underline"
-      >
+      <Link href={`/case/${publicCase.caseNumber}/interrogate`} className={linkCaps}>
         ← {t("back")}
       </Link>
-      <p className="text-accent mt-4 text-sm font-semibold tracking-widest uppercase">
+      <p className={`${kicker} text-accent mt-6`}>
         {tCase("caseNumber", { number: publicCase.caseNumber })} ·{" "}
         {localize(publicCase.briefing.title, locale)}
       </p>
-      <h1 className="font-display mt-1 mb-8 text-3xl font-bold">{t("title")}</h1>
+      <h1 className="font-display mt-2 mb-8 text-4xl sm:text-5xl">{t("title")}</h1>
       {/* Only public, translated options cross to the client. */}
       <ResultView
         caseNumber={publicCase.caseNumber}

@@ -1,5 +1,6 @@
 "use client";
 
+import { buttonPrimary, kicker } from "@/components/ui/styles";
 import { useLocale, useTranslations } from "next-intl";
 import { hasLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -25,10 +26,7 @@ export function ResultView({ caseNumber, options }: Props) {
     return (
       <div className="py-10">
         <p>{t("notYet")}</p>
-        <Link
-          href={`/case/${caseNumber}/accuse`}
-          className="text-accent mt-3 inline-block font-semibold hover:underline"
-        >
+        <Link href={`/case/${caseNumber}/accuse`} className={`${buttonPrimary} mt-4`}>
           {t("goAccuse")} →
         </Link>
       </div>
@@ -63,21 +61,29 @@ export function ResultView({ caseNumber, options }: Props) {
 
   return (
     <div className="space-y-10">
-      <header>
-        <p className="text-6xl" aria-hidden>
-          {correct.killer ? "🕵️" : "🕯️"}
+      <header className="border-ink flex flex-wrap items-center gap-6 border-b pb-8">
+        {/* A rubber stamp: "CASE CLOSED" in green, "UNSOLVED" in red. */}
+        <p
+          aria-hidden
+          className={`font-display -rotate-6 border-4 px-4 py-1 text-3xl tracking-wider uppercase ${
+            correct.killer ? "border-accent text-accent" : "border-alert text-alert"
+          }`}
+        >
+          {correct.killer ? t("stampSolved") : t("stampUnsolved")}
         </p>
-        <h2 className="font-display mt-2 text-4xl font-bold">
-          {correct.killer ? t("solved") : t("unsolved")}
-        </h2>
-        <p className="text-muted mt-1">
-          {t("summary", { questions: result.questionsUsed, hints: result.hintsUsed })}
-        </p>
+        <div>
+          <h2 className="font-display text-4xl sm:text-5xl">
+            {correct.killer ? t("solved") : t("unsolved")}
+          </h2>
+          <p className="text-muted mt-1 italic">
+            {t("summary", { questions: result.questionsUsed, hints: result.hintsUsed })}
+          </p>
+        </div>
       </header>
 
-      <section className="border-rule bg-card overflow-hidden rounded-lg border">
-        <table className="w-full text-left text-sm">
-          <thead className="border-rule border-b">
+      <section className="border-ink overflow-x-auto border-y">
+        <table className="w-full text-left">
+          <thead className="border-ink text-muted border-b font-sans text-xs tracking-[0.15em] uppercase">
             <tr>
               <th className="p-3" />
               <th className="p-3">{t("yourPick")}</th>
@@ -87,7 +93,7 @@ export function ResultView({ caseNumber, options }: Props) {
           <tbody>
             {rows.map((row) => (
               <tr key={row.label} className="border-rule border-b last:border-b-0">
-                <th className="p-3 font-semibold">{row.label}</th>
+                <th className="p-3 font-bold">{row.label}</th>
                 <td className="p-3">
                   {row.ok ? "✅" : "❌"} {row.picked}
                 </td>
@@ -101,19 +107,23 @@ export function ResultView({ caseNumber, options }: Props) {
       <ScoreTable score={score} />
 
       <section>
-        <h2 className="font-display text-2xl font-bold">{t("trueStory")}</h2>
-        <p className="text-muted mt-2 italic">{localize(solution.method, locale)}</p>
-        <div className="mt-4 space-y-4 text-lg leading-relaxed whitespace-pre-line">
+        <h2 className="font-display border-ink border-b pb-2 text-3xl sm:text-4xl">
+          {t("trueStory")}
+        </h2>
+        <p className="text-muted mt-3 text-lg italic">{localize(solution.method, locale)}</p>
+        <div className="first-letter:font-display mt-4 space-y-4 text-lg leading-relaxed whitespace-pre-line first-letter:float-left first-letter:pt-1 first-letter:pr-2 first-letter:text-6xl first-letter:leading-[0.8] md:columns-2 md:gap-8">
           {localize(solution.trueStory, locale)}
         </div>
       </section>
 
       <section>
-        <h2 className="font-display text-2xl font-bold">{t("evidenceExplained")}</h2>
+        <h2 className="font-display border-ink border-b pb-2 text-3xl sm:text-4xl">
+          {t("evidenceExplained")}
+        </h2>
         <ul className="mt-4 space-y-3">
           {solution.evidenceExplanations.map((e) => (
-            <li key={e.evidenceId} className="border-rule bg-card rounded-lg border p-4">
-              <p className="font-semibold">
+            <li key={e.evidenceId} className="border-ink bg-card border-t-[3px] p-4">
+              <p className="font-bold">
                 {solution.keyEvidenceIds.includes(e.evidenceId) && "🔑 "}
                 {evidenceTitle(e.evidenceId)}
               </p>
@@ -137,16 +147,16 @@ function ScoreTable({ score }: { score: ScoreBreakdown }) {
   ];
 
   return (
-    <section className="border-rule bg-card rounded-lg border p-5">
-      <h2 className="font-display text-xl font-bold">{t("score")}</h2>
-      <dl className="mt-3 space-y-1 text-sm">
+    <section className="border-ink bg-card border p-5">
+      <h2 className={kicker}>{t("score")}</h2>
+      <dl className="mt-3 space-y-1">
         {parts.map((p) => (
           <div key={p.key} className="flex justify-between">
             <dt className="text-muted">{p.label}</dt>
             <dd className="tabular-nums">{score[p.key]}</dd>
           </div>
         ))}
-        <div className="border-rule mt-2 flex justify-between border-t pt-2 text-base font-bold">
+        <div className="border-ink mt-2 flex items-baseline justify-between border-t pt-2 text-lg font-bold">
           <dt>{t("total")}</dt>
           <dd className="tabular-nums">{score.total}</dd>
         </div>

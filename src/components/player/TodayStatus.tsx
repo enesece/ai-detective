@@ -14,7 +14,9 @@ export function TodayStatus({ caseNumber }: { caseNumber: number | null }) {
     <div className="flex flex-wrap items-center gap-3 text-sm">
       {caseNumber !== null && <CaseStatusBadge game={record.games[caseNumber]} />}
       {record.streak > 0 && (
-        <span className="font-semibold">🔥 {t("streak", { count: record.streak })}</span>
+        <span className="font-sans text-[13px] font-bold tracking-[0.15em] uppercase">
+          {t("streak", { count: record.streak })}
+        </span>
       )}
       {record.bestStreak > record.streak && (
         <span className="text-muted">{t("bestStreak", { count: record.bestStreak })}</span>

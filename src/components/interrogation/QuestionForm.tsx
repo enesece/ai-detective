@@ -1,5 +1,6 @@
 "use client";
 
+import { buttonInk } from "@/components/ui/styles";
 import { useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { MAX_QUESTION_LENGTH } from "@/lib/game/rules";
@@ -35,17 +36,13 @@ export function QuestionForm({ suspectName, disabled, onAsk }: Props) {
           rows={2}
           disabled={disabled}
           placeholder={t("askPlaceholder", { name: suspectName })}
-          className="border-rule bg-card focus:border-ink w-full resize-none rounded-lg border px-3 py-2 outline-none disabled:opacity-60"
+          className="border-ink bg-card w-full resize-none border px-3 py-2 text-lg disabled:opacity-60"
         />
-        <span className="text-muted block text-right text-xs">
+        <span className="text-muted block text-right font-sans text-xs">
           {draft.length}/{MAX_QUESTION_LENGTH}
         </span>
       </label>
-      <button
-        type="submit"
-        disabled={disabled || !question}
-        className="bg-ink text-paper mb-5 rounded-lg px-5 py-2.5 font-semibold hover:opacity-90 disabled:opacity-40"
-      >
+      <button type="submit" disabled={disabled || !question} className={`${buttonInk} sm:mb-5`}>
         {t("ask")}
       </button>
     </form>

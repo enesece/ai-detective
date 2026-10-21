@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { linkCaps } from "@/components/ui/styles";
 import { Link } from "@/i18n/navigation";
 
 export default async function NotFound() {
@@ -6,8 +7,8 @@ export default async function NotFound() {
 
   return (
     <div className="mx-auto max-w-4xl pt-16">
-      <h1 className="font-display text-3xl font-bold">{t("title")}</h1>
-      <Link href="/" className="text-accent mt-4 inline-block font-semibold hover:underline">
+      <h1 className="font-display text-4xl sm:text-5xl">{t("title")}</h1>
+      <Link href="/" className={`${linkCaps} mt-6 inline-block`}>
         ← {t("home")}
       </Link>
     </div>

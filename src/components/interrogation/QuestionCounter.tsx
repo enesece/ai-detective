@@ -1,5 +1,6 @@
 "use client";
 
+import { kicker } from "@/components/ui/styles";
 import { useTranslations } from "next-intl";
 
 type Props = { used: number; limit: number };
@@ -10,13 +11,10 @@ export function QuestionCounter({ used, limit }: Props) {
 
   return (
     <div aria-live="polite">
-      <p className="text-sm font-semibold">{t("questionsLeft", { left, limit })}</p>
+      <p className={kicker}>{t("questionsLeft", { left, limit })}</p>
       <div className="mt-2 flex gap-0.5" aria-hidden>
         {Array.from({ length: limit }, (_, i) => (
-          <span
-            key={i}
-            className={`h-1.5 flex-1 rounded-full ${i < used ? "bg-rule" : "bg-accent"}`}
-          />
+          <span key={i} className={`h-2 flex-1 ${i < used ? "bg-rule" : "bg-ink"}`} />
         ))}
       </div>
     </div>

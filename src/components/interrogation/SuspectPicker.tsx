@@ -17,7 +17,7 @@ export function SuspectPicker({ suspects, selectedId, askedCount, onSelect }: Pr
     <div
       role="tablist"
       aria-label={t("chooseSuspect")}
-      className="grid grid-cols-2 gap-2 lg:grid-cols-1"
+      className="border-ink grid grid-cols-2 border-t lg:grid-cols-1"
     >
       {suspects.map((s) => {
         const selected = s.id === selectedId;
@@ -28,15 +28,17 @@ export function SuspectPicker({ suspects, selectedId, askedCount, onSelect }: Pr
             role="tab"
             aria-selected={selected}
             onClick={() => onSelect(s.id)}
-            className={`rounded-lg border p-3 text-left transition-colors ${
-              selected ? "border-ink bg-ink text-paper" : "border-rule bg-card hover:border-ink"
+            className={`border-rule min-h-11 border-b p-3 text-left transition-colors odd:border-r lg:odd:border-r-0 ${
+              selected ? "bg-ink text-paper" : "hover:bg-card"
             }`}
           >
-            <span className="font-display block leading-tight font-bold">{s.name}</span>
-            <span className={`block text-xs ${selected ? "opacity-80" : "text-muted"}`}>
+            <span className="block leading-tight font-bold">{s.name}</span>
+            <span className={`block text-sm italic ${selected ? "opacity-80" : "text-muted"}`}>
               {s.role}
             </span>
-            <span className={`mt-1 block text-xs ${selected ? "opacity-80" : "text-muted"}`}>
+            <span
+              className={`mt-1 block font-sans text-[11px] font-bold tracking-[0.15em] uppercase ${selected ? "opacity-80" : "text-muted"}`}
+            >
               {t("askedCount", { count: askedCount(s.id) })}
             </span>
           </button>

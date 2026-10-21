@@ -17,7 +17,7 @@ export function ChecksPanel({
         <DecisionBadge decision={review.decision} />{" "}
         <span className="text-muted">{new Date(review.createdAt).toUTCString()}</span>
       </p>
-      {review.adminNotes && <p className="text-accent break-words">{review.adminNotes}</p>}
+      {review.adminNotes && <p className="text-alert break-words">{review.adminNotes}</p>}
       {!checks ? (
         <p className="text-muted">No automatic checks stored for this review.</p>
       ) : (
@@ -34,7 +34,7 @@ export function ChecksPanel({
               .join(" · ")}
           </p>
           {checks.tooEasy && (
-            <p className="text-accent font-semibold">
+            <p className="text-alert font-semibold">
               Too easy: solved from the case file alone, without interrogation.
             </p>
           )}
@@ -42,7 +42,7 @@ export function ChecksPanel({
             {checks.logic.map((c) => (
               <li
                 key={c.id}
-                className={c.ok ? "" : c.severity === "error" ? "text-accent" : "text-amber-800"}
+                className={c.ok ? "" : c.severity === "error" ? "text-alert" : "text-amber-800"}
               >
                 <span className="mr-1 font-mono">{c.ok ? MARK.ok : MARK[c.severity]}</span>
                 <span className="font-semibold">{c.id}</span> — {c.message}

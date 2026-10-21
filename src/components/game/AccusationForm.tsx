@@ -1,5 +1,6 @@
 "use client";
 
+import { buttonInk, buttonPrimary } from "@/components/ui/styles";
 import { gameFetch } from "@/lib/supabase/session";
 import { useEffect, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
@@ -113,21 +114,21 @@ export function AccusationForm({ caseNumber, options }: Props) {
         ))}
       </ChoiceGroup>
 
-      <div className="border-rule border-t pt-6">
+      <div className="border-ink border-t-4 border-double pt-6">
         {error && (
-          <p role="alert" className="text-accent mb-3 text-sm font-semibold">
+          <p role="alert" className="text-alert mb-3 text-sm font-semibold">
             {tErrors(error)}
           </p>
         )}
         {confirming ? (
-          <div className="border-accent bg-card space-y-3 rounded-lg border p-4">
-            <p className="font-semibold">{t("confirm")}</p>
+          <div className="border-ink bg-card space-y-4 border-t-[3px] p-5">
+            <p className="text-lg font-bold">{t("confirm")}</p>
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
                 disabled={submitting}
                 onClick={submit}
-                className="bg-accent text-paper rounded-lg px-5 py-2.5 font-semibold disabled:opacity-50"
+                className={buttonPrimary}
               >
                 {t("confirmYes")}
               </button>
@@ -135,7 +136,7 @@ export function AccusationForm({ caseNumber, options }: Props) {
                 type="button"
                 disabled={submitting}
                 onClick={() => setConfirming(false)}
-                className="text-muted px-3"
+                className="text-muted min-h-12 px-3 font-sans text-sm font-bold tracking-[0.15em] uppercase"
               >
                 {t("confirmNo")}
               </button>
@@ -146,7 +147,7 @@ export function AccusationForm({ caseNumber, options }: Props) {
             type="button"
             disabled={!complete || alreadyFinished}
             onClick={() => setConfirming(true)}
-            className="bg-ink text-paper rounded-lg px-6 py-3 font-semibold hover:opacity-90 disabled:opacity-40"
+            className={buttonInk}
           >
             {complete ? t("submit") : t("chooseAll")}
           </button>
@@ -159,7 +160,9 @@ export function AccusationForm({ caseNumber, options }: Props) {
 function ChoiceGroup({ legend, children }: { legend: string; children: ReactNode }) {
   return (
     <fieldset>
-      <legend className="font-display mb-3 text-xl font-bold">{legend}</legend>
+      <legend className="font-display border-ink mb-4 w-full border-b pb-2 text-3xl">
+        {legend}
+      </legend>
       <div className="grid gap-2 sm:grid-cols-2">{children}</div>
     </fieldset>
   );
@@ -176,14 +179,16 @@ type ChoiceCardProps = {
 function ChoiceCard({ name, checked, onSelect, title, subtitle }: ChoiceCardProps) {
   return (
     <label
-      className={`cursor-pointer rounded-lg border p-3 transition-colors ${
+      className={`has-[:focus-visible]:outline-accent cursor-pointer border p-3 transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 ${
         checked ? "border-ink bg-ink text-paper" : "border-rule bg-card hover:border-ink"
       }`}
     >
       <input type="radio" name={name} checked={checked} onChange={onSelect} className="sr-only" />
-      <span className="block font-semibold">{title}</span>
+      <span className="block font-bold">{title}</span>
       {subtitle && (
-        <span className={`block text-xs ${checked ? "opacity-80" : "text-muted"}`}>{subtitle}</span>
+        <span className={`block text-sm italic ${checked ? "opacity-80" : "text-muted"}`}>
+          {subtitle}
+        </span>
       )}
     </label>
   );

@@ -119,7 +119,7 @@ async function CaseDetail({ params }: PageProps<"/[locale]/admin/cases/[id]">) {
       {c.briefing && c.secret ? (
         <CaseContent briefing={c.briefing} secret={c.secret} />
       ) : (
-        <p className="text-accent">The stored case doesn&apos;t match the schema: {c.parseError}</p>
+        <p className="text-alert">The stored case doesn&apos;t match the schema: {c.parseError}</p>
       )}
     </div>
   );

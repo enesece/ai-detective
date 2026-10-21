@@ -16,7 +16,7 @@ type Props = {
 
 const TONES = {
   primary: "bg-ink text-paper hover:opacity-90",
-  danger: "bg-accent text-paper hover:opacity-90",
+  danger: "bg-alert text-paper hover:opacity-90",
   plain: "border-rule hover:border-ink border",
 } as const;
 
@@ -51,7 +51,7 @@ export function ActionForm({
       {state && (
         <p
           role="status"
-          className={`text-sm ${state.ok ? "text-green-800" : "text-accent"} break-words`}
+          className={`text-sm ${state.ok ? "text-green-800" : "text-alert"} break-words`}
         >
           {state.message}
         </p>

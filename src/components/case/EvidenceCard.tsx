@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { kicker, linkCaps } from "@/components/ui/styles";
 import { Link } from "@/i18n/navigation";
 import { localize } from "@/lib/case/localize";
 import type { Locale, LocalizedText, PublicEvidence } from "@/lib/case/schema";
@@ -10,6 +11,7 @@ type Props = {
   locale: Locale;
 };
 
+/** An evidence "clipping": the whole card is the link to the evidence page. */
 export async function EvidenceCard({ evidence, placeName, caseNumber, locale }: Props) {
   const t = await getTranslations("Case");
   const tKind = await getTranslations("EvidenceKind");
@@ -17,22 +19,16 @@ export async function EvidenceCard({ evidence, placeName, caseNumber, locale }: 
   return (
     <Link
       href={`/case/${caseNumber}/evidence/${evidence.id}`}
-      className="border-rule bg-card group hover:border-accent flex flex-col rounded-lg border p-5 transition-colors"
+      className="border-ink bg-card group flex flex-col border-t-[3px] p-5 shadow-[0_1px_0_var(--color-rule)] transition-colors hover:bg-white"
     >
-      <span className="text-muted text-xs font-semibold tracking-widest uppercase">
-        {tKind(evidence.kind)}
-      </span>
-      <span className="font-display mt-1 text-lg font-bold">
-        {localize(evidence.title, locale)}
-      </span>
+      <span className={`${kicker} text-muted`}>{tKind(evidence.kind)}</span>
+      <span className="mt-2 text-xl font-bold">{localize(evidence.title, locale)}</span>
       {placeName && (
-        <span className="text-muted mt-1 text-sm">
+        <span className="text-muted mt-1 italic">
           {t("foundAt", { place: localize(placeName, locale) })}
         </span>
       )}
-      <span className="text-accent mt-3 text-sm font-semibold group-hover:underline">
-        {t("examine")} →
-      </span>
+      <span className={`${linkCaps} mt-4 group-hover:underline`}>{t("examine")} →</span>
     </Link>
   );
 }

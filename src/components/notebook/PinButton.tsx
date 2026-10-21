@@ -12,11 +12,23 @@ export function PinButton({ pinned, onToggle }: Props) {
       type="button"
       onClick={onToggle}
       aria-pressed={pinned}
-      className={`rounded px-1.5 py-0.5 text-xs font-semibold transition-colors ${
-        pinned ? "bg-accent text-paper" : "text-muted hover:text-accent"
+      className={`inline-flex min-h-8 items-center gap-1.5 border px-2 font-sans text-[11px] font-bold tracking-[0.15em] uppercase transition-colors ${
+        pinned
+          ? "border-accent bg-accent text-paper"
+          : "border-rule text-muted hover:border-accent hover:text-accent"
       }`}
     >
-      📌 {pinned ? t("pinned") : t("pin")}
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 16 16"
+        className="h-3 w-3"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+      >
+        <path d="M6 2h4l-.5 4 2.5 2v1H4V8l2.5-2L6 2ZM8 9v5" />
+      </svg>
+      {pinned ? t("pinned") : t("pin")}
     </button>
   );
 }

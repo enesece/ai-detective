@@ -1,5 +1,6 @@
 "use client";
 
+import { buttonOutline, buttonPrimary, kicker } from "@/components/ui/styles";
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { hasLocale } from "next-intl";
@@ -27,13 +28,13 @@ export function HintBox({ used, limit, revealed, pending, disabled, onRequest }:
   const left = limit === null ? null : Math.max(0, limit - used);
 
   return (
-    <section className="border-rule bg-card rounded-lg border p-3">
-      <h3 className="font-display font-bold">{t("title")}</h3>
+    <section className="border-ink border-t pt-3">
+      <h3 className={kicker}>{t("title")}</h3>
       {revealed.length > 0 && (
         <ol className="mt-2 space-y-2 text-sm">
           {revealed.map((hint, i) => (
             <li key={i} className="border-accent border-l-2 pl-2 leading-relaxed">
-              <span className="text-accent font-semibold">💡 {i + 1}. </span>
+              <span className="text-accent font-bold">{i + 1}. </span>
               {localize(hint, locale)}
             </li>
           ))}
@@ -44,7 +45,7 @@ export function HintBox({ used, limit, revealed, pending, disabled, onRequest }:
         <button
           type="button"
           disabled
-          className="border-rule mt-2 w-full rounded border px-3 py-1.5 text-sm font-semibold opacity-40"
+          className={`${buttonOutline} mt-2 min-h-11 w-full px-3 text-xs`}
         >
           {t("getLoading")}
         </button>
@@ -61,11 +62,15 @@ export function HintBox({ used, limit, revealed, pending, disabled, onRequest }:
                 setConfirming(false);
                 onRequest();
               }}
-              className="bg-accent text-paper rounded px-3 py-1 font-semibold disabled:opacity-50"
+              className={`${buttonPrimary} min-h-11 px-4 text-xs`}
             >
               {t("yes")}
             </button>
-            <button type="button" onClick={() => setConfirming(false)} className="text-muted px-2">
+            <button
+              type="button"
+              onClick={() => setConfirming(false)}
+              className="text-muted min-h-11 px-2 font-sans text-xs font-bold tracking-[0.15em] uppercase"
+            >
               {t("cancel")}
             </button>
           </div>
@@ -75,7 +80,7 @@ export function HintBox({ used, limit, revealed, pending, disabled, onRequest }:
           type="button"
           disabled={disabled || pending}
           onClick={() => setConfirming(true)}
-          className="border-rule hover:border-ink mt-2 w-full rounded border px-3 py-1.5 text-sm font-semibold disabled:opacity-40"
+          className={`${buttonOutline} mt-2 min-h-11 w-full px-3 text-xs`}
         >
           {t("get", { left, penalty: SCORING.perHint })}
         </button>

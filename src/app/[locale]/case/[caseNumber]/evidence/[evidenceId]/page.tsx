@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { PageFallback } from "@/components/ui/PageFallback";
 import { getTranslations } from "next-intl/server";
 import { EvidencePinButton } from "@/components/notebook/EvidencePinButton";
+import { kicker, linkCaps } from "@/components/ui/styles";
 import { Link } from "@/i18n/navigation";
 import { getAppLocale } from "@/i18n/locale";
 import { localize } from "@/lib/case/localize";
@@ -37,28 +38,27 @@ async function EvidenceContent({
 
   return (
     <article className="mx-auto max-w-4xl pt-10">
-      <Link
-        href={`/case/${publicCase.caseNumber}`}
-        className="text-accent text-sm font-semibold hover:underline"
-      >
+      <Link href={`/case/${publicCase.caseNumber}`} className={linkCaps}>
         ← {t("backToCase")}
       </Link>
 
-      <div className="border-rule bg-card mt-6 rounded-lg border p-6 sm:p-8">
-        <div className="flex items-start justify-between gap-3">
-          <p className="text-muted text-xs font-semibold tracking-widest uppercase">
+      <div className="border-ink bg-card mt-6 border-t-[3px] p-6 shadow-[0_1px_0_var(--color-rule)] sm:p-10">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <p className={`${kicker} text-muted`}>
             {tKind(evidence.kind)}
             {place && ` · ${t("foundAt", { place: localize(place.name, locale) })}`}
           </p>
           <EvidencePinButton caseNumber={publicCase.caseNumber} evidenceId={evidence.id} />
         </div>
-        <h1 className="font-display mt-2 text-3xl font-bold">{localize(evidence.title, locale)}</h1>
-        <p className="mt-6 text-lg leading-relaxed whitespace-pre-line">
+        <h1 className="font-display mt-3 text-4xl sm:text-5xl">
+          {localize(evidence.title, locale)}
+        </h1>
+        <p className="first-letter:font-display mt-6 text-lg leading-relaxed whitespace-pre-line first-letter:float-left first-letter:pt-1 first-letter:pr-2 first-letter:text-6xl first-letter:leading-[0.8]">
           {localize(evidence.description, locale)}
         </p>
       </div>
 
-      <p className="text-muted mt-4 text-sm">{t("evidenceHint")}</p>
+      <p className="text-muted mt-4 italic">{t("evidenceHint")}</p>
     </article>
   );
 }

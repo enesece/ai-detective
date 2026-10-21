@@ -1,5 +1,6 @@
 "use client";
 
+import { buttonOutline, buttonPrimary, kicker, linkCaps } from "@/components/ui/styles";
 import { useEffect, useRef, useState } from "react";
 import { hasLocale, useLocale, useTranslations } from "next-intl";
 import { NotebookPanel } from "@/components/notebook/NotebookPanel";
@@ -56,13 +57,13 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
   const statementTarget = { kind: "statement", suspectId: selected.id } as const;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[200px_1fr] xl:grid-cols-[200px_1fr_320px]">
+    <div className="grid gap-6 lg:grid-cols-[250px_1fr] xl:grid-cols-[250px_1fr_320px]">
       <aside className="space-y-4">
         <QuestionCounter used={questionsUsed} limit={questionLimit} />
         {/* The accusation is open at any time, not only after all 20 questions. */}
         <Link
           href={finished ? `/case/${caseNumber}/result` : `/case/${caseNumber}/accuse`}
-          className="bg-accent text-paper block rounded-lg px-4 py-2.5 text-center font-semibold hover:opacity-90"
+          className={`${buttonPrimary} w-full px-4`}
         >
           {finished ? t("seeResult") : t("accuse")}
         </Link>
@@ -82,11 +83,12 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
         />
       </aside>
 
-      <section className="border-rule bg-paper flex h-[70dvh] min-h-[24rem] min-w-0 flex-col rounded-lg border">
-        <header className="border-rule flex items-start justify-between gap-3 border-b px-4 py-3">
+      <section className="border-ink bg-paper flex h-[70dvh] min-h-[24rem] min-w-0 flex-col border">
+        <header className="border-ink flex flex-col items-start justify-between gap-3 border-b px-4 py-3 sm:flex-row">
           <div>
-            <h2 className="font-display text-xl font-bold">{selected.name}</h2>
-            <p className="text-muted text-sm">{selected.role}</p>
+            <p className={`${kicker} text-muted`}>{t("interviewWith")}</p>
+            <h2 className="font-display text-2xl sm:text-3xl">{selected.name}</h2>
+            <p className="text-muted italic">{selected.role}</p>
           </div>
           {/* Below xl the notebook is a panel you open; on wide screens it's always visible. */}
           <button
@@ -94,7 +96,7 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
             onClick={() => setNotebookOpen((open) => !open)}
             aria-expanded={notebookOpen}
             aria-controls="notebook-panel"
-            className="border-rule hover:border-ink shrink-0 rounded-lg border px-3 py-1.5 text-sm font-semibold xl:hidden"
+            className={`${buttonOutline} min-h-11 shrink-0 px-3 text-xs xl:hidden`}
           >
             {tNotebook("toggle", { count: notebook.pins.length })}
           </button>
@@ -119,19 +121,16 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
           )}
         </div>
 
-        <footer className="border-rule border-t p-4">
+        <footer className="border-ink border-t p-4">
           {error && (
-            <p role="alert" className="text-accent mb-2 text-sm font-semibold">
+            <p role="alert" className="text-alert mb-2 text-sm font-semibold">
               {t(`errors.${error}`)}
             </p>
           )}
           {finished ? (
             <p className="text-center">
               <span className="text-muted italic">{t("caseClosed")} </span>
-              <Link
-                href={`/case/${caseNumber}/result`}
-                className="text-accent font-semibold hover:underline"
-              >
+              <Link href={`/case/${caseNumber}/result`} className={linkCaps}>
                 {t("seeResult")} →
               </Link>
             </p>

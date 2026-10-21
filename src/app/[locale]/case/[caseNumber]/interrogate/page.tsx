@@ -4,6 +4,7 @@ import { PageFallback } from "@/components/ui/PageFallback";
 import { getTranslations } from "next-intl/server";
 import { InterrogationRoom } from "@/components/interrogation/InterrogationRoom";
 import type { EvidenceOption, SuspectOption } from "@/components/interrogation/types";
+import { linkCaps } from "@/components/ui/styles";
 import { Link } from "@/i18n/navigation";
 import { getAppLocale } from "@/i18n/locale";
 import { localize } from "@/lib/case/localize";
@@ -42,14 +43,11 @@ async function InterrogateContent({
 
   return (
     <div className="pt-10">
-      <Link
-        href={`/case/${publicCase.caseNumber}`}
-        className="text-accent text-sm font-semibold hover:underline"
-      >
+      <Link href={`/case/${publicCase.caseNumber}`} className={linkCaps}>
         ← {tCase("backToCase")}
       </Link>
-      <h1 className="font-display mt-4 text-3xl font-bold">{t("title")}</h1>
-      <p className="text-muted mt-1 mb-6">{t("intro")}</p>
+      <h1 className="font-display mt-4 text-4xl sm:text-5xl">{t("title")}</h1>
+      <p className="text-muted mt-2 mb-6 text-lg italic">{t("intro")}</p>
       <InterrogationRoom
         caseNumber={publicCase.caseNumber}
         suspects={suspects}

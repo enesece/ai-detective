@@ -64,7 +64,7 @@ export function CaseContent({ briefing, secret }: Props) {
             >
               <h3 className="font-semibold">
                 {s.name}{" "}
-                {s.id === secret.solution.killerId && <span className="text-accent">(killer)</span>}
+                {s.id === secret.solution.killerId && <span className="text-alert">(killer)</span>}
               </h3>
               <Bilingual text={s.role} />
               <Bilingual text={s.profile} />

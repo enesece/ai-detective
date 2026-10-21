@@ -43,7 +43,7 @@ export function PinnedList({ pins, suspects, evidence, caseNumber, onUnpin }: Pr
     <div className="space-y-5">
       {groups.map(({ suspect, statement, answers }) => (
         <section key={suspect.id}>
-          <h4 className="font-display font-bold">{suspect.name}</h4>
+          <h4 className="border-rule border-b pb-1 font-bold">{suspect.name}</h4>
           <ul className="mt-1 space-y-2">
             {statement && (
               <PinnedEntry
@@ -64,7 +64,7 @@ export function PinnedList({ pins, suspects, evidence, caseNumber, onUnpin }: Pr
 
       {pinnedEvidence.length > 0 && (
         <section>
-          <h4 className="font-display font-bold">{t("evidenceGroup")}</h4>
+          <h4 className="border-rule border-b pb-1 font-bold">{t("evidenceGroup")}</h4>
           <ul className="mt-1 space-y-2">
             {pinnedEvidence.map((e) => (
               <PinnedEntry
@@ -74,7 +74,7 @@ export function PinnedList({ pins, suspects, evidence, caseNumber, onUnpin }: Pr
               >
                 <Link
                   href={`/case/${caseNumber}/evidence/${e.id}`}
-                  className="text-accent font-semibold hover:underline"
+                  className="text-accent font-bold hover:underline"
                 >
                   {e.title} →
                 </Link>
@@ -93,13 +93,17 @@ function PinnedEntry({ label, onRemove, children }: EntryProps) {
   const t = useTranslations("Notebook");
 
   return (
-    <li className="border-rule bg-card rounded-md border px-3 py-2 text-sm">
+    <li className="border-ink bg-card border-l-2 px-3 py-2 text-[15px]">
       <div className="flex items-start justify-between gap-2">
-        {label && <p className="text-muted text-xs font-semibold">{label}</p>}
+        {label && (
+          <p className="text-muted font-sans text-[11px] font-bold tracking-[0.15em] uppercase">
+            {label}
+          </p>
+        )}
         <button
           type="button"
           onClick={onRemove}
-          className="text-muted hover:text-accent ml-auto shrink-0 text-xs"
+          className="text-muted hover:text-alert ml-auto min-h-8 shrink-0 px-1 font-sans text-xs"
         >
           {t("remove")}
         </button>

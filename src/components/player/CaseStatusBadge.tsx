@@ -9,17 +9,17 @@ export function CaseStatusBadge({ game }: { game: PlayedCase | undefined }) {
   if (!game) return null;
   if (!game.finished) {
     return (
-      <span className="rounded bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-900">
+      <span className="font-sans text-[11px] font-bold uppercase tracking-[0.15em] border px-2 py-1 border-muted text-muted">
         {t("inProgress")}
       </span>
     );
   }
   return game.solved ? (
-    <span className="rounded bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-900">
+    <span className="font-sans text-[11px] font-bold uppercase tracking-[0.15em] border px-2 py-1 border-accent bg-accent text-paper">
       {t("solved", { score: game.score ?? 0 })}
     </span>
   ) : (
-    <span className="rounded bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-900">
+    <span className="font-sans text-[11px] font-bold uppercase tracking-[0.15em] border px-2 py-1 border-alert text-alert">
       {t("unsolved")}
     </span>
   );
