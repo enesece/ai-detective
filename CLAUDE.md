@@ -135,13 +135,13 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 
 ## 3. Durum
 
-| Aşama                                                                                     | Durum                       | Not                                                                |
-| ----------------------------------------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------ |
-| 1 — Kurulum, şema, fixture dava, dava/kanıt ekranları                                     | 🟢 Kod tamam, onay bekliyor | Kalan: Enes'in GitHub / Supabase / Vercel hesap adımları (aşağıda) |
-| 2 — Sorgu, streaming, soru sayacı                                                         | ⚪ Bekliyor                 |                                                                    |
-| 3 — Tablolar/RLS, anonim giriş, suçlama, puan, paylaşım, not defteri, hız sınırı, eval v1 | ⚪ Bekliyor                 |                                                                    |
-| 4 — AI üretici + doğrulama, admin paneli, cron, ana sayfa, arşiv, cila                    | ⚪ Bekliyor                 |                                                                    |
-| 5 — README                                                                                | ⚪ Bekliyor                 |                                                                    |
+| Aşama                                                                                     | Durum                       | Not                                                                                     |
+| ----------------------------------------------------------------------------------------- | --------------------------- | --------------------------------------------------------------------------------------- |
+| 1 — Kurulum, şema, fixture dava, dava/kanıt ekranları                                     | ✅ Onaylandı                | Supabase anahtarları ve Gemini anahtarı `.env.local`'de; GitHub/Vercel adımları Enes'te |
+| 2 — Sorgu, streaming, soru sayacı                                                         | 🟢 Kod tamam, onay bekliyor | Sayaç şimdilik bellekte; Aşama 3'te Supabase'e taşınacak                                |
+| 3 — Tablolar/RLS, anonim giriş, suçlama, puan, paylaşım, not defteri, hız sınırı, eval v1 | ⚪ Bekliyor                 |                                                                                         |
+| 4 — AI üretici + doğrulama, admin paneli, cron, ana sayfa, arşiv, cila                    | ⚪ Bekliyor                 |                                                                                         |
+| 5 — README                                                                                | ⚪ Bekliyor                 |                                                                                         |
 
 ### Aşama 1'de yapılanlar
 
@@ -154,6 +154,25 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 - Ekranlar: ana sayfa, dava dosyası (`/[locale]/case/[caseNumber]`), kanıt detayı (`.../evidence/[evidenceId]`), dile uygun 404. Hepsi build'de statik üretiliyor.
 - `npm run check:leaks`: build çıktısında (client JS + HTML/RSC) gizli metin arar; sızıntı varsa hata verir. Şu an: 112 gizli metin, 0 sızıntı.
 
+### Aşama 2'de yapılanlar
+
+- AI modülü `src/server/ai/` (sağlayıcıdan bağımsız `ChatModel` arayüzü). Gemini SDK'sız, `fetch` + SSE ile (`gemini.ts`). Anahtar yoksa dev'de `mock.ts`. Model tek yerden: `getChatModel()`; `GEMINI_MODEL` env (varsayılan `gemini-flash-lite-latest`).
+- Şüpheli prompt'u `src/server/interrogation/prompt.ts`: girdi olarak sadece açık brifing + o şüphelinin kendi sırrı + `isKiller` boolean'ı alır. Çözüm ve diğer sırlar parametre değil → prompt'a giremez.
+- `POST /api/interrogate`: Zod ile istek doğrulama → sayaç rezervasyonu (aynı anda tek soru, 20 sınır) → AI → düz metin streaming. AI hata verirse soru iade edilir; 429 → `rate_limited`. Oyuncu ayrılırsa (`request.signal`) model çağrısı durur.
+- `GET /api/game/[caseNumber]`: oyuncunun kendi sayacı + konuşması (sayfa yenilenince).
+- Oyun durumu `game-store.ts` (bellekte, `GameStore` arayüzü arkasında). Oyuncu kimliği httpOnly `dd_session` çerezi.
+- Sorgu ekranı `/[locale]/case/[caseNumber]/interrogate`: `useInterrogation` hook'u + `SuspectPicker`, `ChatLog`, `QuestionForm`, `QuestionCounter`.
+- Dinamik sayfalarda `params` artık `<Suspense>` içinde okunuyor (Next 16 instant navigation uyarısı giderildi).
+- `npm run check:prompts`: her şüphelinin gerçek prompt'unu kurar; başka şüphelinin sırrı veya (masumlar için) çözüm metni varsa hata verir. Negatif testle doğrulandı.
+
+### Aşama 2 AI kalite notları (gerçek Gemini ile denendi)
+
+- Flash-Lite: karakterde kalıyor, EN/TR injection denemelerini geçiştiriyor, sırları doğru koşulda açıyor (Margaret → telefon kaydı, Reed → "Margaret başka yerdeydi").
+- `gemini-flash-latest` bir thinking modeli: düşünme token'ları cevap bütçesini yiyor, yavaş, bir cevapta düşünme notu sızdı → kullanılmıyor.
+- Düzeltilen sorunlar: (1) karışık dilli geçmiş dil kaymasına yol açıyordu → geçmiş sadece aynı dildeki sorulardan, dil hatırlatması sorudan sonra; (2) uydurma saatler → "saatleri sadece verildiği gibi kullan" kuralı; (3) yalan/sır önceliği belirsizdi → "açılma koşulu yalandan önce gelir".
+- Ücretsiz katman dakikalık limiti ~13-15 hızlı istekte doldu (429). Aşama 3'teki hız sınırı bunu oyuncu tarafında yumuşatmalı.
+- Henüz yok (Aşama 3): çıktı filtresi (başka şüphelinin sırrını sızdıran cevabı engelleme), injection eval seti, kalıcı sayaç.
+
 ### Notlar / alınan teknik kararlar
 
 - Next 16: `middleware.ts` → `proxy.ts`; `cacheComponents` açıkken her kök parametre için `generateStaticParams` zorunlu, `dynamicParams` kullanılamaz. Bulunamayan sayfalar stream sonrası 200 + `noindex` döner (Next'in belgelenmiş davranışı).
@@ -164,3 +183,5 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 - Çalışma adı: "Daily Alibi" (messages dosyalarında; isim kesinleşince değişecek).
 - `npm audit`: 5 high uyarısı yalnızca ESLint geliştirme araçlarının alt bağımlılıklarında (braces/micromatch); `--force` düzeltmesi eslint-config-next'i 14'e düşürdüğü için uygulanmadı.
 - `prettier-plugin-tailwindcss` eklenmedi (onay bekliyor).
+- Tarayıcıdaki ColorZilla eklentisi `<body>`'ye `cz-shortcut-listen` ekleyip hydration uyarısı veriyor; bizim hatamız değil.
+- Script'ler ek paket olmadan Node 24'ün TypeScript desteğiyle çalışıyor (`.mts`, `allowImportingTsExtensions`). Test runner (ör. Vitest) gerekirse Aşama 3'te sorulacak.
