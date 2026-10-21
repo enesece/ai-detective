@@ -269,6 +269,15 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      approve_case: {
+        Args: { p_case_id: string; p_publish_date?: string };
+        Returns: number;
+      };
+      schedule_case: {
+        Args: { p_case_id: string; p_publish_date: string };
+        Returns: undefined;
+      };
+      unschedule_day: { Args: { p_publish_date: string }; Returns: undefined };
       check_rate_limits: {
         Args: { p_keys: string[]; p_limits: number[]; p_window_seconds: number[] };
         Returns: boolean;

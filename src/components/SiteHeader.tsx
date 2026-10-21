@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "./ui/LocaleSwitcher";
@@ -10,7 +11,11 @@ export async function SiteHeader() {
       <Link href="/" className="font-display text-xl font-bold tracking-tight">
         {t("brand")}
       </Link>
-      <LocaleSwitcher />
+      {/* It reads the URL (usePathname), which pages with runtime-only params
+          (e.g. /admin/cases/[id]) can't know while prerendering. */}
+      <Suspense fallback={<span className="h-7 w-16" aria-hidden />}>
+        <LocaleSwitcher />
+      </Suspense>
     </header>
   );
 }
