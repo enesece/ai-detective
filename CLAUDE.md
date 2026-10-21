@@ -173,6 +173,15 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 - Ücretsiz katman dakikalık limiti ~13-15 hızlı istekte doldu (429). Aşama 3'teki hız sınırı bunu oyuncu tarafında yumuşatmalı.
 - Henüz yok (Aşama 3): çıktı filtresi (başka şüphelinin sırrını sızdıran cevabı engelleme), injection eval seti, kalıcı sayaç.
 
+### Ara özellik: not defteri + sorgu ekranında ifadeler (Aşama 2 sonrası, Enes'in isteğiyle)
+
+- Sorgu ekranında seçili şüphelinin ilk ifadesi sohbetin üstünde (`StatementCard`).
+- Not defteri: serbest not + ifade / sorgu cevabı / kanıt işaretleme. İşaretlenenler şüpheliye göre gruplu (ifade + cevaplar alt alta → çelişki yan yana), sonra kanıtlar.
+- Şimdilik localStorage'da (`dd:notebook:v1:case-{n}`), Zod ile doğrulanarak okunur; Aşama 3'te Supabase'e taşınacak. Kod: `src/lib/notebook/schema.ts`, `src/components/notebook/` (`notebookStore.ts` + `useSyncExternalStore` ile `useNotebook`).
+- İfade/kanıt id ile saklanır (dil değişince doğru dilde görünür); cevaplar metin kopyası + `exchangeIndex` ile.
+- Yerleşim: xl'de 3 sütun (şüpheliler | sohbet | not defteri); daha dar ekranda "Not defteri (n)" düğmesiyle açılır. Genel içerik genişliği `max-w-6xl`; metin sayfaları `max-w-4xl` kalır.
+- Kanıt detay sayfasında da işaretleme düğmesi var.
+
 ### Notlar / alınan teknik kararlar
 
 - Next 16: `middleware.ts` → `proxy.ts`; `cacheComponents` açıkken her kök parametre için `generateStaticParams` zorunlu, `dynamicParams` kullanılamaz. Bulunamayan sayfalar stream sonrası 200 + `noindex` döner (Next'in belgelenmiş davranışı).
