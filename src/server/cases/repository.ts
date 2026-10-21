@@ -16,7 +16,15 @@ import { createSupabaseAdminClient } from "@/server/supabase";
  * The secret half is never cached: it is read fresh for each request that
  * needs it, so it never lands in Next.js' cache, let alone a page.
  * Both halves are validated with Zod on the way out of the database.
+ *
+ * Players only ever see *published* cases: approved and scheduled for today
+ * or an earlier day. A case approved for next week stays invisible until then.
  */
+
+/** Schedule dates are UTC calendar days. */
+export function utcToday(): string {
+  return new Date().toISOString().slice(0, 10);
+}
 
 const DIFFICULTIES = ["easy", "medium", "hard"] as const;
 type Difficulty = (typeof DIFFICULTIES)[number];
@@ -27,39 +35,41 @@ function toDifficulty(value: string): Difficulty {
   return found;
 }
 
-/** Approved case numbers, for prerendering. */
+/** Published case numbers, for prerendering. */
 export async function listCaseNumbers(): Promise<number[]> {
   "use cache";
   cacheLife("hours");
-  cacheTag("cases");
+  cacheTag("cases", "schedule");
 
   const { data, error } = await createSupabaseAdminClient()
     .from("cases")
-    .select("case_number")
+    .select("case_number, daily_schedule!inner(publish_date)")
     .eq("status", "approved")
+    .lte("daily_schedule.publish_date", utcToday())
     .order("case_number");
   if (error) throw new Error(`listCaseNumbers: ${error.message}`);
-  return data.map((row) => row.case_number);
+  return data.flatMap((row) => (row.case_number === null ? [] : [row.case_number]));
 }
 
 /** Only the public half. Safe to render and to pass to Client Components. */
 export async function getPublicCase(caseNumber: number): Promise<PublicCase | null> {
   "use cache";
   cacheLife("hours");
-  cacheTag("cases", `case-${caseNumber}`);
+  cacheTag("cases", "schedule", `case-${caseNumber}`);
 
   // Selects only public columns: the secret isn't even fetched here.
   const { data, error } = await createSupabaseAdminClient()
     .from("cases")
-    .select("case_number, difficulty, public_briefing")
+    .select("difficulty, public_briefing, daily_schedule!inner(publish_date)")
     .eq("case_number", caseNumber)
     .eq("status", "approved")
+    .lte("daily_schedule.publish_date", utcToday())
     .maybeSingle();
   if (error) throw new Error(`getPublicCase(${caseNumber}): ${error.message}`);
   if (!data) return null;
 
   return {
-    caseNumber: data.case_number,
+    caseNumber,
     difficulty: toDifficulty(data.difficulty),
     briefing: PublicBriefingSchema.parse(data.public_briefing),
   };
@@ -69,9 +79,10 @@ export async function getPublicCase(caseNumber: number): Promise<PublicCase | nu
 export async function getCaseSecret(caseNumber: number): Promise<CaseSecret | null> {
   const { data, error } = await createSupabaseAdminClient()
     .from("cases")
-    .select("secret")
+    .select("secret, daily_schedule!inner(publish_date)")
     .eq("case_number", caseNumber)
     .eq("status", "approved")
+    .lte("daily_schedule.publish_date", utcToday())
     .maybeSingle();
   if (error) throw new Error(`getCaseSecret(${caseNumber}): ${error.message}`);
   return data ? CaseSecretSchema.parse(data.secret) : null;
@@ -83,7 +94,7 @@ export async function getTodaysCaseNumber(): Promise<number | null> {
   cacheLife("minutes");
   cacheTag("schedule");
 
-  const today = new Date().toISOString().slice(0, 10); // schedule dates are UTC
+  const today = utcToday();
   const { data, error } = await createSupabaseAdminClient()
     .from("daily_schedule")
     .select("publish_date, cases!inner(case_number, status)")

@@ -48,7 +48,7 @@ export type Database = {
       };
       cases: {
         Row: {
-          case_number: number;
+          case_number: number | null;
           created_at: string;
           difficulty: string;
           id: string;
@@ -58,7 +58,7 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
-          case_number: number;
+          case_number?: number | null;
           created_at?: string;
           difficulty: string;
           id?: string;
@@ -68,7 +68,7 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
-          case_number?: number;
+          case_number?: number | null;
           created_at?: string;
           difficulty?: string;
           id?: string;
