@@ -25,21 +25,69 @@
       }
     },
     "crimeSceneId": "study",
-    "estimatedTimeOfDeath": { "from": "21:30", "to": "22:30" },
+    "estimatedTimeOfDeath": {
+      "from": "21:30",
+      "to": "22:30"
+    },
     "locations": [
-      { "id": "study", "name": { "en": "Study", "tr": "Çalışma odası" } },
-      { "id": "library", "name": { "en": "Library", "tr": "Kütüphane" } },
-      { "id": "music-room", "name": { "en": "Music room", "tr": "Müzik odası" } },
-      { "id": "drawing-room", "name": { "en": "Drawing room", "tr": "Misafir salonu" } },
-      { "id": "hall", "name": { "en": "Main hall", "tr": "Ana hol" } },
-      { "id": "terrace", "name": { "en": "Terrace", "tr": "Teras" } },
-      { "id": "stables", "name": { "en": "Stables", "tr": "Ahırlar" } }
+      {
+        "id": "study",
+        "name": {
+          "en": "Study",
+          "tr": "Çalışma odası"
+        }
+      },
+      {
+        "id": "library",
+        "name": {
+          "en": "Library",
+          "tr": "Kütüphane"
+        }
+      },
+      {
+        "id": "music-room",
+        "name": {
+          "en": "Music room",
+          "tr": "Müzik odası"
+        }
+      },
+      {
+        "id": "drawing-room",
+        "name": {
+          "en": "Drawing room",
+          "tr": "Misafir salonu"
+        }
+      },
+      {
+        "id": "hall",
+        "name": {
+          "en": "Main hall",
+          "tr": "Ana hol"
+        }
+      },
+      {
+        "id": "terrace",
+        "name": {
+          "en": "Terrace",
+          "tr": "Teras"
+        }
+      },
+      {
+        "id": "stables",
+        "name": {
+          "en": "Stables",
+          "tr": "Ahırlar"
+        }
+      }
     ],
     "suspects": [
       {
         "id": "margaret-ashcombe",
         "name": "Lady Margaret Ashcombe",
-        "role": { "en": "The victim's wife", "tr": "Kurbanın eşi" },
+        "role": {
+          "en": "The victim's wife",
+          "tr": "Kurbanın eşi"
+        },
         "profile": {
           "en": "52. Elegant, reserved and rarely seen to raise her voice. Twenty-six years married; the last ten, the servants say, in separate wings of the house.",
           "tr": "52 yaşında. Zarif, ölçülü ve sesini yükselttiği pek görülmemiş biri. Yirmi altı yıllık evli; hizmetçilere göre son on yılı konağın ayrı kanatlarında geçmiş."
@@ -52,7 +100,10 @@
       {
         "id": "julian-ashcombe",
         "name": "Julian Ashcombe",
-        "role": { "en": "The victim's nephew and heir", "tr": "Kurbanın yeğeni ve varisi" },
+        "role": {
+          "en": "The victim's nephew and heir",
+          "tr": "Kurbanın yeğeni ve varisi"
+        },
         "profile": {
           "en": "29. Charming, restless, and recently down from London with no clear reason for the visit. Expected to inherit the bulk of the estate.",
           "tr": "29 yaşında. Çekici, yerinde duramayan biri; belirgin bir sebep olmadan Londra'dan yeni gelmiş. Mirasın büyük kısmının ona kalması bekleniyor."
@@ -65,7 +116,10 @@
       {
         "id": "helena-voss",
         "name": "Dr. Helena Voss",
-        "role": { "en": "The family physician", "tr": "Ailenin doktoru" },
+        "role": {
+          "en": "The family physician",
+          "tr": "Ailenin doktoru"
+        },
         "profile": {
           "en": "41. Composed, precise and well liked in the village. A frequent dinner guest at Ashcombe and a fine pianist. Sits on the board of the cottage hospital trust.",
           "tr": "41 yaşında. Soğukkanlı, titiz ve köyde sevilen biri. Ashcombe'da sık sık yemeğe gelir, iyi piyano çalar. Köy hastanesi vakfının yönetim kurulunda."
@@ -78,7 +132,10 @@
       {
         "id": "thomas-reed",
         "name": "Thomas Reed",
-        "role": { "en": "Private secretary", "tr": "Özel sekreter" },
+        "role": {
+          "en": "Private secretary",
+          "tr": "Özel sekreter"
+        },
         "profile": {
           "en": "35. Quiet, loyal and meticulous. Has kept Sir Edmund's papers for eight years and works in the library, which connects to the study by a single door.",
           "tr": "35 yaşında. Sessiz, sadık ve titiz. Sekiz yıldır Sir Edmund'un evraklarıyla ilgileniyor; çalışma odasına tek bir kapıyla bağlanan kütüphanede çalışıyor."
@@ -93,7 +150,10 @@
       {
         "id": "burned-letter",
         "kind": "document",
-        "title": { "en": "Half-burned letter", "tr": "Yarısı yanmış mektup" },
+        "title": {
+          "en": "Half-burned letter",
+          "tr": "Yarısı yanmış mektup"
+        },
         "description": {
           "en": "Pulled from the study fireplace, in Sir Edmund's handwriting. Most of it is ash. What survives reads: \"...can no longer overlook the irregularities in the trust's accounts. Unless Dr. V— can account for the missing two thousand pounds before the board meets, I shall be obliged to...\"",
           "tr": "Çalışma odasının şöminesinden çıkarılmış, Sir Edmund'un el yazısı. Büyük kısmı kül olmuş. Kalan kısım şöyle: \"...vakfın hesaplarındaki usulsüzlükleri artık görmezden gelemem. Dr. V— yönetim kurulu toplanmadan önce kayıp iki bin sterlinin hesabını veremezse, mecburen...\""
@@ -103,7 +163,10 @@
       {
         "id": "gramophone-records",
         "kind": "object",
-        "title": { "en": "Records on the radiogram", "tr": "Radyogramdaki plaklar" },
+        "title": {
+          "en": "Records on the radiogram",
+          "tr": "Radyogramdaki plaklar"
+        },
         "description": {
           "en": "The music room's radiogram has an automatic record changer. Six records sit on the platter, already played: Chopin's nocturnes, about twenty-five minutes of music in all. The cabinet lid is still warm from the valves when the police arrive.",
           "tr": "Müzik odasındaki radyogramın otomatik plak değiştiricisi var. Tablada çalınmış altı plak duruyor: Chopin'in noktürnleri, toplam yirmi beş dakika kadar müzik. Polis geldiğinde kabinin kapağı lambaların ısısıyla hâlâ sıcak."
@@ -113,7 +176,10 @@
       {
         "id": "muddy-footprints",
         "kind": "object",
-        "title": { "en": "Muddy footprints", "tr": "Çamurlu ayak izleri" },
+        "title": {
+          "en": "Muddy footprints",
+          "tr": "Çamurlu ayak izleri"
+        },
         "description": {
           "en": "A man's boot prints lead from the study's French window across the wet terrace toward the stables. The rain stopped at a quarter to ten, so the prints were made after that.",
           "tr": "Bir erkek botunun izleri, çalışma odasının balkon kapısından ıslak terasın üzerinden ahırlara doğru gidiyor. Yağmur ona çeyrek kala dindiği için izler bu saatten sonra oluşmuş."
@@ -123,7 +189,10 @@
       {
         "id": "telephone-log",
         "kind": "phone",
-        "title": { "en": "Telephone exchange record", "tr": "Telefon santrali kaydı" },
+        "title": {
+          "en": "Telephone exchange record",
+          "tr": "Telefon santrali kaydı"
+        },
         "description": {
           "en": "The village exchange logged one call from the manor's only telephone, in the main hall that evening: a trunk call to a London number, Whitehall 4471, from 22:12 to 22:16.",
           "tr": "Köy santrali, konağın ana holdeki tek telefonundan o akşam yapılan bir görüşmeyi kaydetmiş: Londra'da Whitehall 4471 numarasına bir şehirlerarası görüşme, 22:12 ile 22:16 arası."
@@ -133,7 +202,10 @@
       {
         "id": "board-agenda",
         "kind": "document",
-        "title": { "en": "Typed board agenda", "tr": "Daktiloyla yazılmış gündem" },
+        "title": {
+          "en": "Typed board agenda",
+          "tr": "Daktiloyla yazılmış gündem"
+        },
         "description": {
           "en": "Found in the typewriter in the library: the agenda for tomorrow's meeting of the Cottage Hospital Trust. Item 4 reads: \"Treasurer's accounts. Sir Edmund to report.\" The treasurer is listed as Dr. H. Voss.",
           "tr": "Kütüphanedeki daktilonun içinde bulundu: Köy Hastanesi Vakfı'nın yarınki toplantısının gündemi. 4. madde: \"Sayman hesapları. Sir Edmund rapor sunacak.\" Sayman olarak Dr. H. Voss yazıyor."
@@ -144,7 +216,10 @@
     "motiveOptions": [
       {
         "id": "inheritance",
-        "label": { "en": "To inherit his fortune", "tr": "Servetini miras almak" }
+        "label": {
+          "en": "To inherit his fortune",
+          "tr": "Servetini miras almak"
+        }
       },
       {
         "id": "exposure",
@@ -155,7 +230,10 @@
       },
       {
         "id": "unhappy-marriage",
-        "label": { "en": "To escape an unhappy marriage", "tr": "Mutsuz bir evlilikten kurtulmak" }
+        "label": {
+          "en": "To escape an unhappy marriage",
+          "tr": "Mutsuz bir evlilikten kurtulmak"
+        }
       },
       {
         "id": "jealousy",
@@ -166,7 +244,10 @@
       },
       {
         "id": "revenge",
-        "label": { "en": "Revenge for an old humiliation", "tr": "Eski bir aşağılanmanın intikamı" }
+        "label": {
+          "en": "Revenge for an old humiliation",
+          "tr": "Eski bir aşağılanmanın intikamı"
+        }
       }
     ]
   },
@@ -290,7 +371,7 @@
         "hides": [
           {
             "secret": "He heard a woman's voice in the study at about 22:03.",
-            "revealWhen": "Asked specifically what he heard around ten o'clock, or whether he heard a woman. He fears it was Lady Margaret and protects her until told she was elsewhere."
+            "revealWhen": "When told or shown that Lady Margaret was somewhere else at the time, or when asked a second time whether he heard a woman's voice. Until then he protects Lady Margaret by saying he heard nothing."
           },
           {
             "secret": "He heard Julian arguing with Edmund around 21:45.",
@@ -392,7 +473,10 @@
         "at": "21:45",
         "actorId": null,
         "locationId": "terrace",
-        "event": { "en": "The rain stops.", "tr": "Yağmur diner." }
+        "event": {
+          "en": "The rain stops.",
+          "tr": "Yağmur diner."
+        }
       },
       {
         "at": "21:45",
