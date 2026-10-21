@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { PageFallback } from "@/components/ui/PageFallback";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getAppLocale } from "@/i18n/locale";
@@ -16,9 +18,11 @@ export function generateStaticParams() {
   });
 }
 
-export default async function EvidencePage({
+async function EvidenceContent({
   params,
-}: PageProps<"/[locale]/case/[caseNumber]/evidence/[evidenceId]">) {
+}: {
+  params: PageProps<"/[locale]/case/[caseNumber]/evidence/[evidenceId]">["params"];
+}) {
   const { caseNumber: raw, evidenceId } = await params;
   const caseNumber = parseCaseNumber(raw);
   const publicCase = caseNumber === null ? null : getPublicCase(caseNumber);
@@ -52,5 +56,16 @@ export default async function EvidencePage({
 
       <p className="text-muted mt-4 text-sm">{t("evidenceHint")}</p>
     </article>
+  );
+}
+
+// Reading `params` happens inside <Suspense>, so navigation can show the shell instantly.
+export default function EvidencePage({
+  params,
+}: PageProps<"/[locale]/case/[caseNumber]/evidence/[evidenceId]">) {
+  return (
+    <Suspense fallback={<PageFallback />}>
+      <EvidenceContent params={params} />
+    </Suspense>
   );
 }
