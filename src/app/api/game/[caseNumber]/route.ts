@@ -13,5 +13,7 @@ export async function GET(_request: Request, ctx: RouteContext<"/api/game/[caseN
   const gameId = playerId && secret ? await gameStore.findGame(playerId, caseNumber) : null;
 
   const progress = gameId ? await gameStore.progress(gameId) : EMPTY_PROGRESS;
-  return jsonResponse(toSnapshot(progress, secret));
+  // Stats are a nice extra: if they fail to load, the result screen still works.
+  const stats = progress.result ? await gameStore.caseStats(caseNumber).catch(() => null) : null;
+  return jsonResponse(toSnapshot(progress, secret, stats));
 }

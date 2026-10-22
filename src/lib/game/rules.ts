@@ -77,7 +77,12 @@ export type GameSnapshot = {
   /** Only the hints already unlocked; the rest stay on the server. */
   revealedHints: LocalizedText[];
   result: GameResult | null;
+  /** How all players did on this case. Only sent once this player's game is over. */
+  stats: CaseStats | null;
 };
+
+/** Totals across every finished game of one case; never one player's answers. */
+export type CaseStats = { finished: number; solved: number; averageScore: number };
 
 export type HintResponse = Pick<GameSnapshot, "hintsUsed" | "hintLimit" | "revealedHints">;
 export type AccuseResponse = { result: GameResult };

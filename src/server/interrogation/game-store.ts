@@ -2,7 +2,13 @@ import "server-only";
 
 import { z } from "zod";
 import { LOCALES, type Locale } from "@/lib/case/schema";
-import { GameResultSchema, QUESTION_LIMIT, type Exchange, type GameResult } from "@/lib/game/rules";
+import {
+  GameResultSchema,
+  QUESTION_LIMIT,
+  type CaseStats,
+  type Exchange,
+  type GameResult,
+} from "@/lib/game/rules";
 import { createSupabaseAdminClient } from "@/server/supabase";
 
 /*
@@ -51,10 +57,15 @@ export interface GameStore {
     gameId: string,
     decide: (counters: { questionsUsed: number; hintsUsed: number }) => GameResult,
   ): Promise<FinishResult>;
+  /** Totals across all finished games of a case (for the result screen). */
+  caseStats(caseNumber: number): Promise<CaseStats>;
 }
 
 // What the counter functions return (validated: the database is outside our type system).
 const CounterRowsSchema = z.array(z.object({ used: z.number(), error: z.string().nullable() }));
+const StatsRowsSchema = z.array(
+  z.object({ finished: z.number(), solved: z.number(), average_score: z.number() }),
+);
 const MessageRowSchema = z.object({
   suspect_id: z.string(),
   question: z.string(),
@@ -194,5 +205,18 @@ export const gameStore: GameStore = {
     if (rpcError) fail("finishGame", rpcError.message);
     if (failure === null) return { ok: true, result };
     return { ok: false, error: failure === "busy" ? "busy" : "game_over" };
+  },
+
+  async caseStats(caseNumber) {
+    const { data, error } = await createSupabaseAdminClient().rpc("case_stats", {
+      p_case_number: caseNumber,
+    });
+    if (error) fail("caseStats", error.message);
+    const row = StatsRowsSchema.parse(data)[0];
+    return {
+      finished: row?.finished ?? 0,
+      solved: row?.solved ?? 0,
+      averageScore: row?.average_score ?? 0,
+    };
   },
 };

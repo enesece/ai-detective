@@ -278,6 +278,10 @@ export type Database = {
         Returns: undefined;
       };
       unschedule_day: { Args: { p_publish_date: string }; Returns: undefined };
+      case_stats: {
+        Args: { p_case_number: number };
+        Returns: { average_score: number; finished: number; solved: number }[];
+      };
       check_rate_limits: {
         Args: { p_keys: string[]; p_limits: number[]; p_window_seconds: number[] };
         Returns: boolean;
