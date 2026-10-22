@@ -175,5 +175,46 @@
     "title": "Case archive",
     "intro": "Every case so far. Past cases don't count towards your streak.",
     "empty": "No cases yet."
+  },
+  "Privacy": {
+    "title": "Privacy",
+    "updated": "Last updated 22 October 2026",
+    "intro": "Daily Alibi is a hobby project. It keeps only what it needs to run the game.",
+    "stored": {
+      "heading": "What is stored",
+      "body": "When you start playing you get an anonymous account: a random ID, with no name, email or password. With it we store your games (your questions, the suspects' answers, hints, your accusation and score), your notebook and your streak, so you can carry on after a reload and the question counter stays fair."
+    },
+    "ai": {
+      "heading": "The AI suspects",
+      "body": "Your questions are sent to Google's Gemini API, which writes the suspects' answers. The game uses Gemini's free tier, and Google may use what is sent on that tier to improve its products. Please don't put anything personal in your questions."
+    },
+    "abuse": {
+      "heading": "Protection against abuse",
+      "body": "Cloudflare Turnstile checks that a new player isn't a bot. To limit how fast anyone can ask questions, we keep short-lived counters tied to your account and to a one-way hash of your IP address, never the address itself."
+    },
+    "services": {
+      "heading": "Services we use",
+      "body": "Vercel (hosting), Supabase (database and anonymous accounts), Google Gemini (the suspects' answers) and Cloudflare Turnstile (bot check)."
+    },
+    "notDone": {
+      "heading": "What we don't do",
+      "body": "No ads, no analytics or tracking cookies, and no selling or sharing of your data. The only cookies are the ones that keep you signed in."
+    },
+    "delete": {
+      "heading": "Delete your data",
+      "body": "This deletes your anonymous account along with every game, answer and note saved with it. It can't be undone, and your streak starts again from zero."
+    },
+    "deleteButton": "Delete my data",
+    "deleteConfirm": "Delete everything? This can't be undone.",
+    "deleteYes": "Yes, delete",
+    "deleteCancel": "Cancel",
+    "deleted": "Done: your data has been deleted.",
+    "deleteFailed": "That didn't work. Please try again in a moment.",
+    "noData": "Nothing is saved for this browser."
+  },
+  "Footer": {
+    "privacy": "Privacy",
+    "archive": "Archive",
+    "note": "A new case every day at midnight UTC."
   }
 }

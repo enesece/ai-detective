@@ -175,5 +175,46 @@
     "title": "Dava arşivi",
     "intro": "Bugüne kadarki tüm davalar. Geçmiş davalar seriye sayılmaz.",
     "empty": "Henüz dava yok."
+  },
+  "Privacy": {
+    "title": "Gizlilik",
+    "updated": "Son güncelleme: 22 Ekim 2026",
+    "intro": "Daily Alibi bir hobi projesidir. Oyunun çalışması için gerekenden fazlasını saklamaz.",
+    "stored": {
+      "heading": "Neler saklanıyor",
+      "body": "Oynamaya başladığında sana anonim bir hesap açılır: rastgele bir kimlik; ad, e-posta ya da şifre yok. Bu kimlikle oyunların (soruların, şüphelilerin cevapları, ipuçları, suçlaman ve puanın), not defterin ve serin saklanır. Böylece sayfayı yenilesen de kaldığın yerden devam edersin ve soru sayacı adil kalır."
+    },
+    "ai": {
+      "heading": "Yapay zekâ şüpheliler",
+      "body": "Soruların, şüphelilerin cevaplarını yazan Google Gemini API'sine gönderilir. Oyun Gemini'nin ücretsiz katmanını kullanır; Google bu katmanda gönderilenleri ürünlerini geliştirmek için kullanabilir. Lütfen sorularına kişisel bilgi yazma."
+    },
+    "abuse": {
+      "heading": "Kötüye kullanıma karşı koruma",
+      "body": "Cloudflare Turnstile, yeni bir oyuncunun bot olmadığını kontrol eder. Herkesin ne kadar hızlı soru sorabileceğini sınırlamak için hesabına ve IP adresinin tek yönlü bir özetine bağlı, kısa ömürlü sayaçlar tutulur; IP adresinin kendisi asla saklanmaz."
+    },
+    "services": {
+      "heading": "Kullanılan hizmetler",
+      "body": "Vercel (barındırma), Supabase (veritabanı ve anonim hesaplar), Google Gemini (şüphelilerin cevapları) ve Cloudflare Turnstile (bot kontrolü)."
+    },
+    "notDone": {
+      "heading": "Neler yapılmıyor",
+      "body": "Reklam yok, analiz ya da takip çerezi yok, verilerin satılmaz ve kimseyle paylaşılmaz. Kullanılan tek çerezler oturumunu açık tutanlardır."
+    },
+    "delete": {
+      "heading": "Verilerini sil",
+      "body": "Bu işlem anonim hesabını ve ona bağlı bütün oyunları, cevapları ve notları siler. Geri alınamaz; serin de sıfırdan başlar."
+    },
+    "deleteButton": "Verilerimi sil",
+    "deleteConfirm": "Her şey silinsin mi? Bu geri alınamaz.",
+    "deleteYes": "Evet, sil",
+    "deleteCancel": "Vazgeç",
+    "deleted": "Tamam: verilerin silindi.",
+    "deleteFailed": "Olmadı. Lütfen biraz sonra tekrar dene.",
+    "noData": "Bu tarayıcı için kayıtlı bir veri yok."
+  },
+  "Footer": {
+    "privacy": "Gizlilik",
+    "archive": "Arşiv",
+    "note": "Her gün UTC gece yarısı yeni bir dava."
   }
 }

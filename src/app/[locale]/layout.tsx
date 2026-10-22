@@ -4,8 +4,10 @@ import { notFound } from "next/navigation";
 import { locale as rootLocale } from "next/root-params";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
+import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { routing } from "@/i18n/routing";
+import { SITE_URL } from "@/lib/site";
 import "../globals.css";
 
 // latin-ext covers Turkish letters (ğ, ş, ı, İ).
@@ -29,7 +31,21 @@ export function generateStaticParams() {
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Metadata");
-  return { title: t("title"), description: t("description") };
+  const locale = await rootLocale();
+  return {
+    metadataBase: new URL(SITE_URL),
+    // Pages set their own title; it becomes "Case #2: … · Daily Alibi".
+    title: { default: t("title"), template: `%s · ${t("title")}` },
+    description: t("description"),
+    openGraph: {
+      siteName: t("title"),
+      title: t("title"),
+      description: t("description"),
+      locale: locale === "tr" ? "tr_TR" : "en_GB",
+      type: "website",
+    },
+    twitter: { card: "summary_large_image" },
+  };
 }
 
 export default async function LocaleLayout({ children }: LayoutProps<"/[locale]">) {
@@ -46,6 +62,7 @@ export default async function LocaleLayout({ children }: LayoutProps<"/[locale]"
         <NextIntlClientProvider>
           <SiteHeader />
           <main className="mx-auto w-full max-w-6xl px-4 pb-20">{children}</main>
+          <SiteFooter />
         </NextIntlClientProvider>
       </body>
     </html>
