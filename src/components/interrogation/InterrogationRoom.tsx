@@ -39,6 +39,18 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
   const [selectedId, setSelectedId] = useState(suspects[0]?.id ?? "");
   const [notebookOpen, setNotebookOpen] = useState(false);
   const chatScrollRef = useRef<HTMLDivElement>(null);
+  const notebookRef = useRef<HTMLDivElement>(null);
+
+  // Below xl the notebook opens under the chat: bring it into view, or it opens off-screen.
+  function toggleNotebook() {
+    const opening = !notebookOpen;
+    setNotebookOpen(opening);
+    if (opening) {
+      requestAnimationFrame(() =>
+        notebookRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
+      );
+    }
+  }
   const lastAnswer = exchanges.at(-1)?.answer;
 
   // Keep the newest message in view. Scrolls only the chat box, never the page
@@ -60,7 +72,7 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
   return (
     <div className="grid gap-6 lg:grid-cols-[250px_1fr] xl:grid-cols-[250px_1fr_320px]">
       {/* On phones the sidebar dissolves into the grid ("contents") so its pieces can be
-          reordered: counter and suspects first, then the chat, then accuse and hints. */}
+          reordered: counter and suspects, the chat, the notebook (when open), then accuse and hints. */}
       <aside className="max-lg:contents lg:space-y-4">
         <div className="max-lg:order-1">
           <QuestionCounter used={questionsUsed} limit={questionLimit} />
@@ -68,11 +80,11 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
         {/* The accusation is open at any time, not only after all 20 questions. */}
         <Link
           href={finished ? `/case/${caseNumber}/result` : `/case/${caseNumber}/accuse`}
-          className={`${buttonPrimary} w-full px-4 max-lg:order-4`}
+          className={`${buttonPrimary} w-full px-4 max-lg:order-5`}
         >
           {finished ? t("seeResult") : t("accuse")}
         </Link>
-        <div className="max-lg:order-5">
+        <div className="max-lg:order-6">
           <HintBox
             used={hints.used}
             limit={status === "loading" ? null : hints.limit}
@@ -112,7 +124,7 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
           {/* Below xl the notebook is a panel you open; on wide screens it's always visible. */}
           <button
             type="button"
-            onClick={() => setNotebookOpen((open) => !open)}
+            onClick={toggleNotebook}
             aria-expanded={notebookOpen}
             aria-controls="notebook-panel"
             className={`${buttonOutline} min-h-11 shrink-0 px-3 text-xs xl:hidden`}
@@ -169,7 +181,8 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
 
       <div
         id="notebook-panel"
-        className={`${notebookOpen ? "block" : "hidden"} max-lg:order-6 lg:col-span-2 xl:col-span-1 xl:block xl:h-[70dvh] xl:overflow-y-auto`}
+        ref={notebookRef}
+        className={`${notebookOpen ? "block" : "hidden"} max-lg:order-4 lg:col-span-2 xl:col-span-1 xl:block xl:h-[70dvh] xl:overflow-y-auto`}
       >
         <NotebookPanel
           notebook={notebook}
