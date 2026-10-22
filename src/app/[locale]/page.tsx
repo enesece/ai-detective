@@ -116,6 +116,11 @@ export default async function HomePage() {
           ))}
         </ol>
         <p className="text-muted mt-8 text-center italic">{t("daily")}</p>
+        <p className="mt-3 text-center">
+          <Link href="/lab" className={linkCaps}>
+            {t("labLink")}
+          </Link>
+        </p>
       </section>
 
       {archive.length > 0 && (

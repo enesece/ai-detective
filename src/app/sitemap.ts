@@ -18,6 +18,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry(""),
     entry("/archive"),
     entry("/privacy"),
+    entry("/lab"),
     ...cases.map((c) => entry(`/case/${c.caseNumber}`, c.publishDate)),
   ];
 }

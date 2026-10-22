@@ -13,6 +13,9 @@ export async function SiteFooter() {
           <Link href="/archive" className="hover:text-accent">
             {t("archive")}
           </Link>
+          <Link href="/lab" className="hover:text-accent">
+            {t("lab")}
+          </Link>
           <Link href="/privacy" className="hover:text-accent">
             {t("privacy")}
           </Link>
