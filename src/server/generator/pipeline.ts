@@ -37,7 +37,11 @@ import { TOO_EASY_PROBABILITY, solveCase, type SolverRun } from "./solver";
 const GENERATOR_MAX_OUTPUT_TOKENS = 60_000;
 const GENERATOR_TEMPERATURE = 1;
 /** Fix attempts after the first draft, when there is time left. */
-const MAX_REPAIRS = 1;
+/**
+ * Repair rounds after the first draft. Hard cases get one more: the blind solver's
+ * "too easy" verdict comes last, and a first round often goes on small fixes.
+ */
+const MAX_REPAIRS: Record<Difficulty, number> = { easy: 1, medium: 1, hard: 2 };
 /** A repair takes about as long as a generation; don't start one without this much time. */
 const MIN_MS_FOR_REPAIR = 150_000;
 const FULL_SOLVER_RUNS = 2;
@@ -117,7 +121,7 @@ export async function runPipeline(options: PipelineOptions): Promise<PipelineOut
     return title.success ? [title.data.title.en] : [];
   });
 
-  // 1-4. Generate and check; if anything fails, the model gets one chance to fix it.
+  // 1-4. Generate and check; if anything fails, the model gets a chance (two for hard) to fix it.
   const attempts: Attempt[] = [];
   const schema = z.toJSONSchema(CaseDraftShapeSchema);
   let prompt = buildGeneratorPrompt({
@@ -130,7 +134,7 @@ export async function runPipeline(options: PipelineOptions): Promise<PipelineOut
   let best: { draft: CaseDraft; checked: Checked } | null = null;
   let lastProblems: string[] = [];
 
-  for (let attempt = 0; attempt <= MAX_REPAIRS; attempt++) {
+  for (let attempt = 0; attempt <= MAX_REPAIRS[options.difficulty]; attempt++) {
     if (attempt > 0 && timeLeft() < MIN_MS_FOR_REPAIR) {
       log("Not enough time left for a repair.");
       break;
@@ -236,8 +240,19 @@ function repairNotes(checked: Checked): string[] {
   const notes = [...checked.reasons];
   const briefingOnly = checked.solverRuns.find((r) => r.mode === "briefing_only");
   if (checked.reasons.some((r) => r.startsWith("too_easy")) && briefingOnly) {
+    // A vague "make it harder" didn't work (every hard draft failed again after repair),
+    // so the fix is spelled out: give the deduction a second, equally good answer.
+    const decoy = briefingOnly.runnerUp?.suspectId ?? "the most suspicious innocent";
     notes.push(
-      `A solver reading ONLY the public case file reasoned: "${briefingOnly.answer.reasoning}". Rework the public evidence and initial statements so this deduction is no longer possible without interrogation, while the suspects' testimony still leads to the same killer.`,
+      `A solver reading ONLY the public case file reasoned: "${briefingOnly.answer.reasoning}"`,
+      [
+        `Fix it like this, keeping the same killer:`,
+        `(1) Make ${decoy} an equally good answer on paper.`,
+        `(2) For every fact the solver used above, change the PUBLIC text (evidence descriptions, profiles, initial statements, setting) so it fits ${decoy} just as well: two people had that access, the item could be either one's, both had that motive and opportunity.`,
+        `(3) Remove from public text anything only the killer has (a role, key, badge, skill, belonging, initial).`,
+        `(4) Put the one fact that separates them into an innocent suspect's "hides", revealed "When shown the <exact evidence title>".`,
+        `(5) Update the private notes, evidence pointsTo, timeline, hints and both languages to match.`,
+      ].join(" "),
     );
   }
   const missed = checked.solverRuns.find((r) => r.mode === "full" && !r.passed);

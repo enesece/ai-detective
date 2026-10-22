@@ -228,9 +228,11 @@ export function runLogicChecks(c: CaseDraft): CheckResult[] {
   const untranslated = collectLocalized(c).filter(
     (t) => t.en.length > 20 && t.en.trim() === t.tr.trim(),
   );
+  // One short identical text is usually a proper name (a place, a ship); more is a missed translation.
+  const onlyAName = untranslated.length === 1 && (untranslated[0]?.en.length ?? 0) <= 60;
   check(
     "turkish_translated",
-    "error",
+    onlyAName ? "warning" : "error",
     untranslated.length === 0,
     untranslated.length === 0
       ? "All player-facing text has a Turkish version."
