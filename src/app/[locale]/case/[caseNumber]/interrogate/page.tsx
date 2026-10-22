@@ -62,12 +62,12 @@ async function InterrogateContent({
   });
 
   return (
-    <div className="pt-10">
+    <div className="pt-6 sm:pt-10">
       <Link href={`/case/${publicCase.caseNumber}`} className={linkCaps}>
         ← {tCase("backToCase")}
       </Link>
       <h1 className="font-display mt-4 text-4xl sm:text-5xl">{t("title")}</h1>
-      <p className="text-muted mt-2 mb-6 text-lg italic">{t("intro")}</p>
+      <p className="text-muted mt-2 mb-6 italic sm:text-lg">{t("intro")}</p>
       <InterrogationRoom
         caseNumber={publicCase.caseNumber}
         suspects={suspects}

@@ -52,13 +52,21 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
     }
   }
   const lastAnswer = exchanges.at(-1)?.answer;
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Keep the newest message in view. Scrolls only the chat box, never the page
-  // (scrollIntoView would scroll every scrollable ancestor, including the page).
+  // Keep the newest message in view. On wide screens the chat is its own scroll box:
+  // scroll only that box (scrollIntoView would also move the page). On phones the
+  // chat flows in the page, so the page follows a question and its streaming answer.
   useEffect(() => {
     const box = chatScrollRef.current;
-    if (box) box.scrollTop = box.scrollHeight;
+    if (!box) return;
+    if (getComputedStyle(box).overflowY === "auto") box.scrollTop = box.scrollHeight;
   }, [exchanges.length, lastAnswer, selectedId]);
+  useEffect(() => {
+    const box = chatScrollRef.current;
+    if (!box || getComputedStyle(box).overflowY === "auto" || status !== "asking") return;
+    chatEndRef.current?.scrollIntoView({ block: "end" });
+  }, [exchanges.length, lastAnswer, status]);
 
   const selected = suspects.find((s) => s.id === selectedId);
   if (!selected) return null;
@@ -104,9 +112,11 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
         </div>
       </aside>
 
-      <section className="border-ink bg-paper flex h-[70dvh] min-h-[24rem] min-w-0 flex-col border max-lg:order-3">
+      {/* Wide screens: a framed box with its own scroll. Phones: no frame, the chat flows in the
+          page and the question bar sticks to the bottom of the screen, like a messaging app. */}
+      <section className="border-ink bg-paper flex min-w-0 flex-col max-lg:order-3 lg:h-[70dvh] lg:min-h-[24rem] lg:border">
         {/* On phones the suspect strip above already shows face and role, so the header stays slim. */}
-        <header className="border-ink flex items-center justify-between gap-3 border-b px-4 py-2 sm:py-3">
+        <header className="border-ink flex items-center justify-between gap-3 border-b py-2 sm:py-3 lg:px-4">
           <div className="flex min-w-0 items-center gap-4">
             <Portrait
               name={selected.name}
@@ -133,7 +143,7 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
           </button>
         </header>
 
-        <div ref={chatScrollRef} className="min-h-0 flex-1 overflow-y-auto p-4">
+        <div ref={chatScrollRef} className="py-4 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:px-4">
           <StatementCard
             suspect={selected}
             pinned={isPinned(statementTarget)}
@@ -151,9 +161,11 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
               evidenceTitle={(id) => evidence.find((e) => e.id === id)?.title}
             />
           )}
+          {/* Phones scroll this into view; the margin keeps it clear of the sticky question bar. */}
+          <div ref={chatEndRef} className="scroll-mb-56" aria-hidden />
         </div>
 
-        <footer className="border-ink border-t p-4">
+        <footer className="border-ink bg-paper border-t py-3 max-lg:sticky max-lg:bottom-0 max-lg:z-10 max-lg:-mx-4 max-lg:px-4 max-lg:pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:p-4">
           {error && (
             <p role="alert" className="text-alert mb-2 text-sm font-semibold">
               {t(`errors.${error}`)}

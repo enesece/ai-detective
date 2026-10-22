@@ -11,17 +11,20 @@ export async function SuspectCard({ suspect, locale }: Props) {
   const t = await getTranslations("Case");
 
   return (
-    <article className="flex flex-col">
+    // Phones: a small portrait beside name and role, the text below. Wider: a portrait column.
+    <article className="grid grid-cols-[5.5rem_1fr] content-start gap-x-4 sm:flex sm:flex-col">
       <Portrait
         name={suspect.name}
         seed={suspect.id}
         appearance={suspect.appearance}
-        className="aspect-4/5 w-full max-sm:mx-auto max-sm:w-44"
+        className="row-span-2 aspect-4/5 w-full"
       />
-      <h3 className="mt-4 text-xl font-bold">{suspect.name}</h3>
-      <p className={`${label} mt-1`}>{localize(suspect.role, locale)}</p>
-      <p className="mt-3 leading-relaxed">{localize(suspect.profile, locale)}</p>
-      <figure className="border-rule mt-4 border-t pt-3">
+      <h3 className="self-end text-xl leading-tight font-bold sm:mt-4 sm:self-auto">
+        {suspect.name}
+      </h3>
+      <p className={`${label} mt-1 self-start sm:self-auto`}>{localize(suspect.role, locale)}</p>
+      <p className="col-span-2 mt-3 leading-relaxed">{localize(suspect.profile, locale)}</p>
+      <figure className="border-rule col-span-2 mt-4 border-t pt-3">
         <figcaption className={label}>{t("statement")}</figcaption>
         <blockquote className="mt-2 leading-relaxed italic">
           “{localize(suspect.initialStatement, locale)}”

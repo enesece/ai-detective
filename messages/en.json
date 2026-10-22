@@ -98,7 +98,8 @@
     "removeEvidence": "Stop showing {title}",
     "showDefault": "What can you tell me about this?",
     "showPlaceholder": "Add a question, or just show it…",
-    "show": "Show"
+    "show": "Show",
+    "askedShort": "{count, plural, =0 {Not asked} one {# question} other {# questions}}"
   },
   "Notebook": {
     "title": "Notebook",

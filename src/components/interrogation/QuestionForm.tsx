@@ -100,7 +100,7 @@ export function QuestionForm({ suspectName, evidence, disabled, onAsk }: Props) 
         )}
       </div>
 
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
+      <div className="flex items-end gap-2">
         <label className="flex-1">
           <span className="sr-only">{t("askPlaceholder", { name: suspectName })}</span>
           <textarea
@@ -119,11 +119,15 @@ export function QuestionForm({ suspectName, evidence, disabled, onAsk }: Props) 
             placeholder={shown ? t("showPlaceholder") : t("askPlaceholder", { name: suspectName })}
             className="border-ink bg-card w-full resize-none border px-3 py-2 text-lg disabled:opacity-60"
           />
-          <span className="text-muted block text-right font-sans text-xs">
+          <span className="text-muted block text-right font-sans text-xs max-sm:hidden">
             {draft.length}/{MAX_QUESTION_LENGTH}
           </span>
         </label>
-        <button type="submit" disabled={disabled || !question} className={`${buttonInk} sm:mb-5`}>
+        <button
+          type="submit"
+          disabled={disabled || !question}
+          className={`${buttonInk} max-sm:min-h-12 max-sm:px-4 sm:mb-5`}
+        >
           {shown ? t("show") : t("ask")}
         </button>
       </div>

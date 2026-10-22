@@ -98,7 +98,8 @@
     "removeEvidence": "{title} göstermekten vazgeç",
     "showDefault": "Bununla ilgili ne söyleyebilirsiniz?",
     "showPlaceholder": "Bir soru ekle ya da sadece göster…",
-    "show": "Göster"
+    "show": "Göster",
+    "askedShort": "{count, plural, =0 {Sorulmadı} other {# soru}}"
   },
   "Notebook": {
     "title": "Not defteri",
