@@ -284,6 +284,16 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 - Masaüstünde kök yazı boyutu %90 (≥640 px), telefonda %100: Tailwind rem kullandığı için her şey eşit küçülür.
 - **Şüpheli portreleri kodla çiziliyor** (`src/components/ui/Portrait.tsx`, SVG gazete gravürü): Gemini görsel modellerinin ücretsiz kotası yok (fatura gerekir), 0 $ hedefi için seçilmedi. Şüpheli şemasında isteğe bağlı, herkese açık `appearance` (cinsiyet, yaş, saç, saç rengi, şapka, gözlük, sakal/bıyık, kıyafet); yoksa `resolveAppearance()` (`src/lib/case/appearance.ts`) id'den sabit özellikler seçer. Dava #1 fixture'ında ve dava #2'de (SQL ile) dolduruldu; üretici prompt'u yeni davalarda ister. `crop="head"` küçük resimler için.
 
+### Site incelemesi sonrası iyileştirmeler (22 Ekim 2026)
+
+- **Dava havuzu:** onaylı havuz boşalmıştı (takvim 22 Ekim'de bitiyordu). `npm run generate` ile yerelde 7 dava üretimi başlatıldı; onay Enes'te. Admin takvim sayfasında "N günlük dava kaldı" uyarısı (3'ün altında kırmızı). Sertleştirilmiş prompt çalışıyor: orta davalar sadece brifingle çözülemiyor, tam bilgiyle %90+ çözülüyor. Gemini kotası 10:00'da (TR) yenilenir.
+- **Sonuç ekranı:** "Gözden kaçanlar" (not defterine girmeyen kilit kanıtlar + hiç sorgulanmayan şüpheliler), "yeni dava X sa Y dk sonra" (`NextCaseCountdown`, ana sayfada da günün davası bitince), çözen oranı + ortalama puan.
+- **İstatistik:** migration `case_stats` (MCP ile uygulandı): sadece toplamlar, sadece `service_role`. `GET /api/game/[n]` bunu `stats` olarak yalnızca suçlamadan sonra gönderir (öncesinde ipucu olabilir). Smoke testi bunu kontrol eder.
+- **Sorgu:** hata alınan soru kutuya geri döner; IME yazarken Enter göndermez. Telefonda sıra: sayaç → yatay şüpheli şeridi → sohbet → suçlama → ipuçları → not defteri (`max-lg:contents` + `order`). Ekran okuyucu sadece bitmiş cevabı duyurur.
+- **Güven + paylaşım:** `/[locale]/privacy` (EN/TR) + "Verilerimi sil" (`DELETE /api/player`: sadece anonim hesap, cascade ile her şey silinir; smoke 401/403'ü kontrol eder). Alt bilgi (arşiv + gizlilik). Her sayfada başlık + hreflang (`src/lib/site.ts`, `case-metadata.ts`), `robots.ts`, `sitemap.ts`, `error.tsx` (Next 16'da prop adı `retry`), güvenlik başlıkları (`next.config.ts`; nonce'lu katı CSP bilinçli olarak yok, statik prerender'ı kapatırdı).
+- **Link önizleme görselleri:** `next/og` ile gazete kartı (`src/server/og/gazette-card.tsx`), site geneli + dava başına. Fontlar `assets/fonts/` (OFL lisanslarıyla), `outputFileTracingIncludes` ile sunucu paketine eklenir. Satori `double` kenarlığı desteklemiyor → iki çizgi.
+- Not: dev sunucusu açıkken aynı klasörde `npm run build` almak dev'i sonsuz "Compiled" döngüsüne sokabiliyor → dev'i yeniden başlat.
+
 ### Notlar / alınan teknik kararlar
 
 - Next 16: `middleware.ts` → `proxy.ts`; `cacheComponents` açıkken her kök parametre için `generateStaticParams` zorunlu, `dynamicParams` kullanılamaz. Bulunamayan sayfalar stream sonrası 200 + `noindex` döner (Next'in belgelenmiş davranışı).
