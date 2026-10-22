@@ -12,10 +12,16 @@ import { getAppLocale } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 import { getPublicCase, listCaseNumbers } from "@/server/cases/repository";
 import { parseCaseNumber } from "./case-number";
+import { caseMetadata } from "./case-metadata";
 
 // Prerender every known case at build time.
 export async function generateStaticParams() {
   return (await listCaseNumbers()).map((n) => ({ caseNumber: String(n) }));
+}
+
+export async function generateMetadata({ params }: PageProps<"/[locale]/case/[caseNumber]">) {
+  const { caseNumber } = await params;
+  return caseMetadata(caseNumber);
 }
 
 async function CaseContent({

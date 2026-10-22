@@ -9,6 +9,7 @@ import { getAppLocale } from "@/i18n/locale";
 import { localize } from "@/lib/case/localize";
 import { getPublicCase, listCaseNumbers } from "@/server/cases/repository";
 import { parseCaseNumber } from "../../case-number";
+import { caseMetadata } from "../../case-metadata";
 
 export async function generateStaticParams() {
   const cases = await Promise.all((await listCaseNumbers()).map((n) => getPublicCase(n)));
@@ -18,6 +19,18 @@ export async function generateStaticParams() {
       evidenceId: e.id,
     })),
   );
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]/case/[caseNumber]/evidence/[evidenceId]">) {
+  const { caseNumber, evidenceId } = await params;
+  const parsed = parseCaseNumber(caseNumber);
+  const publicCase = parsed === null ? null : await getPublicCase(parsed);
+  const evidence = publicCase?.briefing.evidence.find((e) => e.id === evidenceId);
+  if (!evidence) return {};
+  const title = localize(evidence.title, await getAppLocale());
+  return caseMetadata(caseNumber, `/evidence/${evidenceId}`, title);
 }
 
 async function EvidenceContent({

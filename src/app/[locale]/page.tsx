@@ -4,7 +4,12 @@ import { buttonPrimary, kicker, label, linkCaps } from "@/components/ui/styles";
 import { Link } from "@/i18n/navigation";
 import { getAppLocale } from "@/i18n/locale";
 import { localize } from "@/lib/case/localize";
+import { pageAlternates } from "@/lib/site";
 import { getPublicCase, getTodaysCase, listPublishedCases } from "@/server/cases/repository";
+
+export async function generateMetadata() {
+  return { alternates: pageAlternates(await getAppLocale(), "") };
+}
 
 const STEPS = ["read", "ask", "note", "accuse"] as const;
 

@@ -10,9 +10,21 @@ import { getAppLocale } from "@/i18n/locale";
 import { localize } from "@/lib/case/localize";
 import { getPublicCase, listCaseNumbers } from "@/server/cases/repository";
 import { parseCaseNumber } from "../case-number";
+import { caseMetadata } from "../case-metadata";
 
 export async function generateStaticParams() {
   return (await listCaseNumbers()).map((n) => ({ caseNumber: String(n) }));
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]/case/[caseNumber]/interrogate">) {
+  const { caseNumber } = await params;
+  return caseMetadata(
+    caseNumber,
+    "/interrogate",
+    (await getTranslations("Interrogation"))("title"),
+  );
 }
 
 async function InterrogateContent({

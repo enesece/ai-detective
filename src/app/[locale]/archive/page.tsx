@@ -2,11 +2,12 @@ import { getFormatter, getTranslations } from "next-intl/server";
 import { ArchiveList, type ArchiveRow } from "@/components/player/ArchiveList";
 import { getAppLocale } from "@/i18n/locale";
 import { localize } from "@/lib/case/localize";
+import { pageAlternates } from "@/lib/site";
 import { listPublishedCases } from "@/server/cases/repository";
 
 export async function generateMetadata() {
   const t = await getTranslations("Archive");
-  return { title: t("title") };
+  return { title: t("title"), alternates: pageAlternates(await getAppLocale(), "/archive") };
 }
 
 export default async function ArchivePage() {
