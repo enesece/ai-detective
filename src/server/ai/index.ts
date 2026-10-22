@@ -1,6 +1,7 @@
 import "server-only";
 
 import { getAiEnv } from "@/server/env";
+import { withFallback } from "./fallback";
 import { createGeminiJsonModel, createGeminiModel } from "./gemini";
 import { createMockModel } from "./mock";
 import type { ChatModel, JsonModel } from "./types";
@@ -12,7 +13,14 @@ export { withRetry } from "./retry";
 /** The one place that decides which model the app talks to. */
 export function getChatModel(): ChatModel {
   const env = getAiEnv();
-  if (env.GEMINI_API_KEY) return createGeminiModel(env.GEMINI_API_KEY, env.GEMINI_MODEL);
+  if (env.GEMINI_API_KEY) {
+    const primary = createGeminiModel(env.GEMINI_API_KEY, env.GEMINI_MODEL);
+    // Free-tier quotas are per model: a second one keeps the suspects talking
+    // when the first runs out for the day.
+    return env.GEMINI_FALLBACK_MODEL && env.GEMINI_FALLBACK_MODEL !== env.GEMINI_MODEL
+      ? withFallback(primary, createGeminiModel(env.GEMINI_API_KEY, env.GEMINI_FALLBACK_MODEL))
+      : primary;
+  }
   if (process.env.NODE_ENV !== "production") return createMockModel();
   throw new Error("GEMINI_API_KEY is not set");
 }

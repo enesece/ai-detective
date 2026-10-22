@@ -26,6 +26,11 @@ const AiEnvSchema = z.object({
     .string()
     .optional()
     .transform((v) => (v ? v : "gemini-flash-lite-latest")),
+  // Used for suspects when GEMINI_MODEL's daily free quota is used up. "none" turns it off.
+  GEMINI_FALLBACK_MODEL: z
+    .string()
+    .optional()
+    .transform((v) => (v === "none" ? undefined : v ? v : "gemini-3.1-flash-lite")),
   // Case generation runs offline, so it can use a slower model that reasons
   // before answering (a "thinking" model): fewer broken plots.
   GEMINI_GENERATOR_MODEL: z
