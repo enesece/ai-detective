@@ -33,38 +33,47 @@ export function ChatLog({
     );
   }
 
+  // Screen readers hear the finished answer once, not every streamed chunk.
+  const last = exchanges.at(-1);
+  const announcement = !waitingForAnswer && last?.answer ? `${speaker}: ${last.answer}` : "";
+
   return (
-    <ol className="divide-rule divide-y" aria-live="polite">
-      {exchanges.map((e, i) => {
-        const streaming = waitingForAnswer && i === exchanges.length - 1;
-        const target: PinTarget = {
-          kind: "answer",
-          exchangeIndex: e.index,
-          suspectId: e.suspectId,
-          question: e.question,
-          answer: e.answer,
-        };
-        return (
-          <li key={e.index} className="space-y-3 py-5 first:pt-2">
-            <p className="leading-relaxed">
-              <strong className={`${kicker} mr-2`}>{t("you")}:</strong>
-              {e.question}
-            </p>
-            <div>
-              <p className="text-lg leading-relaxed">
-                <strong className={`${kicker} text-accent mr-2`}>{speaker}:</strong>
-                {e.answer ||
-                  (streaming ? <span className="text-muted italic">{t("thinking")}</span> : null)}
+    <>
+      <p className="sr-only" aria-live="polite">
+        {announcement}
+      </p>
+      <ol className="divide-rule divide-y">
+        {exchanges.map((e, i) => {
+          const streaming = waitingForAnswer && i === exchanges.length - 1;
+          const target: PinTarget = {
+            kind: "answer",
+            exchangeIndex: e.index,
+            suspectId: e.suspectId,
+            question: e.question,
+            answer: e.answer,
+          };
+          return (
+            <li key={e.index} className="space-y-3 py-5 first:pt-2">
+              <p className="leading-relaxed">
+                <strong className={`${kicker} mr-2`}>{t("you")}:</strong>
+                {e.question}
               </p>
-              {!streaming && e.answer && (
-                <div className="mt-2">
-                  <PinButton pinned={isPinned(target)} onToggle={() => onTogglePin(target)} />
-                </div>
-              )}
-            </div>
-          </li>
-        );
-      })}
-    </ol>
+              <div>
+                <p className="text-lg leading-relaxed">
+                  <strong className={`${kicker} text-accent mr-2`}>{speaker}:</strong>
+                  {e.answer ||
+                    (streaming ? <span className="text-muted italic">{t("thinking")}</span> : null)}
+                </p>
+                {!streaming && e.answer && (
+                  <div className="mt-2">
+                    <PinButton pinned={isPinned(target)} onToggle={() => onTogglePin(target)} />
+                  </div>
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </>
   );
 }

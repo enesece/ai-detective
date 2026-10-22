@@ -59,32 +59,40 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
 
   return (
     <div className="grid gap-6 lg:grid-cols-[250px_1fr] xl:grid-cols-[250px_1fr_320px]">
-      <aside className="space-y-4">
-        <QuestionCounter used={questionsUsed} limit={questionLimit} />
+      {/* On phones the sidebar dissolves into the grid ("contents") so its pieces can be
+          reordered: counter and suspects first, then the chat, then accuse and hints. */}
+      <aside className="max-lg:contents lg:space-y-4">
+        <div className="max-lg:order-1">
+          <QuestionCounter used={questionsUsed} limit={questionLimit} />
+        </div>
         {/* The accusation is open at any time, not only after all 20 questions. */}
         <Link
           href={finished ? `/case/${caseNumber}/result` : `/case/${caseNumber}/accuse`}
-          className={`${buttonPrimary} w-full px-4`}
+          className={`${buttonPrimary} w-full px-4 max-lg:order-4`}
         >
           {finished ? t("seeResult") : t("accuse")}
         </Link>
-        <HintBox
-          used={hints.used}
-          limit={status === "loading" ? null : hints.limit}
-          revealed={hints.revealed}
-          pending={hints.pending}
-          disabled={finished || status === "loading"}
-          onRequest={requestHint}
-        />
-        <SuspectPicker
-          suspects={suspects}
-          selectedId={selected.id}
-          askedCount={(id) => exchanges.filter((e) => e.suspectId === id).length}
-          onSelect={setSelectedId}
-        />
+        <div className="max-lg:order-5">
+          <HintBox
+            used={hints.used}
+            limit={status === "loading" ? null : hints.limit}
+            revealed={hints.revealed}
+            pending={hints.pending}
+            disabled={finished || status === "loading"}
+            onRequest={requestHint}
+          />
+        </div>
+        <div className="min-w-0 max-lg:order-2">
+          <SuspectPicker
+            suspects={suspects}
+            selectedId={selected.id}
+            askedCount={(id) => exchanges.filter((e) => e.suspectId === id).length}
+            onSelect={setSelectedId}
+          />
+        </div>
       </aside>
 
-      <section className="border-ink bg-paper flex h-[70dvh] min-h-[24rem] min-w-0 flex-col border">
+      <section className="border-ink bg-paper flex h-[70dvh] min-h-[24rem] min-w-0 flex-col border max-lg:order-3">
         <header className="border-ink flex flex-col items-start justify-between gap-3 border-b px-4 py-3 sm:flex-row">
           <div className="flex items-center gap-4">
             <Portrait
@@ -158,7 +166,7 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
 
       <div
         id="notebook-panel"
-        className={`${notebookOpen ? "block" : "hidden"} lg:col-span-2 xl:col-span-1 xl:block xl:h-[70dvh] xl:overflow-y-auto`}
+        className={`${notebookOpen ? "block" : "hidden"} max-lg:order-6 lg:col-span-2 xl:col-span-1 xl:block xl:h-[70dvh] xl:overflow-y-auto`}
       >
         <NotebookPanel
           notebook={notebook}
