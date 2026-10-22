@@ -107,6 +107,24 @@
           "passed": 40
         }
       }
+    },
+    {
+      "kind": "consistency",
+      "date": "2026-10-22T12:21:11.287Z",
+      "model": "gemini:gemini-flash-lite-latest",
+      "judgeModel": "gemini:gemini-flash-lite-latest",
+      "cases": 4,
+      "interviews": 32,
+      "answers": 192,
+      "metrics": {
+        "consistent": 0.9947916666666666,
+        "no_invention": 1,
+        "no_early_reveal": 0.984375,
+        "reveals_on_cue": 0.9947916666666666,
+        "in_character": 0.9947916666666666,
+        "language": 0.9947916666666666,
+        "length": 1
+      }
     }
   ]
 }

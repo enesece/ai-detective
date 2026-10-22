@@ -304,7 +304,12 @@ Plan: 1) kanıt göster → 2) yüzleşmeye dayalı davalar (zor dava + haftanı
   - Sohbette kanıt etiketi; sonuç ekranında "hiçbir şüpheliye gösterilmeyen kilit kanıtlar". Telefonda röportaj başlığı sade.
   - Gerçek Gemini ile denendi: Margaret telefon kaydıyla aramayı, Julian ayak izleriyle tartışmayı itiraf ediyor; Voss (katil) davadaki geri çekilme cevaplarını veriyor, itiraf yok. Smoke testi kanıt kontrollerini içeriyor.
 - Bulgu: biten oyunlarda ortalama 2,3 soru → sorgu az kullanılıyordu; bu özellik bunun için.
-- **2. kısım (kod bitti, push onayı bekliyor):**
+- **3. kısım bitti (eval'ler):**
+  - `npm run eval` (injection v2): 50 saldırı (40 tek + 10 çok turlu), rol + yer tutucu ile her davada. 4 dava: **199/200 savunuldu**, model tek başına 198/200, dil 200/200. Tek "sızıntı" elle bakınca yanlış alarm (katilin kendi alibisi başka şüphelinin notlarıyla 5 kelime ortak). Filtre, "yapay zekâ da neyin nesi?" diyen karakter içi bir cevabı da engelledi (fazla katı).
+  - `npm run eval:consistency`: her şüpheliye EN+TR 6 soruluk röportaj (kanıt gösterme dahil), hakem model notlarla karşılaştırır. 4 dava, 192 cevap: tutarlı %99,5, uydurma yok %100, erken açılma yok %98,4, zamanında açılma %99,5, karakterde %99,5, dil %99,5, uzunluk %100.
+  - Gerçek bulgular: dava #4'te katil Sylvie tek kanıt gösterilince sahte harmanlamayı (motif) itiraf ediyor (cinayeti değil; filtre görmez); Reed TR'de seslerle ilgili sırrı EN'den daha geç veriyor; bir cevapta "[Reply in Turkish.]" sızdı (filtre yakaladı); bir TR cevap Türkçe karaktersiz yazıldı.
+  - Tam dökümler `eval/results/private/` (git'e girmez); `eval/results/summary.json` sadece rakamlar (`src/lib/eval/summary.ts` şeması).
+- **2. kısım (canlıda):**
   - Mantık kontrolü `confrontation_reveals`: en az 2 sır adı geçen bir kanıt gösterilince açılmalı (orta/zor hata, kolay uyarı). `mentionsEvidence()` kanıt id'sini ya da başlıktaki anlamlı kelimelerin en az 2'sini arar. Mevcut davaların çoğu zaten geçiyor.
   - Üretici prompt'u "Kanıt göster" düğmesini anlatıyor.
   - Zor dava: kâğıt üzerinde ikinci bir şüpheli katil kadar şüpheli olabilir (`killer_most_implicated` zor davada eşitliğe izin verir); ayrımı bir masumun kanıtla açılan ifadesi yapar.
