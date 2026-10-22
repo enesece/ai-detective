@@ -304,6 +304,15 @@ Plan: 1) kanıt göster → 2) yüzleşmeye dayalı davalar (zor dava + haftanı
   - Sohbette kanıt etiketi; sonuç ekranında "hiçbir şüpheliye gösterilmeyen kilit kanıtlar". Telefonda röportaj başlığı sade.
   - Gerçek Gemini ile denendi: Margaret telefon kaydıyla aramayı, Julian ayak izleriyle tartışmayı itiraf ediyor; Voss (katil) davadaki geri çekilme cevaplarını veriyor, itiraf yok. Smoke testi kanıt kontrollerini içeriyor.
 - Bulgu: biten oyunlarda ortalama 2,3 soru → sorgu az kullanılıyordu; bu özellik bunun için.
+- **2. kısım (kod bitti, push onayı bekliyor):**
+  - Mantık kontrolü `confrontation_reveals`: en az 2 sır adı geçen bir kanıt gösterilince açılmalı (orta/zor hata, kolay uyarı). `mentionsEvidence()` kanıt id'sini ya da başlıktaki anlamlı kelimelerin en az 2'sini arar. Mevcut davaların çoğu zaten geçiyor.
+  - Üretici prompt'u "Kanıt göster" düğmesini anlatıyor.
+  - Zor dava: kâğıt üzerinde ikinci bir şüpheli katil kadar şüpheli olabilir (`killer_most_implicated` zor davada eşitliğe izin verir); ayrımı bir masumun kanıtla açılan ifadesi yapar.
+  - "Çok kolay" onarım notu artık somut: çözücünün ikinci tercihini "yem" yapıp her açık ipucunu ona da uydurma talimatı. Zor davaya 2 onarım turu.
+  - Tek bir kısa özdeş EN/TR metni (genelde özel ad) artık uyarı.
+  - Onarım çağrısı hata verirse (ör. kota) eldeki kontrol edilmiş taslak kaydedilir; önceden kayboluyordu.
+  - Haftanın gününe göre zorluk (`src/lib/case/weekday.ts`): Pzt-Sa kolay, Ça-Pe orta, Cu-Pa zor; yoksa en yakın zorluk. Cron (`ensureTodayHasCase`) ve admin takvimi ("Empty · wants hard · will get #N") aynı fonksiyonu kullanır.
+  - **Açık sorun:** 3 zor denemenin 3'ü de "çok kolay" (çözücü sadece dosyadan %85-90 buluyor; model dosyaya tek kişiye uyan ayrıntılar koyuyor). Yeni onarım talimatı kota dolduğu için henüz denenmedi (22 Ekim). Yarın tekrar.
 
 ### Notlar / alınan teknik kararlar
 
