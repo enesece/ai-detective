@@ -59,7 +59,7 @@ export function useInterrogation(caseNumber: number, locale: Locale) {
   }, [caseNumber]);
 
   const ask = useCallback(
-    async (suspectId: string, question: string) => {
+    async (suspectId: string, question: string): Promise<boolean> => {
       setError(null);
       setStatus("asking");
       // Show the question immediately; the answer fills in as it streams.
@@ -85,7 +85,7 @@ export function useInterrogation(caseNumber: number, locale: Locale) {
           setError(code);
           if (code === "limit_reached") setQuestionsUsed(questionLimit);
           if (code === "game_over") setFinished(true);
-          return;
+          return false;
         }
 
         const used = Number(res.headers.get(QUESTIONS_USED_HEADER));
@@ -98,9 +98,11 @@ export function useInterrogation(caseNumber: number, locale: Locale) {
           updateLastAnswer((answer) => answer + value);
         }
         updateLastAnswer((answer) => answer.trim());
+        return true;
       } catch {
         dropLast();
         setError("ai_unavailable");
+        return false;
       } finally {
         setStatus("ready");
       }

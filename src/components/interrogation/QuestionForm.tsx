@@ -5,18 +5,25 @@ import { useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { MAX_QUESTION_LENGTH } from "@/lib/game/rules";
 
-type Props = { suspectName: string; disabled: boolean; onAsk: (question: string) => void };
+type Props = {
+  suspectName: string;
+  disabled: boolean;
+  /** Resolves to false when the question was not answered (error, limit…). */
+  onAsk: (question: string) => Promise<boolean>;
+};
 
 export function QuestionForm({ suspectName, disabled, onAsk }: Props) {
   const t = useTranslations("Interrogation");
   const [draft, setDraft] = useState("");
   const question = draft.trim();
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (disabled || !question) return;
-    onAsk(question);
     setDraft("");
+    // If it failed, give the question back so it doesn't have to be retyped
+    // (unless the player has already started typing a new one).
+    if (!(await onAsk(question))) setDraft((current) => current || question);
   }
 
   return (
@@ -27,7 +34,8 @@ export function QuestionForm({ suspectName, disabled, onAsk }: Props) {
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
+            // Not while an input method is still composing a character.
+            if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
               e.preventDefault();
               e.currentTarget.form?.requestSubmit();
             }
