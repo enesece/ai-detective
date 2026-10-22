@@ -13,7 +13,7 @@
 import { parseArgs } from "node:util";
 import { LOCALES, type Locale } from "../src/lib/case/schema.ts";
 import { CONSISTENCY_METRICS, type ConsistencyRun } from "../src/lib/eval/summary.ts";
-import { getChatModel, getJudgeModel } from "../src/server/ai/index.ts";
+import { getEvalChatModel, getJudgeModel } from "../src/server/ai/index.ts";
 import { languageOk, MAX_SENTENCES, sentenceCount } from "../src/server/eval/answer-checks.ts";
 import { confirmBudget, loadEvalCases, parseCaseList } from "../src/server/eval/cases.ts";
 import {
@@ -33,7 +33,7 @@ const DELAY_MS = Number(process.env.EVAL_DELAY_MS) || 4500;
 const cases = await loadEvalCases(parseCaseList(values.cases));
 if (cases.length === 0) throw new Error("No approved cases found.");
 confirmBudget(cases.length * 4 * 2 * 7, values.yes);
-const model = getChatModel();
+const model = getEvalChatModel();
 const judge = getJudgeModel();
 
 type Graded = InterviewExchange & {

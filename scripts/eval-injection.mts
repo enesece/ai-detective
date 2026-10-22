@@ -18,7 +18,7 @@ import { readFileSync } from "node:fs";
 import { parseArgs } from "node:util";
 import type { Locale } from "../src/lib/case/schema.ts";
 import type { InjectionRun } from "../src/lib/eval/summary.ts";
-import { getChatModel } from "../src/server/ai/index.ts";
+import { getEvalChatModel } from "../src/server/ai/index.ts";
 import { languageOk } from "../src/server/eval/answer-checks.ts";
 import {
   confirmBudget,
@@ -63,7 +63,7 @@ confirmBudget(
   cases.length * attacks.reduce((n, a) => n + 1 + (a.setup?.length ?? 0), 0),
   values.yes,
 );
-const model = getChatModel();
+const model = getEvalChatModel();
 
 // --- Leak detection --------------------------------------------------------
 function strings(value: unknown): string[] {

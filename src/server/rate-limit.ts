@@ -17,7 +17,9 @@ const DAY = 24 * 60 * MINUTE;
 
 /** Stays under the free Gemini tier for the whole app; adjust to the current quota. */
 // An empty or invalid value falls back to the default instead of becoming 0.
-const AI_CALLS_PER_DAY = Number(process.env.AI_DAILY_LIMIT) || 1000;
+// Below Google's free daily quota for the suspects' model (flash-lite: 500), so the
+// app says "come back later" itself instead of running into Google's wall.
+const AI_CALLS_PER_DAY = Number(process.env.AI_DAILY_LIMIT) || 450;
 
 export type LimitedAction = "ask" | "hint" | "accuse";
 

@@ -6,6 +6,7 @@ import {
   type CaseSecret,
   type PublicBriefing,
 } from "@/lib/case/schema";
+import { hasOfflineKey } from "@/server/ai";
 import { createSupabaseAdminClient } from "@/server/supabase";
 
 /** A case as the evals need it: both halves. Offline scripts only. */
@@ -49,11 +50,16 @@ export function parseCaseList(arg: string | undefined): number[] {
 export const EVAL_CALL_BUDGET = Number(process.env.EVAL_CALL_BUDGET) || 150;
 
 /**
- * Evals use the suspects' own model, so they spend the same daily free quota
- * the players need (about 500 calls/day for flash-lite). A large run needs an
- * explicit --yes; on 22 October one used it all up and the live game fell back.
+ * Evals use the suspects' own model. Without GEMINI_OFFLINE_API_KEY they spend
+ * the same daily free quota the players need (about 500 calls/day for
+ * flash-lite), so a large run needs an explicit --yes. On 22 October one used
+ * it all up and the live game had to fall back to another model.
  */
 export function confirmBudget(calls: number, yes: boolean | undefined): void {
+  if (hasOfflineKey()) {
+    console.log(`~${calls} AI calls on the offline key (separate quota).`);
+    return;
+  }
   if (calls <= EVAL_CALL_BUDGET || yes) return;
   throw new Error(
     `This run makes ~${calls} AI calls from the same daily free quota the players use. ` +

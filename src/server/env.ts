@@ -21,6 +21,13 @@ const AiEnvSchema = z.object({
     .string()
     .optional()
     .transform((v) => (v ? v : undefined)),
+  // Optional second key, from a separate Google Cloud project, for offline work
+  // (case generation, the blind solver, evals). Free-tier quotas are per project,
+  // so offline runs can't use up the calls the live game needs.
+  GEMINI_OFFLINE_API_KEY: z
+    .string()
+    .optional()
+    .transform((v) => (v ? v : undefined)),
   // "-latest" aliases follow Google's current model, so the default doesn't go stale.
   GEMINI_MODEL: z
     .string()
