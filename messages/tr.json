@@ -210,7 +210,8 @@
     "deleteCancel": "Vazgeç",
     "deleted": "Tamam: verilerin silindi.",
     "deleteFailed": "Olmadı. Lütfen biraz sonra tekrar dene.",
-    "noData": "Bu tarayıcı için kayıtlı bir veri yok."
+    "noData": "Bu tarayıcı için kayıtlı bir veri yok.",
+    "permanentAccount": "Kalıcı bir hesapla girişlisin; bu hesap bu sayfadan silinemez. Burada yalnızca anonim oyuncuların verileri silinir."
   },
   "Footer": {
     "privacy": "Gizlilik",

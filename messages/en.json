@@ -210,7 +210,8 @@
     "deleteCancel": "Cancel",
     "deleted": "Done: your data has been deleted.",
     "deleteFailed": "That didn't work. Please try again in a moment.",
-    "noData": "Nothing is saved for this browser."
+    "noData": "Nothing is saved for this browser.",
+    "permanentAccount": "You're signed in with a permanent account, which can't be deleted from this page. Only anonymous players' data is deleted here."
   },
   "Footer": {
     "privacy": "Privacy",
