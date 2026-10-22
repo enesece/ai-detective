@@ -8,16 +8,31 @@ import { utcToday } from "@/server/cases/repository";
 import { adminOrRedirect } from "../guard";
 
 const DAYS = 14;
+const LOW_STOCK_DAYS = 3;
 
 async function ScheduleContent() {
   await adminOrRedirect();
   const [days, rows] = await Promise.all([getUpcomingSchedule(DAYS), listCases()]);
   const pool = rows.filter((r) => r.status === "approved" && r.publishDate === null);
   const today = utcToday();
+  // Days after today that already have a case, plus cases the daily job can still pick.
+  const daysOfStock = days.filter((d) => d.date > today && d.entry).length + pool.length;
 
   return (
     <div className="space-y-8">
       <h1 className="font-display text-2xl font-bold">Schedule (UTC)</h1>
+
+      <p
+        role={daysOfStock < LOW_STOCK_DAYS ? "alert" : undefined}
+        className={`rounded-lg border px-4 py-3 text-sm ${
+          daysOfStock < LOW_STOCK_DAYS
+            ? "border-alert text-alert font-semibold"
+            : "border-rule bg-card"
+        }`}
+      >
+        {daysOfStock === 1 ? "1 day" : `${daysOfStock} days`} of cases left after today.
+        {daysOfStock < LOW_STOCK_DAYS && " Generate and approve a few more soon."}
+      </p>
 
       <ul className="divide-rule border-rule bg-card divide-y rounded-lg border">
         {days.map((day) => (
