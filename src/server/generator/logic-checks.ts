@@ -135,16 +135,21 @@ export function runLogicChecks(c: CaseDraft): CheckResult[] {
     `${killerClues.length} clue(s) point to the killer; at least 2 from different places or of different kinds are needed.`,
   );
 
-  // 6. The killer is the most implicated suspect, strictly.
+  // 6. The killer is the most implicated suspect: strictly, except in hard cases, where
+  // another suspect may look just as guilty on paper and only the interrogations
+  // (an innocent's testimony, unlocked by evidence) tell them apart.
   const implicated = (id: string) => secret.evidence.filter((e) => e.pointsTo.includes(id)).length;
-  const rivals = innocents.filter((id) => implicated(id) >= implicated(killerId));
+  const allowTie = c.difficulty === "hard";
+  const rivals = innocents.filter((id) =>
+    allowTie ? implicated(id) > implicated(killerId) : implicated(id) >= implicated(killerId),
+  );
   check(
     "killer_most_implicated",
     "error",
     rivals.length === 0,
     rivals.length === 0
-      ? `The killer is implicated by ${implicated(killerId)} clue(s), more than anyone else.`
-      : `As implicated as the killer: ${rivals.map(nameOf).join(", ")}.`,
+      ? `The killer is implicated by ${implicated(killerId)} clue(s), ${allowTie ? "no fewer than" : "more than"} anyone else.`
+      : `${allowTie ? "More" : "As"} implicated ${allowTie ? "than" : "as"} the killer: ${rivals.map(nameOf).join(", ")}.`,
   );
 
   // 7. Every key evidence item points to the killer.
@@ -232,7 +237,46 @@ export function runLogicChecks(c: CaseDraft): CheckResult[] {
       : `${untranslated.length} text(s) are identical in English and Turkish.`,
   );
 
+  // Confrontation: some secrets must be unlocked by showing a named piece of evidence
+  // ("Show evidence" in the game). Required from medium up; a nudge for easy cases.
+  const confrontations = secret.suspects.flatMap((s) =>
+    s.hides.filter((h) => pub.evidence.some((e) => mentionsEvidence(h.revealWhen, e))),
+  );
+  check(
+    "confrontation_reveals",
+    c.difficulty === "easy" ? "warning" : "error",
+    confrontations.length >= MIN_CONFRONTATIONS,
+    `${confrontations.length} secret(s) open when a named piece of evidence is shown; at least ${MIN_CONFRONTATIONS} must ("Reveal when shown the <evidence title>").`,
+  );
+
   return results;
+}
+
+const MIN_CONFRONTATIONS = 2;
+const STOP_WORDS = new Set(["with", "from", "that", "this", "their", "the", "into", "about"]);
+
+/** The evidence's meaningful title words (e.g. "half", "burned", "letter"). */
+function titleWords(title: string): string[] {
+  return title
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter((w) => w.length >= 4 && !STOP_WORDS.has(w));
+}
+
+/**
+ * Whether a reveal condition names this evidence: its id, or enough of its
+ * title words ("shown the burned letter" names "Half-burned letter").
+ */
+export function mentionsEvidence(
+  text: string,
+  evidence: { id: string; title: { en: string } },
+): boolean {
+  const lower = text.toLowerCase();
+  if (lower.includes(evidence.id)) return true;
+  const words = titleWords(evidence.title.en);
+  if (words.length === 0) return false;
+  const found = words.filter((w) => new RegExp(`\\b${w}`).test(lower)).length;
+  return found >= Math.min(2, words.length);
 }
 
 /** Every { en, tr } pair in the case. */

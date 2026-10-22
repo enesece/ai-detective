@@ -40,7 +40,11 @@ const DIFFICULTY_GUIDE: Record<Difficulty, string> = {
   easy: "EASY: the key clues are fairly direct, one red herring, the killer's lie breaks with one good question.",
   medium:
     "MEDIUM: the player must combine a clue with an interrogation answer; one or two red herrings.",
-  hard: "HARD: the decisive contradiction only appears when two suspects' testimonies and a clue are put side by side; two red herrings and a second suspect with a believable motive.",
+  hard: [
+    "HARD: on paper, a second suspect looks exactly as guilty as the killer: as many clues point to them, they have a believable motive and a shaky alibi. Two red herrings.",
+    "Nothing in the public case file separates the two. The decisive fact is an innocent suspect's hidden testimony that comes out only when they are shown one specific piece of evidence; put next to another clue, it breaks the killer's alibi.",
+    "Test it yourself: someone who reads only the public case file must not be able to say which of the two is the killer.",
+  ].join(" "),
 };
 
 export const GENERATOR_SYSTEM = `You write fair-play murder mysteries for a daily browser game.
@@ -63,6 +67,7 @@ FAIR PLAY (a separate solver checks this without seeing the solution)
 - The killer's public initial statement must not be disprovable by public evidence alone. What breaks it is an innocent suspect's testimony (seen, heard, a time) that the player has to ask for.
 - Evidence descriptions state observations, never what they prove or who they belong to.
 - Innocent suspects hold the testimony that breaks the killer's alibi (something they saw or heard). Their "hides" are given up under a condition a player can actually meet: being asked about a topic, or confronted with a named piece of evidence or another suspect's words. Use "Never" only for the killer's confession.
+- The game has a "Show evidence" button: the player puts one piece of evidence in front of a suspect. At least 2 "hides" (across all suspects) open this way; write their revealWhen as "When shown the <exact evidence title>…" using the evidence's English title.
 - Every fact needed for the solution is discoverable; nothing depends on information the player can't get.
 - Each innocent has a secret of their own and a reason to look suspicious, so every interrogation matters.
 
