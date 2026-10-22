@@ -142,7 +142,20 @@ export async function runPipeline(options: PipelineOptions): Promise<PipelineOut
     const kind = attempt === 0 ? "generate" : "repair";
     log(`${kind}: asking ${generator.id} (${theme}, ${options.difficulty})...`);
     const t = Date.now();
-    const answer = await callModel(generator, prompt, schema, timeLeft(), log);
+    let answer: string;
+    try {
+      answer = await callModel(generator, prompt, schema, timeLeft(), log);
+    } catch (error) {
+      // A failed repair (e.g. the daily quota ran out) must not lose the draft we already have.
+      if (!best) throw error;
+      log(`${kind} failed, keeping the last checked draft: ${errorMessage(error)}`);
+      attempts.push({
+        kind,
+        ms: Date.now() - t,
+        problems: [`${kind} failed: ${errorMessage(error)}`],
+      });
+      break;
+    }
     const evaluated = evaluate(answer);
     log(`${kind}: written in ${Math.round((Date.now() - t) / 1000)}s`);
 
@@ -393,4 +406,8 @@ function callTimeout(msLeft: number): number {
 
 function pct(p: number): string {
   return `${Math.round(p * 100)}%`;
+}
+
+function errorMessage(error: unknown): string {
+  return (error instanceof Error ? error.message : String(error)).slice(0, 200);
 }
