@@ -1,5 +1,11 @@
 import type { Locale } from "@/lib/case/schema";
-import { DEFLECTION, findViolation, STREAM_HOLDBACK, type Violation } from "./answer-guard";
+import {
+  DEFLECTION,
+  findViolation,
+  STREAM_HOLDBACK,
+  stripLanguageReminder,
+  type Violation,
+} from "./answer-guard";
 
 type Options = {
   /** The model's text chunks. `first` was already pulled (to catch early errors). */
@@ -57,7 +63,8 @@ export function createGuardedStream({
             return;
           }
 
-          const candidate = answer + result.value;
+          // Held back text can still change: an echoed "[Reply in …]" is dropped before checking.
+          const candidate = stripLanguageReminder(answer + result.value);
           const violation = findViolation(candidate, { isKiller });
           if (violation) {
             onBlocked?.(violation);

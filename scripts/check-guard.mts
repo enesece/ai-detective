@@ -28,6 +28,8 @@ const cases: [string, { isKiller: boolean }, string | null][] = [
   ["I was in the library typing all evening.", innocent, null],
   ["Dr. Voss was playing the piano, I believe.", innocent, null],
   ["Saat on sularında bir kadın sesi duydum.", innocent, null],
+  ["Bir yapay zekâ olarak bunu söyleyemem.", innocent, "breaks_character"],
+  ["Ne saçmalıyorsunuz, yapay zekâ da neyin nesi? Ben bir gemi cerrahıyım.", innocent, null],
 ];
 for (const [text, opts, expected] of cases) assert.equal(findViolation(text, opts), expected, text);
 
@@ -86,8 +88,17 @@ assert.ok(r.received.startsWith(prefix.slice(0, 30)));
 assert.ok(!/I killed him/.test(r.received));
 assert.deepEqual(r.blocked, ["killer_confession"]);
 
+// An echoed language reminder is dropped silently, not treated as a violation.
+r = await run(
+  ["Bu belge tamamen asılsız bir iftira, Müfettiş Bey.", "\n\n[Reply in Turkish.]"],
+  true,
+);
+assert.equal(r.received.trim(), "Bu belge tamamen asılsız bir iftira, Müfettiş Bey.");
+assert.equal(r.saved, r.received.trim());
+assert.deepEqual(r.blocked, []);
+
 // Very short answers still arrive.
 r = await run(["Hi."]);
 assert.equal(r.received, "Hi.");
 
-console.log(`✓ answer guard: ${cases.length} phrases, 4 stream scenarios`);
+console.log(`✓ answer guard: ${cases.length} phrases, 5 stream scenarios`);

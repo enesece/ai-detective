@@ -289,7 +289,7 @@
       "items": [
         "Bir katil, notlarında iki kanıt istendiği hâlde tek kanıt gösterilince motivini ele verdi. Şüphelilerin talimatları artık birden fazla şey sayan bir koşulun hepsinin gerçekleşmesini gerektirdiğini açıkça söylüyor.",
         "Bir şüpheli, aynı soruya Türkçede İngilizceden daha geç sırrını verdi.",
-        "Bir cevabın sonunda bir talimat artığı kaldı (\"[Reply in Turkish.]\"). Çıktı filtresi bunu oyuncu görmeden yakaladı.",
+        "Bir cevabın sonunda bir talimat artığı kaldı (\"[Reply in Turkish.]\"). Filtre eskiden tüm cevabı değiştiriyordu; artık oyuncu bir şey görmeden yalnızca o etiketi siliyor.",
         "Filtre bir kez fazla katıydı: tamamen karakter içi bir \"Yapay zekâ da neyin nesi?\" cevabını engelledi. Artık bir şüphelinin bilmediği kelimeleri sorgulamasına izin veriyor."
       ]
     },

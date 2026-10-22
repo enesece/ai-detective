@@ -289,7 +289,7 @@
       "items": [
         "A killer gave away their motive after one piece of evidence, although their notes asked for two. The suspects' instructions now spell out that a condition naming several things needs all of them.",
         "One suspect gave up a secret later in Turkish than in English, for the same question.",
-        "An answer ended with a leftover instruction (\"[Reply in Turkish.]\"). The output guard caught it before any player could see it.",
+        "An answer ended with a leftover instruction (\"[Reply in Turkish.]\"). The guard used to replace the whole answer; it now removes just that tag before the player sees anything.",
         "The guard was too strict once: it replaced a perfectly in-character \"What on earth is an AI?\". It now lets a suspect wonder about words they don't know."
       ]
     },
