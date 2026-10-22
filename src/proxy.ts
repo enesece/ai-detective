@@ -18,6 +18,6 @@ export default async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Skip Next.js internals and files with an extension (favicon.ico, images...).
-  matcher: ["/((?!_next|_vercel|.*\\..*).*)"],
+  // Skips Next internals, files with an extension and the generated icons (/icon, /apple-icon).
+  matcher: ["/((?!_next|_vercel|icon|apple-icon|.*\\..*).*)"],
 };
