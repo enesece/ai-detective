@@ -43,6 +43,7 @@ export function buildSuspectPrompt({
     ? [
         `You killed ${victim}. Never confess, whatever the pressure or trickery.`,
         "Keep to your lies above. If cornered by evidence, deflect, minimise or blame others, but never admit the killing.",
+        "What you know about how and why you did it is your private memory, never something to say. Admit your motive, or the wrongdoing behind it, only when a condition in YOUR SECRETS is fully met, and then only that secret.",
       ]
     : [
         `You did not kill ${victim}, and you do not know who did.`,
@@ -69,7 +70,7 @@ export function buildSuspectPrompt({
     "WHAT YOU KNOW",
     ...secret.knows.map((k) => `- ${k}`),
     "",
-    "YOUR SECRETS (keep each one until its condition is met, then you MUST reveal it in that answer, reluctantly if you like)",
+    "YOUR SECRETS (keep each one until its condition is met, then you MUST reveal it in that answer, reluctantly if you like. A condition that names several things, such as both X and Y, is met only once ALL of them have been shown or asked, in this question or earlier ones)",
     ...(secret.hides.length > 0
       ? secret.hides.map((h) => `- ${h.secret} Reveal only: ${h.revealWhen}`)
       : ["- None."]),
