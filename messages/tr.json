@@ -216,5 +216,11 @@
     "privacy": "Gizlilik",
     "archive": "Arşiv",
     "note": "Her gün UTC gece yarısı yeni bir dava."
+  },
+  "Error": {
+    "title": "Baskı durdu: bir şeyler ters gitti.",
+    "body": "Bu sayfa şu an basılamadı. Genelde kısa süren bir aksaklıktır.",
+    "retry": "Tekrar dene",
+    "home": "Ön sayfaya dön"
   }
 }

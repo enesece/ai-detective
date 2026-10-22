@@ -216,5 +216,11 @@
     "privacy": "Privacy",
     "archive": "Archive",
     "note": "A new case every day at midnight UTC."
+  },
+  "Error": {
+    "title": "Stop the presses: something went wrong.",
+    "body": "This page couldn't be printed just now. It's usually a brief hiccup.",
+    "retry": "Try again",
+    "home": "Back to the front page"
   }
 }
