@@ -166,6 +166,7 @@ export type Database = {
           id: number;
           locale: string;
           question: string;
+          shown_evidence_id: string | null;
           suspect_id: string;
         };
         Insert: {
@@ -175,6 +176,7 @@ export type Database = {
           id?: never;
           locale: string;
           question: string;
+          shown_evidence_id?: string | null;
           suspect_id: string;
         };
         Update: {
@@ -184,6 +186,7 @@ export type Database = {
           id?: never;
           locale?: string;
           question?: string;
+          shown_evidence_id?: string | null;
           suspect_id?: string;
         };
         Relationships: [
@@ -292,6 +295,7 @@ export type Database = {
           p_game_id: string;
           p_locale: string;
           p_question: string;
+          p_shown_evidence_id?: string;
           p_suspect_id: string;
         };
         Returns: undefined;

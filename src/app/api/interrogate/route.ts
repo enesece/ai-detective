@@ -18,7 +18,7 @@ import { errorResponse } from "@/server/http";
 
 /*
  * POST /api/interrogate
- * Body: { caseNumber, suspectId, question, locale }
+ * Body: { caseNumber, suspectId, question, locale, evidenceId? }
  * Streams the suspect's answer as plain text. The server loads the case itself
  * and counts the question; the client only sends what the player typed.
  */
@@ -26,7 +26,7 @@ import { errorResponse } from "@/server/http";
 export async function POST(request: Request): Promise<Response> {
   const parsed = InterrogateRequestSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return errorResponse("invalid_request", 400);
-  const { caseNumber, suspectId, question, locale } = parsed.data;
+  const { caseNumber, suspectId, question, locale, evidenceId } = parsed.data;
 
   const publicCase = await getPublicCase(caseNumber);
   const caseSecret = await getCaseSecret(caseNumber);
@@ -35,6 +35,12 @@ export async function POST(request: Request): Promise<Response> {
   const suspect = publicCase.briefing.suspects.find((s) => s.id === suspectId);
   const suspectSecret = caseSecret.suspects.find((s) => s.suspectId === suspectId);
   if (!suspect || !suspectSecret) return errorResponse("suspect_not_found", 404);
+
+  // Shown evidence must be one of this case's public items; its text comes from the case file.
+  const evidenceById = (id: string | null | undefined) =>
+    id ? publicCase.briefing.evidence.find((e) => e.id === id) : undefined;
+  const shown = evidenceById(evidenceId);
+  if (evidenceId && !shown) return errorResponse("invalid_request", 400);
 
   let model: ChatModel;
   try {
@@ -67,10 +73,13 @@ export async function POST(request: Request): Promise<Response> {
         locale,
       }),
       history: history.flatMap((e) => [
-        { role: "user" as const, text: formatQuestion(e.question, locale) },
+        {
+          role: "user" as const,
+          text: formatQuestion(e.question, locale, evidenceById(e.evidenceId)),
+        },
         { role: "model" as const, text: e.answer },
       ]),
-      message: formatQuestion(question, locale),
+      message: formatQuestion(question, locale, shown),
       maxOutputTokens: SUSPECT_MAX_OUTPUT_TOKENS,
       temperature: SUSPECT_TEMPERATURE,
       signal: request.signal, // stop paying for tokens if the player leaves
@@ -101,7 +110,14 @@ export async function POST(request: Request): Promise<Response> {
       console.warn(`[guard] blocked ${violation} from ${suspectId} (case ${caseNumber})`),
     // Save what the player actually received; nothing at all means the question is refunded.
     onFinish: async (answer) => {
-      if (answer) await gameStore.completeQuestion(gameId, { suspectId, question, answer, locale });
+      if (answer)
+        await gameStore.completeQuestion(gameId, {
+          suspectId,
+          question,
+          answer,
+          locale,
+          evidenceId: shown?.id ?? null,
+        });
       else await gameStore.refundQuestion(gameId);
     },
   });

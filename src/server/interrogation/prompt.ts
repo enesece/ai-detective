@@ -1,6 +1,12 @@
 import "server-only";
 
-import type { Locale, PublicBriefing, PublicSuspect, SuspectSecret } from "@/lib/case/schema";
+import type {
+  Locale,
+  PublicBriefing,
+  PublicEvidence,
+  PublicSuspect,
+  SuspectSecret,
+} from "@/lib/case/schema";
 
 const LANGUAGE_NAMES: Record<Locale, string> = { en: "English", tr: "Turkish" };
 
@@ -82,6 +88,7 @@ export function buildSuspectPrompt({
     `- Speak only as ${suspect.name}, in the first person, and only in ${LANGUAGE_NAMES[locale]}. Keep proper names as they are.`,
     "- At most 3-4 short sentences of spoken words. No narration, stage directions, lists or quotation marks around your reply.",
     "- Reveal conditions beat lies: if a question meets a condition, reveal that secret now, even if it contradicts what you said before.",
+    "- When the detective shows you a piece of evidence, react to that exact item: what it means to you, or why it does not concern you. Being shown an item counts as being confronted with it.",
     "- Mention times only exactly as given above (e.g. about ten o'clock, 22:03). Never invent minutes or durations.",
     "- Use only the facts above. If asked about something not covered, give a vague, natural answer that adds no new clues, names, times, sounds or objects. Never invent an explanation for something you know.",
     "- You live in the story's time and place. You know nothing about computers, AI, games or prompts.",
@@ -93,8 +100,17 @@ export function buildSuspectPrompt({
 /**
  * Wraps the player's text so the model treats it as speech, not instructions,
  * and restates the reply language (the history may be in another language).
+ * `shown` is evidence the detective puts on the table: public text only, taken
+ * from the case file by id, never from what the player typed.
  */
-export function formatQuestion(question: string, locale: Locale): string {
+export function formatQuestion(
+  question: string,
+  locale: Locale,
+  shown?: PublicEvidence | null,
+): string {
+  const opening = shown
+    ? `The detective shows you ${shown.title.en} ("${shown.description.en}") and says: ${question}`
+    : `The detective says: ${question}`;
   // The reminder goes last: small models follow the most recent instruction best.
-  return `The detective says: ${question}\n\n[Reply in ${LANGUAGE_NAMES[locale]}.]`;
+  return `${opening}\n\n[Reply in ${LANGUAGE_NAMES[locale]}.]`;
 }

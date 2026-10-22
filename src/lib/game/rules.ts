@@ -15,6 +15,8 @@ export const InterrogateRequestSchema = z.strictObject({
   suspectId: Id,
   question: z.string().trim().min(1).max(MAX_QUESTION_LENGTH),
   locale: z.enum(LOCALES),
+  /** Public evidence the detective puts in front of the suspect with this question. */
+  evidenceId: Id.optional(),
 });
 export type InterrogateRequest = z.infer<typeof InterrogateRequestSchema>;
 
@@ -30,8 +32,17 @@ export const AccuseRequestSchema = z.strictObject({
 export type AccuseRequest = z.infer<typeof AccuseRequestSchema>;
 export type Accusation = Omit<AccuseRequest, "caseNumber">;
 
-/** One question and answer. `locale` is the language the answer was given in. */
-export type Exchange = { suspectId: string; question: string; answer: string; locale: Locale };
+/**
+ * One question and answer. `locale` is the language the answer was given in;
+ * `evidenceId` is the evidence shown with the question, if any.
+ */
+export type Exchange = {
+  suspectId: string;
+  question: string;
+  answer: string;
+  locale: Locale;
+  evidenceId: string | null;
+};
 
 const ScoreBreakdownSchema = z.strictObject({
   killer: z.number(),

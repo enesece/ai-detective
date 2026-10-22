@@ -71,6 +71,7 @@ const MessageRowSchema = z.object({
   question: z.string(),
   answer: z.string(),
   locale: z.enum(LOCALES),
+  shown_evidence_id: z.string().nullable(),
 });
 
 function fail(context: string, message: string): never {
@@ -79,7 +80,13 @@ function fail(context: string, message: string): never {
 
 function toExchange(row: unknown): Exchange {
   const m = MessageRowSchema.parse(row);
-  return { suspectId: m.suspect_id, question: m.question, answer: m.answer, locale: m.locale };
+  return {
+    suspectId: m.suspect_id,
+    question: m.question,
+    answer: m.answer,
+    locale: m.locale,
+    evidenceId: m.shown_evidence_id,
+  };
 }
 
 export const gameStore: GameStore = {
@@ -109,7 +116,7 @@ export const gameStore: GameStore = {
       db.from("games").select("questions_used, hints_used, result").eq("id", gameId).single(),
       db
         .from("messages")
-        .select("suspect_id, question, answer, locale")
+        .select("suspect_id, question, answer, locale, shown_evidence_id")
         .eq("game_id", gameId)
         .order("id"),
     ]);
@@ -151,6 +158,7 @@ export const gameStore: GameStore = {
       p_question: exchange.question,
       p_answer: exchange.answer,
       p_locale: exchange.locale,
+      p_shown_evidence_id: exchange.evidenceId ?? undefined,
     });
     if (error) fail("completeQuestion", error.message);
   },
@@ -158,7 +166,7 @@ export const gameStore: GameStore = {
   async recentExchanges(gameId, suspectId, locale, limit) {
     const { data, error } = await createSupabaseAdminClient()
       .from("messages")
-      .select("suspect_id, question, answer, locale")
+      .select("suspect_id, question, answer, locale, shown_evidence_id")
       .eq("game_id", gameId)
       .eq("suspect_id", suspectId)
       .eq("locale", locale)
