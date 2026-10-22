@@ -185,9 +185,11 @@ export const CaseSecretSchema = z.strictObject({
 /* FULL CASE + cross-reference checks                                  */
 /* ------------------------------------------------------------------ */
 
+export const DifficultySchema = z.enum(["easy", "medium", "hard"]);
+
 const CaseShapeSchema = z.strictObject({
   caseNumber: z.number().int().positive(),
-  difficulty: z.enum(["easy", "medium", "hard"]),
+  difficulty: DifficultySchema,
   public: PublicBriefingSchema,
   secret: CaseSecretSchema,
 });

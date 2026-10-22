@@ -4,6 +4,8 @@ import { PageFallback } from "@/components/ui/PageFallback";
 import { Link } from "@/i18n/navigation";
 import { scheduleCase, unscheduleDay } from "@/server/admin/actions";
 import { getUpcomingSchedule, listCases } from "@/server/admin/data";
+import { DifficultySchema } from "@/lib/case/schema";
+import { difficultyForDay, pickForDay } from "@/lib/case/weekday";
 import { utcToday } from "@/server/cases/repository";
 import { adminOrRedirect } from "../guard";
 
@@ -17,6 +19,20 @@ async function ScheduleContent() {
   const today = utcToday();
   // Days after today that already have a case, plus cases the daily job can still pick.
   const daysOfStock = days.filter((d) => d.date > today && d.entry).length + pool.length;
+
+  // What the daily job will put on each empty day, if nothing changes: it takes
+  // the weekday's difficulty from the pool (or the closest), one case per day.
+  const remaining = pool.map((row) => ({
+    ...row,
+    difficulty: DifficultySchema.catch("medium").parse(row.difficulty),
+  }));
+  const forecast = new Map<string, (typeof remaining)[number] | undefined>();
+  for (const day of days) {
+    if (day.entry || day.date < today) continue;
+    const pick = pickForDay(remaining, day.date);
+    forecast.set(day.date, pick);
+    if (pick) remaining.splice(remaining.indexOf(pick), 1);
+  }
 
   return (
     <div className="space-y-8">
@@ -53,9 +69,7 @@ async function ScheduleContent() {
                 )}
               </>
             ) : (
-              <span className="text-alert flex-1 text-sm">
-                Empty: the daily job will use the oldest case in the pool.
-              </span>
+              <EmptyDay wanted={difficultyForDay(day.date)} pick={forecast.get(day.date)} />
             )}
           </li>
         ))}
@@ -97,6 +111,27 @@ async function ScheduleContent() {
         ))}
       </section>
     </div>
+  );
+}
+
+function EmptyDay({
+  wanted,
+  pick,
+}: {
+  wanted: string;
+  pick: { caseNumber: number | null; difficulty: string; title: { en: string } } | undefined;
+}) {
+  return (
+    <span className="flex-1 text-sm">
+      <span className="text-muted">Empty · wants {wanted} · </span>
+      {pick ? (
+        <span>
+          will get #{pick.caseNumber} · {pick.title.en} ({pick.difficulty})
+        </span>
+      ) : (
+        <span className="text-alert font-semibold">nothing left in the pool</span>
+      )}
+    </span>
   );
 }
 
