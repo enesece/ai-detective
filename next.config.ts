@@ -19,6 +19,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  // Share images read their fonts from disk at runtime (for cases published after the build).
+  outputFileTracingIncludes: { "/**/opengraph-image*": ["./assets/fonts/*.ttf"] },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
