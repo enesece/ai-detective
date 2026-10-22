@@ -16,7 +16,8 @@
     "check:guard": "tsx scripts/check-guard.mts",
     "eval": "tsx --conditions=react-server --env-file=.env.local scripts/eval-injection.mts",
     "generate": "tsx --conditions=react-server --env-file=.env.local scripts/generate-case.mts",
-    "check:solver": "node --conditions=react-server --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-solver-isolation.mts"
+    "check:solver": "node --conditions=react-server --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-solver-isolation.mts",
+    "eval:consistency": "tsx --conditions=react-server --env-file=.env.local scripts/eval-consistency.mts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

@@ -30,3 +30,10 @@ export function getSolverModel(): JsonModel {
   if (!env.GEMINI_API_KEY) throw new Error("GEMINI_API_KEY is not set");
   return createGeminiJsonModel(env.GEMINI_API_KEY, env.GEMINI_SOLVER_MODEL);
 }
+
+/** Model that grades suspects' answers in the offline consistency eval. */
+export function getJudgeModel(): JsonModel {
+  const env = getAiEnv();
+  if (!env.GEMINI_API_KEY) throw new Error("GEMINI_API_KEY is not set");
+  return createGeminiJsonModel(env.GEMINI_API_KEY, env.EVAL_JUDGE_MODEL ?? env.GEMINI_SOLVER_MODEL);
+}

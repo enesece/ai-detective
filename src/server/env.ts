@@ -39,6 +39,11 @@ const AiEnvSchema = z.object({
     .string()
     .optional()
     .transform((v) => (v ? v : "gemini-flash-lite-latest")),
+  // Offline evals: the model that grades suspects' answers. Defaults to the solver's model.
+  EVAL_JUDGE_MODEL: z
+    .string()
+    .optional()
+    .transform((v) => (v ? v : undefined)),
 });
 
 export type AiEnv = z.infer<typeof AiEnvSchema>;

@@ -41,3 +41,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 scripts/tmp/
+
+# Eval transcripts can contain case secrets (incl. unpublished cases)
+eval/results/private/
