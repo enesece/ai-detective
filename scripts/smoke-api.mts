@@ -55,7 +55,9 @@ async function newPlayer() {
     global: { headers: { Authorization: `Bearer ${data.session.access_token}` } },
     auth: { persistSession: false },
   });
-  return { id: data.session.user.id, call, db };
+  const deleteSelf = () =>
+    fetch(`${APP}/api/player`, { method: "DELETE", headers: { cookie: cookie() } });
+  return { id: data.session.user.id, call, db, deleteSelf };
 }
 
 try {
@@ -91,7 +93,9 @@ try {
   assert.equal(snap.questionsUsed, 1);
   assert.equal(snap.exchanges.length, 1);
   assert.equal(snap.hintsUsed, 1);
-  step("progress persisted in Supabase");
+  // Everyone's results could hint at the answer: none while still playing.
+  assert.equal(snap.stats, null);
+  step("progress persisted in Supabase; no solve stats before the accusation");
 
   // --- Cheating attempts with the player's own credentials -----------------
   const secret = await p.db.from("cases").select("secret");
@@ -150,6 +154,8 @@ try {
 
   snap = await (await p.call("/api/game/1")).json();
   assert.equal(snap.result.score.total, 230);
+  assert.ok(snap.stats.finished >= 1 && snap.stats.solved >= 1, JSON.stringify(snap.stats));
+  step(`solve stats after the accusation: ${snap.stats.solved}/${snap.stats.finished} solved`);
   // Only the case of the day counts towards the streak.
   const day = await p.db
     .from("daily_schedule")
@@ -170,6 +176,11 @@ try {
   });
   assert.equal(res.status, 401);
   step("request without a session rejected (401)");
+
+  // "Delete my data": only for a signed-in, anonymous account.
+  assert.equal((await fetch(`${APP}/api/player`, { method: "DELETE" })).status, 401);
+  assert.equal((await p.deleteSelf()).status, 403);
+  step("data deletion: 401 without a session, 403 for a non-anonymous account");
 
   // --- Rate limit -----------------------------------------------------------
   const spammer = await newPlayer();
