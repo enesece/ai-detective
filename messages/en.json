@@ -156,14 +156,20 @@
     "trueStory": "What really happened",
     "evidenceExplained": "What the evidence was saying",
     "stampSolved": "Case closed",
-    "stampUnsolved": "Unsolved"
+    "stampUnsolved": "Unsolved",
+    "missedTitle": "What you missed",
+    "missedNothing": "Nothing: every key clue was in your notebook and you questioned every suspect. Thorough work, detective.",
+    "missedEvidence": "Key evidence not in your notebook",
+    "missedSuspects": "Suspects you never questioned",
+    "stats": "{percent}% of detectives named the killer · {finished, plural, one {# case closed} other {# cases closed}} · average score {average}"
   },
   "Player": {
     "solved": "Solved · {score} points",
     "unsolved": "Not solved",
     "inProgress": "In progress",
     "streak": "{count, plural, one {# day streak} other {# day streak}}",
-    "bestStreak": "Best: {count}"
+    "bestStreak": "Best: {count}",
+    "nextCase": "Next case in about {hours} h {minutes} min"
   },
   "Archive": {
     "title": "Case archive",

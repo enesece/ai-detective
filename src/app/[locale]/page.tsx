@@ -64,7 +64,7 @@ export default async function HomePage() {
                 {t("openCase")}
               </Link>
               <span className="text-muted font-sans text-sm">{t("questionsNote")}</span>
-              <TodayStatus caseNumber={today.caseNumber} />
+              <TodayStatus caseNumber={today.caseNumber} isToday={isToday} />
             </div>
           </div>
           <aside

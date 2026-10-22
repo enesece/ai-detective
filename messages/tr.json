@@ -156,14 +156,20 @@
     "trueStory": "Gerçekte ne oldu",
     "evidenceExplained": "Kanıtlar ne anlatıyordu",
     "stampSolved": "Dava kapandı",
-    "stampUnsolved": "Çözülemedi"
+    "stampUnsolved": "Çözülemedi",
+    "missedTitle": "Gözden kaçanlar",
+    "missedNothing": "Hiçbir şey: bütün kilit kanıtlar not defterindeydi ve her şüpheliyi sorguladın. Titiz bir iş, dedektif.",
+    "missedEvidence": "Not defterine girmeyen kilit kanıtlar",
+    "missedSuspects": "Hiç sorgulamadığın şüpheliler",
+    "stats": "Katili bulan dedektifler: %{percent} · {finished} dava kapandı · ortalama puan {average}"
   },
   "Player": {
     "solved": "Çözüldü · {score} puan",
     "unsolved": "Çözülemedi",
     "inProgress": "Devam ediyor",
     "streak": "{count} günlük seri",
-    "bestStreak": "En iyi: {count}"
+    "bestStreak": "En iyi: {count}",
+    "nextCase": "Yeni dava yaklaşık {hours} sa {minutes} dk sonra"
   },
   "Archive": {
     "title": "Dava arşivi",

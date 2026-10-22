@@ -1,13 +1,15 @@
 "use client";
 
-import { buttonPrimary, kicker } from "@/components/ui/styles";
+import { useNotebook } from "@/components/notebook/useNotebook";
+import { NextCaseCountdown } from "@/components/player/NextCaseCountdown";
+import { buttonPrimary, kicker, linkCaps } from "@/components/ui/styles";
 import { useLocale, useTranslations } from "next-intl";
 import { hasLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { localize } from "@/lib/case/localize";
 import type { CaseOptions } from "@/lib/case/options";
-import type { ScoreBreakdown } from "@/lib/game/rules";
+import type { CaseStats, ScoreBreakdown } from "@/lib/game/rules";
 import { useGameSnapshot } from "./useGameSnapshot";
 
 type Props = { caseNumber: number; options: CaseOptions };
@@ -17,6 +19,7 @@ export function ResultView({ caseNumber, options }: Props) {
   const rawLocale = useLocale();
   const locale = hasLocale(routing.locales, rawLocale) ? rawLocale : routing.defaultLocale;
   const game = useGameSnapshot(caseNumber);
+  const { notebook } = useNotebook(caseNumber);
 
   if (game.status === "loading") {
     return <p className="text-muted py-10 italic">{t("loading")}</p>;
@@ -37,6 +40,16 @@ export function ResultView({ caseNumber, options }: Props) {
   const motiveLabel = (id: string) => options.motives.find((m) => m.id === id)?.label ?? id;
   const evidenceTitle = (id: string) => options.evidence.find((e) => e.id === id)?.title ?? id;
   const { accusation, correct, solution, score } = result;
+  const exchanges = game.snapshot?.exchanges ?? [];
+  const stats = game.snapshot?.stats ?? null;
+
+  // What the player could have looked at harder: key evidence that never made it
+  // into their notebook, and suspects they never questioned.
+  const pinnedEvidence = new Set(
+    notebook.pins.flatMap((p) => (p.kind === "evidence" ? [p.evidenceId] : [])),
+  );
+  const missedEvidence = solution.keyEvidenceIds.filter((id) => !pinnedEvidence.has(id));
+  const unquestioned = options.suspects.filter((s) => !exchanges.some((e) => e.suspectId === s.id));
 
   const rows = [
     {
@@ -78,6 +91,8 @@ export function ResultView({ caseNumber, options }: Props) {
           <p className="text-muted mt-1 italic">
             {t("summary", { questions: result.questionsUsed, hints: result.hintsUsed })}
           </p>
+          {stats && <StatsLine stats={stats} />}
+          <NextCaseCountdown className="mt-1 font-sans text-sm font-bold tracking-[0.1em] uppercase" />
         </div>
       </header>
 
@@ -106,6 +121,36 @@ export function ResultView({ caseNumber, options }: Props) {
 
       <ScoreTable score={score} />
 
+      <section aria-labelledby="missed-h">
+        <h2 id="missed-h" className="font-display border-ink border-b pb-2 text-3xl">
+          {t("missedTitle")}
+        </h2>
+        {missedEvidence.length === 0 && unquestioned.length === 0 ? (
+          <p className="mt-4 text-lg leading-relaxed">{t("missedNothing")}</p>
+        ) : (
+          <dl className="mt-4 space-y-4">
+            {missedEvidence.length > 0 && (
+              <div>
+                <dt className={kicker}>{t("missedEvidence")}</dt>
+                <dd className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
+                  {missedEvidence.map((id) => (
+                    <a key={id} href={`#explain-${id}`} className={linkCaps}>
+                      🔑 {evidenceTitle(id)}
+                    </a>
+                  ))}
+                </dd>
+              </div>
+            )}
+            {unquestioned.length > 0 && (
+              <div>
+                <dt className={kicker}>{t("missedSuspects")}</dt>
+                <dd className="mt-1 text-lg">{unquestioned.map((s) => s.name).join(", ")}</dd>
+              </div>
+            )}
+          </dl>
+        )}
+      </section>
+
       <section>
         <h2 className="font-display border-ink border-b pb-2 text-3xl">{t("trueStory")}</h2>
         <p className="text-muted mt-3 text-lg italic">{localize(solution.method, locale)}</p>
@@ -118,7 +163,11 @@ export function ResultView({ caseNumber, options }: Props) {
         <h2 className="font-display border-ink border-b pb-2 text-3xl">{t("evidenceExplained")}</h2>
         <ul className="mt-4 space-y-3">
           {solution.evidenceExplanations.map((e) => (
-            <li key={e.evidenceId} className="border-ink bg-card border-t-[3px] p-4">
+            <li
+              key={e.evidenceId}
+              id={`explain-${e.evidenceId}`}
+              className="border-ink bg-card scroll-mt-6 border-t-[3px] p-4"
+            >
               <p className="font-bold">
                 {solution.keyEvidenceIds.includes(e.evidenceId) && "🔑 "}
                 {evidenceTitle(e.evidenceId)}
@@ -129,6 +178,17 @@ export function ResultView({ caseNumber, options }: Props) {
         </ul>
       </section>
     </div>
+  );
+}
+
+function StatsLine({ stats }: { stats: CaseStats }) {
+  const t = useTranslations("Result");
+  if (stats.finished === 0) return null;
+  const percent = Math.round((stats.solved / stats.finished) * 100);
+  return (
+    <p className="mt-1">
+      {t("stats", { percent, finished: stats.finished, average: stats.averageScore })}
+    </p>
   );
 }
 
