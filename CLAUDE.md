@@ -314,6 +314,16 @@ Plan: 1) kanıt göster → 2) yüzleşmeye dayalı davalar (zor dava + haftanı
   - Haftanın gününe göre zorluk (`src/lib/case/weekday.ts`): Pzt-Sa kolay, Ça-Pe orta, Cu-Pa zor; yoksa en yakın zorluk. Cron (`ensureTodayHasCase`) ve admin takvimi ("Empty · wants hard · will get #N") aynı fonksiyonu kullanır.
   - **Açık sorun:** 3 zor denemenin 3'ü de "çok kolay" (çözücü sadece dosyadan %85-90 buluyor; model dosyaya tek kişiye uyan ayrıntılar koyuyor). Yeni onarım talimatı kota dolduğu için henüz denenmedi (22 Ekim). Yarın tekrar.
 
+### Kota olayı (22 Ekim 2026) ve önlemler
+
+- **Ne oldu:** Eval'ler (injection 280 + tutarlılık ~150 çağrı) + çözücü + denemeler, şüphelilerin modeli `gemini-flash-lite-latest`'in (= `gemini-3.5-flash-lite`) günlük ücretsiz kotasını (**500 istek/gün, proje + model başına**) bitirdi; canlı oyun soru cevaplayamadı. Sebep: offline işler canlı oyunla aynı anahtar + modeli kullanıyordu.
+- **Önlemler:**
+  1. Yedek model: `withFallback` (`src/server/ai/fallback.ts`). Ana model 429 verirse (hiç metin gönderilmeden) aynı istek `GEMINI_FALLBACK_MODEL`'e (varsayılan `gemini-3.1-flash-lite`, 503'te bir kez tekrar) gider. Canlıda doğrulandı.
+  2. `GEMINI_OFFLINE_API_KEY`: ikinci bir Google Cloud projesinden anahtar; üretici, çözücü, hakem ve eval'ler bunu kullanır (`offlineKey()`), canlı oyunun kotasına dokunmaz. Eval'ler `getEvalChatModel()` ile oyunun modelini test eder (yedeksiz).
+  3. Eval freni: offline anahtar yoksa 150+ çağrılık çalıştırma `--yes` ister.
+  4. `AI_DAILY_LIMIT` varsayılanı 1000 → 450 (gerçek kota 500).
+- Mevcut modeller AI Studio listesinde: `gemini-2.x` ve `gemma-3` artık 404; `gemini-3.1-flash-lite`, `gemini-3-flash-preview` çalışıyor.
+
 ### Notlar / alınan teknik kararlar
 
 - Next 16: `middleware.ts` → `proxy.ts`; `cacheComponents` açıkken her kök parametre için `generateStaticParams` zorunlu, `dynamicParams` kullanılamaz. Bulunamayan sayfalar stream sonrası 200 + `noindex` döner (Next'in belgelenmiş davranışı).
