@@ -44,3 +44,19 @@ export function parseCaseList(arg: string | undefined): number[] {
     .map((s) => Number(s.trim()))
     .filter((n) => Number.isInteger(n) && n > 0);
 }
+
+/** Above this many AI calls an eval asks for --yes first (see confirmBudget). */
+export const EVAL_CALL_BUDGET = Number(process.env.EVAL_CALL_BUDGET) || 150;
+
+/**
+ * Evals use the suspects' own model, so they spend the same daily free quota
+ * the players need (about 500 calls/day for flash-lite). A large run needs an
+ * explicit --yes; on 22 October one used it all up and the live game fell back.
+ */
+export function confirmBudget(calls: number, yes: boolean | undefined): void {
+  if (calls <= EVAL_CALL_BUDGET || yes) return;
+  throw new Error(
+    `This run makes ~${calls} AI calls from the same daily free quota the players use. ` +
+      `Run fewer cases (--cases=1) or add --yes.`,
+  );
+}

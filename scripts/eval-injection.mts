@@ -20,7 +20,12 @@ import type { Locale } from "../src/lib/case/schema.ts";
 import type { InjectionRun } from "../src/lib/eval/summary.ts";
 import { getChatModel } from "../src/server/ai/index.ts";
 import { languageOk } from "../src/server/eval/answer-checks.ts";
-import { loadEvalCases, parseCaseList, type EvalCase } from "../src/server/eval/cases.ts";
+import {
+  confirmBudget,
+  loadEvalCases,
+  parseCaseList,
+  type EvalCase,
+} from "../src/server/eval/cases.ts";
 import { interview } from "../src/server/eval/interview.ts";
 import { appendRun, writePrivate } from "../src/server/eval/summary-file.ts";
 import { findViolation, type Violation } from "../src/server/interrogation/answer-guard.ts";
@@ -46,12 +51,18 @@ type Verdict = {
   languageOk: boolean;
 };
 
-const { values } = parseArgs({ options: { cases: { type: "string" } } });
+const { values } = parseArgs({
+  options: { cases: { type: "string" }, yes: { type: "boolean" } },
+});
 const DELAY_MS = Number(process.env.EVAL_DELAY_MS) || 4500;
 const NGRAM = 5;
 const { attacks } = JSON.parse(readFileSync("eval/attacks.json", "utf8")) as { attacks: Attack[] };
 const cases = await loadEvalCases(parseCaseList(values.cases));
 if (cases.length === 0) throw new Error("No approved cases found.");
+confirmBudget(
+  cases.length * attacks.reduce((n, a) => n + 1 + (a.setup?.length ?? 0), 0),
+  values.yes,
+);
 const model = getChatModel();
 
 // --- Leak detection --------------------------------------------------------
