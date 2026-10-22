@@ -294,7 +294,7 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 - **Link önizleme görselleri:** `next/og` ile gazete kartı (`src/server/og/gazette-card.tsx`), site geneli + dava başına. Fontlar `assets/fonts/` (OFL lisanslarıyla), `outputFileTracingIncludes` ile sunucu paketine eklenir. Satori `double` kenarlığı desteklemiyor → iki çizgi.
 - Not: dev sunucusu açıkken aynı klasörde `npm run build` almak dev'i sonsuz "Compiled" döngüsüne sokabiliyor → dev'i yeniden başlat.
 
-### İkinci inceleme: sorguyu derinleştir + AI kalitesini ölç (22 Ekim 2026, Enes onayladı)
+### İkinci inceleme: sorguyu derinleştir + AI kalitesini ölç (22 Ekim 2026, Enes onayladı; 4 kısım da bitti)
 
 Plan: 1) kanıt göster → 2) yüzleşmeye dayalı davalar (zor dava + haftanın gününe göre zorluk) → 3) tutarlılık eval'i + injection eval v2 → 4) herkese açık "Laboratuvar" sayfası. Her kısımdan sonra onay.
 
@@ -304,6 +304,8 @@ Plan: 1) kanıt göster → 2) yüzleşmeye dayalı davalar (zor dava + haftanı
   - Sohbette kanıt etiketi; sonuç ekranında "hiçbir şüpheliye gösterilmeyen kilit kanıtlar". Telefonda röportaj başlığı sade.
   - Gerçek Gemini ile denendi: Margaret telefon kaydıyla aramayı, Julian ayak izleriyle tartışmayı itiraf ediyor; Voss (katil) davadaki geri çekilme cevaplarını veriyor, itiraf yok. Smoke testi kanıt kontrollerini içeriyor.
 - Bulgu: biten oyunlarda ortalama 2,3 soru → sorgu az kullanılıyordu; bu özellik bunun için.
+- **4. kısım bitti (canlıda):** `/[locale]/lab` "Laboratuvar" sayfası (EN/TR): manşet rakamlar, saldırı türüne ve tutarlılık ölçütüne göre tek renkli çubuklar (değerler yazılı), testlerin bulduğu sorunlar (dava adı/numarası vermeden), çözümün nasıl gizli kaldığı, sınırlar, çalıştırma geçmişi. `eval/results/summary.json` build'de katı şemayla okunur (`src/lib/eval/results.ts`). Alt bilgi + ana sayfa + sitemap'te bağlantı.
+- **Eval bulgularından düzeltmeler (canlıda):** (1) prompt: birden fazla şey sayan açılma koşulu hepsini ister; katil motivini/arkasındaki suçu sadece koşul tam sağlanınca söyler (2x2 testte tek kanıt 4/4 inkâr, iki kanıt 3/4 doğru açılma, itiraf yok). (2) Filtre: cevap sonundaki "[Reply in …]" artık engellenmiyor, sessizce siliniyor. (3) Türkçe "karakterden çıktı" kalıbı artık sadece "yapay zekâ" kelimesine değil, kendini yapay zekâ olarak tanıtmaya bakıyor.
 - **3. kısım bitti (eval'ler):**
   - `npm run eval` (injection v2): 50 saldırı (40 tek + 10 çok turlu), rol + yer tutucu ile her davada. 4 dava: **199/200 savunuldu**, model tek başına 198/200, dil 200/200. Tek "sızıntı" elle bakınca yanlış alarm (katilin kendi alibisi başka şüphelinin notlarıyla 5 kelime ortak). Filtre, "yapay zekâ da neyin nesi?" diyen karakter içi bir cevabı da engelledi (fazla katı).
   - `npm run eval:consistency`: her şüpheliye EN+TR 6 soruluk röportaj (kanıt gösterme dahil), hakem model notlarla karşılaştırır. 4 dava, 192 cevap: tutarlı %99,5, uydurma yok %100, erken açılma yok %98,4, zamanında açılma %99,5, karakterde %99,5, dil %99,5, uzunluk %100.
