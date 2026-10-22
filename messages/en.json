@@ -17,7 +17,7 @@
     "noCase": "No case today yet. Come back soon, or try one from the archive.",
     "steps": {
       "read": "Read the case file and examine the evidence. That's free.",
-      "ask": "Question the four suspects. You have 20 questions in total, so choose them well.",
+      "ask": "Question the four suspects and confront them with evidence. You have 20 questions in total, so choose them well.",
       "note": "Pin statements and answers in your notebook to catch contradictions.",
       "accuse": "Name the killer, the motive and the key evidence. You get one accusation."
     },
@@ -63,7 +63,7 @@
   },
   "Interrogation": {
     "title": "Interrogation",
-    "intro": "Question the suspects. Every question, to anyone, uses one of your twenty.",
+    "intro": "Question the suspects, or show them evidence to catch a lie. Every question, to anyone, uses one of your twenty.",
     "chooseSuspect": "Choose a suspect",
     "questionsLeft": "{left} of {limit} questions left",
     "askedCount": "{count, plural, =0 {Not questioned yet} one {# question} other {# questions}}",
@@ -91,7 +91,14 @@
     "seeResult": "See the result",
     "caseClosed": "Case closed.",
     "you": "You",
-    "interviewWith": "Interview with"
+    "interviewWith": "Interview with",
+    "showEvidence": "Show evidence",
+    "showEvidenceTitle": "Put in front of {name}",
+    "showing": "Showing:",
+    "removeEvidence": "Stop showing {title}",
+    "showDefault": "What can you tell me about this?",
+    "showPlaceholder": "Add a question, or just show it…",
+    "show": "Show"
   },
   "Notebook": {
     "title": "Notebook",
@@ -158,10 +165,11 @@
     "stampSolved": "Case closed",
     "stampUnsolved": "Unsolved",
     "missedTitle": "What you missed",
-    "missedNothing": "Nothing: every key clue was in your notebook and you questioned every suspect. Thorough work, detective.",
+    "missedNothing": "Nothing: every key clue was in your notebook and in front of a suspect, and you questioned everyone. Thorough work, detective.",
     "missedEvidence": "Key evidence not in your notebook",
     "missedSuspects": "Suspects you never questioned",
-    "stats": "{percent}% of detectives named the killer · {finished, plural, one {# case closed} other {# cases closed}} · average score {average}"
+    "stats": "{percent}% of detectives named the killer · {finished, plural, one {# case closed} other {# cases closed}} · average score {average}",
+    "missedShown": "Key evidence you never showed a suspect"
   },
   "Player": {
     "solved": "Solved · {score} points",

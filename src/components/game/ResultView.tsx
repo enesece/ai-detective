@@ -50,6 +50,9 @@ export function ResultView({ caseNumber, options }: Props) {
   );
   const missedEvidence = solution.keyEvidenceIds.filter((id) => !pinnedEvidence.has(id));
   const unquestioned = options.suspects.filter((s) => !exchanges.some((e) => e.suspectId === s.id));
+  const neverShown = solution.keyEvidenceIds.filter(
+    (id) => !exchanges.some((e) => e.evidenceId === id),
+  );
 
   const rows = [
     {
@@ -125,7 +128,7 @@ export function ResultView({ caseNumber, options }: Props) {
         <h2 id="missed-h" className="font-display border-ink border-b pb-2 text-3xl">
           {t("missedTitle")}
         </h2>
-        {missedEvidence.length === 0 && unquestioned.length === 0 ? (
+        {missedEvidence.length === 0 && unquestioned.length === 0 && neverShown.length === 0 ? (
           <p className="mt-4 text-lg leading-relaxed">{t("missedNothing")}</p>
         ) : (
           <dl className="mt-4 space-y-4">
@@ -136,6 +139,18 @@ export function ResultView({ caseNumber, options }: Props) {
                   {missedEvidence.map((id) => (
                     <a key={id} href={`#explain-${id}`} className={linkCaps}>
                       🔑 {evidenceTitle(id)}
+                    </a>
+                  ))}
+                </dd>
+              </div>
+            )}
+            {neverShown.length > 0 && (
+              <div>
+                <dt className={kicker}>{t("missedShown")}</dt>
+                <dd className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
+                  {neverShown.map((id) => (
+                    <a key={id} href={`#explain-${id}`} className={linkCaps}>
+                      📎 {evidenceTitle(id)}
                     </a>
                   ))}
                 </dd>

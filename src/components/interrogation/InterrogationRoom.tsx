@@ -93,19 +93,20 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
       </aside>
 
       <section className="border-ink bg-paper flex h-[70dvh] min-h-[24rem] min-w-0 flex-col border max-lg:order-3">
-        <header className="border-ink flex flex-col items-start justify-between gap-3 border-b px-4 py-3 sm:flex-row">
-          <div className="flex items-center gap-4">
+        {/* On phones the suspect strip above already shows face and role, so the header stays slim. */}
+        <header className="border-ink flex items-center justify-between gap-3 border-b px-4 py-2 sm:py-3">
+          <div className="flex min-w-0 items-center gap-4">
             <Portrait
               name={selected.name}
               seed={selected.id}
               appearance={selected.appearance}
               crop="head"
-              className="h-16 w-16 shrink-0"
+              className="h-16 w-16 shrink-0 max-lg:hidden"
             />
-            <div>
-              <p className={`${kicker} text-muted`}>{t("interviewWith")}</p>
-              <h2 className="font-display text-2xl sm:text-3xl">{selected.name}</h2>
-              <p className="text-muted italic">{selected.role}</p>
+            <div className="min-w-0">
+              <p className={`${kicker} text-muted max-sm:hidden`}>{t("interviewWith")}</p>
+              <h2 className="font-display text-xl leading-tight sm:text-3xl">{selected.name}</h2>
+              <p className="text-muted italic max-sm:hidden">{selected.role}</p>
             </div>
           </div>
           {/* Below xl the notebook is a panel you open; on wide screens it's always visible. */}
@@ -135,6 +136,7 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
               waitingForAnswer={status === "asking"}
               isPinned={isPinned}
               onTogglePin={togglePin}
+              evidenceTitle={(id) => evidence.find((e) => e.id === id)?.title}
             />
           )}
         </div>
@@ -157,8 +159,9 @@ export function InterrogationRoom({ caseNumber, suspects, evidence }: Props) {
           ) : (
             <QuestionForm
               suspectName={selected.name}
+              evidence={evidence}
               disabled={status !== "ready"}
-              onAsk={(question) => ask(selected.id, question)}
+              onAsk={(question, evidenceId) => ask(selected.id, question, evidenceId)}
             />
           )}
         </footer>

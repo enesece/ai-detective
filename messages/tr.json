@@ -17,7 +17,7 @@
     "noCase": "Bugünün davası henüz yayınlanmadı. Birazdan tekrar bak ya da arşivden bir dava seç.",
     "steps": {
       "read": "Dava dosyasını oku, kanıtları incele. Bunlar ücretsiz.",
-      "ask": "Dört şüpheliyi sorgula. Toplam 20 soru hakkın var, iyi seç.",
+      "ask": "Dört şüpheliyi sorgula, önlerine kanıt koy. Toplam 20 soru hakkın var, iyi seç.",
       "note": "Çelişkileri yakalamak için ifadeleri ve cevapları not defterine işaretle.",
       "accuse": "Katili, motifi ve kilit kanıtı söyle. Tek suçlama hakkın var."
     },
@@ -63,7 +63,7 @@
   },
   "Interrogation": {
     "title": "Sorgu",
-    "intro": "Şüphelileri sorgula. Kime sorarsan sor, her soru yirmi hakkından birini kullanır.",
+    "intro": "Şüphelileri sorgula ya da yalanlarını yakalamak için önlerine kanıt koy. Kime sorarsan sor, her soru yirmi hakkından birini kullanır.",
     "chooseSuspect": "Bir şüpheli seç",
     "questionsLeft": "{limit} sorudan {left} kaldı",
     "askedCount": "{count, plural, =0 {Henüz sorgulanmadı} other {# soru}}",
@@ -91,7 +91,14 @@
     "seeResult": "Sonucu gör",
     "caseClosed": "Dava kapandı.",
     "you": "Siz",
-    "interviewWith": "Röportaj"
+    "interviewWith": "Röportaj",
+    "showEvidence": "Kanıt göster",
+    "showEvidenceTitle": "{name} önüne koy",
+    "showing": "Gösterilen:",
+    "removeEvidence": "{title} göstermekten vazgeç",
+    "showDefault": "Bununla ilgili ne söyleyebilirsiniz?",
+    "showPlaceholder": "Bir soru ekle ya da sadece göster…",
+    "show": "Göster"
   },
   "Notebook": {
     "title": "Not defteri",
@@ -158,10 +165,11 @@
     "stampSolved": "Dava kapandı",
     "stampUnsolved": "Çözülemedi",
     "missedTitle": "Gözden kaçanlar",
-    "missedNothing": "Hiçbir şey: bütün kilit kanıtlar not defterindeydi ve her şüpheliyi sorguladın. Titiz bir iş, dedektif.",
+    "missedNothing": "Hiçbir şey: bütün kilit kanıtlar hem not defterindeydi hem de bir şüphelinin önüne kondu, herkesi de sorguladın. Titiz bir iş, dedektif.",
     "missedEvidence": "Not defterine girmeyen kilit kanıtlar",
     "missedSuspects": "Hiç sorgulamadığın şüpheliler",
-    "stats": "Katili bulan dedektifler: %{percent} · {finished} dava kapandı · ortalama puan {average}"
+    "stats": "Katili bulan dedektifler: %{percent} · {finished} dava kapandı · ortalama puan {average}",
+    "missedShown": "Hiçbir şüpheliye göstermediğin kilit kanıtlar"
   },
   "Player": {
     "solved": "Çözüldü · {score} puan",

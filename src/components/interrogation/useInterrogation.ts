@@ -59,11 +59,11 @@ export function useInterrogation(caseNumber: number, locale: Locale) {
   }, [caseNumber]);
 
   const ask = useCallback(
-    async (suspectId: string, question: string): Promise<boolean> => {
+    async (suspectId: string, question: string, evidenceId: string | null): Promise<boolean> => {
       setError(null);
       setStatus("asking");
       // Show the question immediately; the answer fills in as it streams.
-      setExchanges((prev) => [...prev, { suspectId, question, answer: "", locale }]);
+      setExchanges((prev) => [...prev, { suspectId, question, answer: "", locale, evidenceId }]);
       const updateLastAnswer = (update: (answer: string) => string) =>
         setExchanges((prev) => {
           const last = prev.at(-1);
@@ -71,7 +71,13 @@ export function useInterrogation(caseNumber: number, locale: Locale) {
         });
       const dropLast = () => setExchanges((prev) => prev.slice(0, -1));
 
-      const body: InterrogateRequest = { caseNumber, suspectId, question, locale };
+      const body: InterrogateRequest = {
+        caseNumber,
+        suspectId,
+        question,
+        locale,
+        ...(evidenceId ? { evidenceId } : {}),
+      };
       try {
         const res = await gameFetch("/api/interrogate", {
           method: "POST",

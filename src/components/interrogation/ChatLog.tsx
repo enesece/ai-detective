@@ -15,6 +15,8 @@ type Props = {
   waitingForAnswer: boolean;
   isPinned: (target: PinTarget) => boolean;
   onTogglePin: (target: PinTarget) => void;
+  /** Title of a piece of evidence, for questions that came with one. */
+  evidenceTitle: (id: string) => string | undefined;
 };
 
 export function ChatLog({
@@ -23,6 +25,7 @@ export function ChatLog({
   waitingForAnswer,
   isPinned,
   onTogglePin,
+  evidenceTitle,
 }: Props) {
   const t = useTranslations("Interrogation");
   // Newspaper interviews label answers with the surname: "REED: ..."
@@ -56,6 +59,12 @@ export function ChatLog({
             <li key={e.index} className="space-y-3 py-5 first:pt-2">
               <p className="leading-relaxed">
                 <strong className={`${kicker} mr-2`}>{t("you")}:</strong>
+                {e.evidenceId && (
+                  <span className="bg-ink text-paper mr-2 inline-block px-2 font-sans text-xs leading-6 font-bold tracking-[0.08em]">
+                    <span className="sr-only">{t("showing")} </span>📎{" "}
+                    {evidenceTitle(e.evidenceId) ?? e.evidenceId}
+                  </span>
+                )}
                 {e.question}
               </p>
               <div>
