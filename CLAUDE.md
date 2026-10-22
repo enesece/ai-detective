@@ -294,6 +294,17 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 - **Link önizleme görselleri:** `next/og` ile gazete kartı (`src/server/og/gazette-card.tsx`), site geneli + dava başına. Fontlar `assets/fonts/` (OFL lisanslarıyla), `outputFileTracingIncludes` ile sunucu paketine eklenir. Satori `double` kenarlığı desteklemiyor → iki çizgi.
 - Not: dev sunucusu açıkken aynı klasörde `npm run build` almak dev'i sonsuz "Compiled" döngüsüne sokabiliyor → dev'i yeniden başlat.
 
+### İkinci inceleme: sorguyu derinleştir + AI kalitesini ölç (22 Ekim 2026, Enes onayladı)
+
+Plan: 1) kanıt göster → 2) yüzleşmeye dayalı davalar (zor dava + haftanın gününe göre zorluk) → 3) tutarlılık eval'i + injection eval v2 → 4) herkese açık "Laboratuvar" sayfası. Her kısımdan sonra onay.
+
+- **1. kısım bitti (canlıda):** Sorguda "📎 Kanıt göster". Soruyla birlikte bir kanıt seçilir; boş soru + kanıt = "Bununla ilgili ne söyleyebilirsiniz?". Bir soru hakkı harcar.
+  - `evidenceId` davanın açık kanıtlarıyla kontrol edilir. Kanıt metni davadan gelir, oyuncudan gelmez; `formatQuestion(question, locale, shown)` geçmişte de kullanılır.
+  - Migration `shown_evidence` (Enes SQL Editor'de çalıştırdı): `messages.shown_evidence_id` + `complete_question`'a 6. parametre.
+  - Sohbette kanıt etiketi; sonuç ekranında "hiçbir şüpheliye gösterilmeyen kilit kanıtlar". Telefonda röportaj başlığı sade.
+  - Gerçek Gemini ile denendi: Margaret telefon kaydıyla aramayı, Julian ayak izleriyle tartışmayı itiraf ediyor; Voss (katil) davadaki geri çekilme cevaplarını veriyor, itiraf yok. Smoke testi kanıt kontrollerini içeriyor.
+- Bulgu: biten oyunlarda ortalama 2,3 soru → sorgu az kullanılıyordu; bu özellik bunun için.
+
 ### Notlar / alınan teknik kararlar
 
 - Next 16: `middleware.ts` → `proxy.ts`; `cacheComponents` açıkken her kök parametre için `generateStaticParams` zorunlu, `dynamicParams` kullanılamaz. Bulunamayan sayfalar stream sonrası 200 + `noindex` döner (Next'in belgelenmiş davranışı).
