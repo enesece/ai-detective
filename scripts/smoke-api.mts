@@ -77,11 +77,23 @@ try {
   assert.equal(snap.revealedHints.length, 1);
   step("hint 1 unlocked");
 
+  // Shown evidence must be one of the case's own items.
+  res = await p.call("/api/interrogate", {
+    caseNumber: 1,
+    suspectId: "thomas-reed",
+    question: "Explain this.",
+    locale: "en",
+    evidenceId: "not-in-this-case",
+  });
+  assert.equal(res.status, 400);
+  step("unknown evidence rejected");
+
   res = await p.call("/api/interrogate", {
     caseNumber: 1,
     suspectId: "thomas-reed",
     question: "Where were you this evening?",
     locale: "en",
+    evidenceId: "telephone-log",
   });
   const answer = await res.text();
   assert.equal(res.status, 200, answer);
@@ -92,10 +104,11 @@ try {
   snap = await (await p.call("/api/game/1")).json();
   assert.equal(snap.questionsUsed, 1);
   assert.equal(snap.exchanges.length, 1);
+  assert.equal(snap.exchanges[0].evidenceId, "telephone-log");
   assert.equal(snap.hintsUsed, 1);
   // Everyone's results could hint at the answer: none while still playing.
   assert.equal(snap.stats, null);
-  step("progress persisted in Supabase; no solve stats before the accusation");
+  step("progress (with the shown evidence) persisted; no solve stats before the accusation");
 
   // --- Cheating attempts with the player's own credentials -----------------
   const secret = await p.db.from("cases").select("secret");
