@@ -1,0 +1,60 @@
+# Generates one case (generate → Zod → logic checks → blind solver → repair)
+# and saves it as a draft for review. Started from the admin panel, or by hand
+# from the Actions tab. Runs here because it can take 5-15 minutes, longer
+# than a Vercel function may run (300 s).
+name: Generate case
+run-name: Generate a ${{ inputs.difficulty }} case
+
+on:
+  workflow_dispatch:
+    inputs:
+      difficulty:
+        description: Difficulty
+        type: choice
+        options: [easy, medium, hard]
+        default: medium
+        required: true
+      theme:
+        description: Theme (optional, random if empty)
+        type: string
+        required: false
+        default: ""
+
+# One generation at a time: the thinking model allows only 5 calls a minute.
+concurrency:
+  group: generate-case
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Generate and check
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          GEMINI_OFFLINE_API_KEY: ${{ secrets.GEMINI_OFFLINE_API_KEY }}
+          # Inputs go through env, never straight into the script, so a theme
+          # can't inject shell commands.
+          DIFFICULTY: ${{ inputs.difficulty }}
+          THEME: ${{ inputs.theme }}
+        run: |
+          # The npm script loads .env.local; here the values come from env above.
+          touch .env.local
+          args=(--difficulty="$DIFFICULTY")
+          if [ -n "$THEME" ]; then args+=(--theme="$THEME"); fi
+          npm run generate -- "${args[@]}"

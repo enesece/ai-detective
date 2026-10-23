@@ -63,3 +63,23 @@ export type AiEnv = z.infer<typeof AiEnvSchema>;
 export function getAiEnv(): AiEnv {
   return AiEnvSchema.parse(process.env);
 }
+
+// Optional. When both are set, the admin panel runs case generation on GitHub
+// Actions instead of inside a Vercel function (which stops after 300 s).
+const GitHubEnvSchema = z.object({
+  GITHUB_DISPATCH_TOKEN: z
+    .string()
+    .optional()
+    .transform((v) => (v ? v : undefined)),
+  GITHUB_REPO: z
+    .string()
+    .regex(/^[\w.-]+\/[\w.-]+$/, "GITHUB_REPO must look like owner/name")
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
+});
+
+export type GitHubEnv = z.infer<typeof GitHubEnvSchema>;
+
+export function getGitHubEnv(): GitHubEnv {
+  return GitHubEnvSchema.parse(process.env);
+}

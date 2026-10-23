@@ -1,14 +1,16 @@
 import { Suspense } from "react";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { DecisionBadge } from "@/components/admin/ChecksPanel";
+import { GenerationRuns } from "@/components/admin/GenerationRuns";
 import { SignOutButton } from "@/components/admin/SignOutButton";
 import { PageFallback } from "@/components/ui/PageFallback";
 import { Link } from "@/i18n/navigation";
 import { generateCase } from "@/server/admin/actions";
 import { listCases, type CaseRow } from "@/server/admin/data";
+import { getGenerationRunner, listGenerationRuns } from "@/server/admin/github";
 import { adminOrRedirect } from "./guard";
 
-// Generating a case can take minutes; this raises the limit for the page's Server Actions.
+// Without GitHub settings, generation runs inside the Server Action: allow the full 300 s.
 export const maxDuration = 300;
 
 const FILTERS = ["pending", "rejected", "approved", "all"] as const;
@@ -24,7 +26,11 @@ async function CasesContent({ searchParams }: PageProps<"/[locale]/admin">) {
   const admin = await adminOrRedirect();
   const raw = (await searchParams).show;
   const filter: Filter = FILTERS.find((f) => f === raw) ?? "pending";
-  const rows = await listCases();
+  const runner = getGenerationRunner();
+  const [rows, runs] = await Promise.all([
+    listCases(),
+    runner ? listGenerationRuns(runner) : Promise.resolve(null),
+  ]);
   const visible = rows.filter((r) => matches(r, filter));
 
   return (
@@ -41,7 +47,7 @@ async function CasesContent({ searchParams }: PageProps<"/[locale]/admin">) {
         <ActionForm
           action={generateCase}
           submitLabel="Generate"
-          pendingLabel="Writing and checking… (up to 5 minutes)"
+          pendingLabel={runs ? "Starting…" : "Writing and checking… (up to 5 minutes)"}
         >
           <div className="flex flex-wrap gap-3">
             <select
@@ -62,9 +68,17 @@ async function CasesContent({ searchParams }: PageProps<"/[locale]/admin">) {
           </div>
         </ActionForm>
         <p className="text-muted mt-2 text-xs">
-          Uses the thinking model (about 20 calls a day on the free tier). On Vercel there&apos;s no
-          time for a repair round; run <code>npm run generate</code> locally for that.
+          Uses the thinking model (about 20 calls a day on the free tier).{" "}
+          {runs
+            ? "Runs on GitHub Actions, so repair rounds have time to finish."
+            : "Runs in this request (max 300 s on Vercel), so there's usually no time for a repair round."}
         </p>
+        {runs && (
+          <div className="mt-4 space-y-2">
+            <h3 className="font-semibold">Recent runs</h3>
+            <GenerationRuns runs={runs} />
+          </div>
+        )}
       </section>
 
       <nav className="flex flex-wrap gap-2 text-sm">

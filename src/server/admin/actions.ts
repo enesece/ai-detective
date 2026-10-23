@@ -1,10 +1,11 @@
 "use server";
 
-import { updateTag } from "next/cache";
+import { refresh, updateTag } from "next/cache";
 import { z } from "zod";
 import { recheckDraft, runPipeline } from "@/server/generator/pipeline";
 import { createSupabaseAdminClient } from "@/server/supabase";
 import { requireAdmin } from "./auth";
+import { dispatchGeneration, getGenerationRunner } from "./github";
 
 /*
  * Admin mutations, as Server Actions. Each one checks the caller is an admin
@@ -133,11 +134,29 @@ export async function generateCase(_prev: ActionState, form: FormData): Promise<
     .trim()
     .max(200)
     .safeParse(form.get("theme") ?? "");
+  const themeText = theme.success && theme.data ? theme.data : undefined;
 
+  // Deployed: hand the job to GitHub Actions, which has no 300 s limit.
+  const runner = getGenerationRunner();
+  if (runner) {
+    try {
+      await dispatchGeneration(runner, { difficulty: difficulty.data, theme: themeText });
+    } catch (error) {
+      return { ok: false, message: error instanceof Error ? error.message : "Couldn't start." };
+    }
+    refresh(); // show the new run in the list below
+    return {
+      ok: true,
+      message:
+        "Started on GitHub Actions. The draft appears under Pending when it's done (usually 5-15 minutes).",
+    };
+  }
+
+  // Local dev without GitHub settings: run it here, within the request's time limit.
   try {
     const outcome = await runPipeline({
       difficulty: difficulty.data,
-      theme: theme.success && theme.data ? theme.data : undefined,
+      theme: themeText,
       deadline: Date.now() + GENERATION_BUDGET_MS,
     });
     if (outcome.decision === "failed") {
