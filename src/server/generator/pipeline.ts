@@ -399,10 +399,17 @@ function toJson(value: unknown): Json {
   return JSON.parse(JSON.stringify(value)) as Json;
 }
 
-/** Per-call limit: what's left before the deadline, between 30 s and 280 s. */
+/**
+ * Per-call limit. With a deadline (the admin panel on Vercel, 300 s per
+ * function): what's left, between 30 s and 280 s. Without one (npm run
+ * generate): 10 minutes, since the thinking model sometimes needs over 280 s.
+ */
 function callTimeout(msLeft: number): number {
+  if (!Number.isFinite(msLeft)) return LOCAL_CALL_TIMEOUT_MS;
   return Math.round(Math.max(Math.min(msLeft, 280_000), 30_000));
 }
+
+const LOCAL_CALL_TIMEOUT_MS = 600_000;
 
 function pct(p: number): string {
   return `${Math.round(p * 100)}%`;
