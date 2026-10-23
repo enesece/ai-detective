@@ -42,6 +42,12 @@ export type JsonRequest = {
   maxOutputTokens: number;
   temperature: number;
   signal?: AbortSignal;
+  /**
+   * For thinking models on long jobs: stream the model's thought summaries too
+   * (they are dropped from the result), so data, and the response headers,
+   * arrive while it is still thinking instead of after minutes of silence.
+   */
+  streamThoughts?: boolean;
 };
 
 export type JsonResult = {

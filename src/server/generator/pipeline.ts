@@ -388,6 +388,9 @@ async function callModel(
         maxOutputTokens: GENERATOR_MAX_OUTPUT_TOKENS,
         temperature: GENERATOR_TEMPERATURE,
         signal: AbortSignal.timeout(callTimeout(msLeft)),
+        // The thinking model can be silent for 5+ minutes; streamed thoughts keep
+        // the connection alive (Node's fetch drops it after 300 s without headers).
+        streamThoughts: true,
       }),
     { log },
   );

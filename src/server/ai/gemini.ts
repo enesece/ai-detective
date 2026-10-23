@@ -143,6 +143,7 @@ export function createGeminiJsonModel(apiKey: string, model: string): JsonModel 
             temperature: request.temperature,
             responseMimeType: "application/json",
             responseJsonSchema: schema,
+            ...(request.streamThoughts ? { thinkingConfig: { includeThoughts: true } } : {}),
           },
         }),
       });
