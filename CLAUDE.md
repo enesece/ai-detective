@@ -329,6 +329,9 @@ Plan: 1) kanıt göster → 2) yüzleşmeye dayalı davalar (zor dava + haftanı
   2. `GEMINI_OFFLINE_API_KEY`: ikinci bir Google Cloud projesinden anahtar; üretici, çözücü, hakem ve eval'ler bunu kullanır (`offlineKey()`), canlı oyunun kotasına dokunmaz. Eval'ler `getEvalChatModel()` ile oyunun modelini test eder (yedeksiz).
   3. Eval freni: offline anahtar yoksa 150+ çağrılık çalıştırma `--yes` ister.
   4. `AI_DAILY_LIMIT` varsayılanı 1000 → 450 (gerçek kota 500).
+- **23 Ekim:** `gemini-3.5-flash-lite` aşırı yüklüydü (20-30 sn bekleme, sık 503) → oyuncular "Şüpheli cevap vermiyor" gördü. `withFallback` artık 5xx'te ve ana model 10 sn içinde ilk parçayı göndermezse de yedeğe geçiyor.
+- **Zor dava denemesi (23 Ekim):** "yem" onarım talimatı çalıştı. "The Alpine Scriptum": ilk taslak çok kolaydı, onarımdan sonra sadece dosyayla çözücü yemi seçiyor, tam bilgiyle katili %85-95 buluyor. Taslak onay bekliyor (695 sn, 3 Flash isteği).
+- **Panelden üretim GitHub Actions'ta (23 Ekim):** panelde "The operation was aborted due to timeout" → Flash yoğunken ilk yazım 270 sn'yi aşıyordu (Vercel 300 sn). `GITHUB_DISPATCH_TOKEN` + `GITHUB_REPO` varsa "Generate" `.github/workflows/generate-case.yml`'ı başlatır (45 dk sınır, aynı anda tek iş, tema env ile geçer → kabuk enjeksiyonu yok); panelde son 5 çalıştırma (`src/server/admin/github.ts`, `GenerationRuns`). Yoksa eskisi gibi istek içinde çalışır. Repo secrets: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `GEMINI_OFFLINE_API_KEY`.
 - Mevcut modeller AI Studio listesinde: `gemini-2.x` ve `gemma-3` artık 404; `gemini-3.1-flash-lite`, `gemini-3-flash-preview` çalışıyor.
 
 ### Notlar / alınan teknik kararlar
