@@ -61,8 +61,10 @@ export function createGeminiModel(apiKey: string, model: string): ChatModel {
   };
 }
 
-/** Parses `data: {...}` lines from an SSE stream and yields the text parts. */
-async function* readSseText(body: ReadableStream<Uint8Array<ArrayBuffer>>): AsyncGenerator<string> {
+/** Parses `data: {...}` lines from an SSE stream and yields each event's JSON. */
+async function* readSseEvents(
+  body: ReadableStream<Uint8Array<ArrayBuffer>>,
+): AsyncGenerator<unknown> {
   const reader = body.pipeThrough(new TextDecoderStream()).getReader();
   let buffer = "";
 
@@ -76,16 +78,22 @@ async function* readSseText(body: ReadableStream<Uint8Array<ArrayBuffer>>): Asyn
       buffer = lines.pop() ?? ""; // keep a partial line for the next read
 
       for (const line of lines) {
-        if (!line.startsWith("data:")) continue;
-        const parsed = ChunkSchema.safeParse(JSON.parse(line.slice(5)));
-        if (!parsed.success) continue;
-        for (const part of parsed.data.candidates?.[0]?.content?.parts ?? []) {
-          if (part.text && !part.thought) yield part.text;
-        }
+        if (line.startsWith("data:")) yield JSON.parse(line.slice(5));
       }
     }
   } finally {
     reader.releaseLock();
+  }
+}
+
+/** The text parts of a streamed answer (the model's private "thoughts" are skipped). */
+async function* readSseText(body: ReadableStream<Uint8Array<ArrayBuffer>>): AsyncGenerator<string> {
+  for await (const event of readSseEvents(body)) {
+    const parsed = ChunkSchema.safeParse(event);
+    if (!parsed.success) continue;
+    for (const part of parsed.data.candidates?.[0]?.content?.parts ?? []) {
+      if (part.text && !part.thought) yield part.text;
+    }
   }
 }
 
@@ -120,7 +128,10 @@ export function createGeminiJsonModel(apiKey: string, model: string): JsonModel 
     async generateJson(request: JsonRequest): Promise<JsonResult> {
       const schema = toGeminiSchema(request.schema);
 
-      const response = await fetch(`${API_BASE}/${model}:generateContent`, {
+      // Streamed even though we wait for the whole answer: the response headers
+      // arrive at once, so a thinking model that takes over 5 minutes doesn't
+      // hit Node's 300 s headers timeout (UND_ERR_HEADERS_TIMEOUT).
+      const response = await fetch(`${API_BASE}/${model}:streamGenerateContent?alt=sse`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
         signal: request.signal,
@@ -146,19 +157,26 @@ export function createGeminiJsonModel(apiKey: string, model: string): JsonModel 
         );
       }
 
-      const data = GenerateResponseSchema.parse(await response.json());
-      const candidate = data.candidates?.[0];
-      const text = (candidate?.content?.parts ?? [])
-        .filter((part) => !part.thought)
-        .map((part) => part.text ?? "")
-        .join("");
+      if (!response.body) throw new ChatModelError("Gemini returned no body");
+      let text = "";
+      let finishReason: string | undefined;
+      let usage: z.infer<typeof GenerateResponseSchema>["usageMetadata"];
+      for await (const event of readSseEvents(response.body)) {
+        const data = GenerateResponseSchema.parse(event);
+        const candidate = data.candidates?.[0];
+        for (const part of candidate?.content?.parts ?? []) {
+          if (!part.thought) text += part.text ?? "";
+        }
+        // The last event carries why it stopped and the token counts.
+        finishReason = candidate?.finishReason ?? finishReason;
+        usage = data.usageMetadata ?? usage;
+      }
 
-      if (candidate?.finishReason && candidate.finishReason !== "STOP") {
-        throw new ChatModelError(`Gemini stopped early: ${candidate.finishReason}`);
+      if (finishReason && finishReason !== "STOP") {
+        throw new ChatModelError(`Gemini stopped early: ${finishReason}`);
       }
       if (!text) throw new ChatModelError("Gemini returned no text");
 
-      const usage = data.usageMetadata;
       return {
         text,
         usage: usage
