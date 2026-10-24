@@ -98,6 +98,8 @@ async function* readSseText(body: ReadableStream<Uint8Array<ArrayBuffer>>): Asyn
 }
 
 const GenerateResponseSchema = z.object({
+  // Sent instead of candidates when the request fails mid-stream (e.g. overloaded).
+  error: z.object({ code: z.number().optional(), message: z.string().optional() }).optional(),
   candidates: z
     .array(
       z.object({
@@ -164,6 +166,13 @@ export function createGeminiJsonModel(apiKey: string, model: string): JsonModel 
       let usage: z.infer<typeof GenerateResponseSchema>["usageMetadata"];
       for await (const event of readSseEvents(response.body)) {
         const data = GenerateResponseSchema.parse(event);
+        if (data.error) {
+          const code = data.error.code ?? 503;
+          throw new ChatModelError(
+            `Gemini stream error (${code}): ${(data.error.message ?? "").slice(0, 300)}`,
+            code,
+          );
+        }
         const candidate = data.candidates?.[0];
         for (const part of candidate?.content?.parts ?? []) {
           if (!part.thought) text += part.text ?? "";
@@ -173,10 +182,23 @@ export function createGeminiJsonModel(apiKey: string, model: string): JsonModel 
         usage = data.usageMetadata ?? usage;
       }
 
-      if (finishReason && finishReason !== "STOP") {
+      // No finish reason: the connection closed before the answer was done. Worth a retry.
+      if (!finishReason) {
+        throw new ChatModelError(
+          `Gemini's stream ended before the answer finished (${text.length} characters received)`,
+          503,
+        );
+      }
+      if (finishReason !== "STOP") {
         throw new ChatModelError(`Gemini stopped early: ${finishReason}`);
       }
-      if (!text) throw new ChatModelError("Gemini returned no text");
+      if (!text) {
+        // Seen with the thinking model: it "finishes" after thinking without writing anything.
+        throw new ChatModelError(
+          `Gemini returned no text (finish: ${finishReason}, thinking tokens: ${usage?.thoughtsTokenCount ?? "?"}, output tokens: ${usage?.candidatesTokenCount ?? "?"})`,
+          500,
+        );
+      }
 
       return {
         text,
