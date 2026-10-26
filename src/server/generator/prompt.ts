@@ -32,8 +32,12 @@ export const THEMES = [
   "a country auction house in 1950s England",
 ] as const;
 
-export function pickTheme(seed: number = Date.now()): string {
-  return THEMES[Math.abs(seed) % THEMES.length] ?? THEMES[0];
+/** A random theme among the least used ones, so themes don't repeat until all have been tried. */
+export function pickTheme(usedThemes: string[], random: number = Math.random()): string {
+  const uses = (theme: string) => usedThemes.filter((used) => used === theme).length;
+  const fewest = Math.min(...THEMES.map(uses));
+  const fresh = THEMES.filter((theme) => uses(theme) === fewest);
+  return fresh[Math.floor(random * fresh.length)] ?? THEMES[0];
 }
 
 const DIFFICULTY_GUIDE: Record<Difficulty, string> = {

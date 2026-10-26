@@ -112,8 +112,8 @@ export async function runPipeline(options: PipelineOptions): Promise<PipelineOut
   const startedAt = Date.now();
   const timeLeft = () => (options.deadline ?? Infinity) - Date.now();
   const generator = getGeneratorModel();
-  const theme = options.theme ?? pickTheme();
   const db = createSupabaseAdminClient();
+  const theme = options.theme ?? pickTheme(await usedThemes(db));
 
   const { data: existing } = await db.from("cases").select("public_briefing");
   const avoidTitles = (existing ?? []).flatMap((row) => {
@@ -345,6 +345,15 @@ async function checkDraft(
     solverRuns,
     tooEasy,
   };
+}
+
+/** One entry per case that was generated with a theme (rechecks of the same case count once). */
+async function usedThemes(db: ReturnType<typeof createSupabaseAdminClient>): Promise<string[]> {
+  const { data, error } = await db.from("case_reviews").select("case_id, theme:checks->>theme");
+  if (error) throw new Error(`Reading used themes failed: ${error.message}`);
+  const byCase = new Map<string, string>();
+  for (const row of data) if (row.theme) byCase.set(row.case_id, row.theme);
+  return [...byCase.values()];
 }
 
 async function saveReview(
