@@ -4,7 +4,6 @@
 
 **▶ Play it: [dailyalibi.vercel.app](https://dailyalibi.vercel.app)** · English + Turkish · no sign-up
 
-<!-- Demo GIF: record ~60 s of one game (case file → evidence → interrogation with "Show evidence" → accusation → result) and save it as docs/demo.gif -->
 
 ![Gameplay demo](docs/demo.gif)
 
