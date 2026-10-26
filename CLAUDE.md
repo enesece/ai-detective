@@ -140,8 +140,8 @@ Hedef aylık 0 dolar. Günde bir dava ve oyun başına 20 soru, AI çağrıları
 | 1 — Kurulum, şema, fixture dava, dava/kanıt ekranları                                     | ✅ Onaylandı                    | Supabase anahtarları ve Gemini anahtarı `.env.local`'de; GitHub/Vercel adımları Enes'te |
 | 2 — Sorgu, streaming, soru sayacı                                                         | ✅ Onaylandı                    | + not defteri, ipucu, suçlama/sonuç ara özellikleri                                     |
 | 3 — Tablolar/RLS, anonim giriş, kalıcılık, hız sınırı, Turnstile, çıktı filtresi, eval v1 | ✅ Onaylandı                    | Canlı: https://dailyalibi.vercel.app (Turnstile + Supabase CAPTCHA açık)               |
-| 4 — AI üretici + doğrulama, admin paneli, cron, ana sayfa, arşiv, cila                    | 🟢 4a + 4b + 4c bitti, onay bekliyor | 4a üretici + doğrulama; 4b admin paneli; 4c cron, ana sayfa, arşiv, cila                |
-| 5 — README                                                                                | ⚪ Bekliyor                     |                                                                                         |
+| 4 — AI üretici + doğrulama, admin paneli, cron, ana sayfa, arşiv, cila                    | ✅ Onaylandı (26 Ekim)              | 4a üretici + doğrulama; 4b admin paneli; 4c cron, ana sayfa, arşiv, cila                |
+| 5 — README                                                                                | 🟡 Taslak yazıldı (26 Ekim)     | Mermaid mimari diyagramı; demo GIF (`docs/demo.gif`) eksik                              |
 
 ### Aşama 1'de yapılanlar
 
