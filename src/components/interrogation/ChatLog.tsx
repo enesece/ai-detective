@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { PinButton } from "@/components/notebook/PinButton";
 import type { Exchange } from "@/lib/game/rules";
 import type { PinTarget } from "@/lib/notebook/schema";
+import { WaitingForAnswer } from "./WaitingForAnswer";
 
 /** An exchange plus its position in the whole game's conversation (a stable pin key). */
 export type IndexedExchange = Exchange & { index: number };
@@ -70,8 +71,7 @@ export function ChatLog({
               <div>
                 <p className="text-lg leading-relaxed">
                   <strong className={`${kicker} text-accent mr-2`}>{speaker}:</strong>
-                  {e.answer ||
-                    (streaming ? <span className="text-muted italic">{t("thinking")}</span> : null)}
+                  {e.answer || (streaming ? <WaitingForAnswer name={suspectName} /> : null)}
                 </p>
                 {!streaming && e.answer && (
                   <div className="mt-2">

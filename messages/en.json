@@ -72,6 +72,8 @@
     "askPlaceholder": "Ask {name} a question…",
     "ask": "Ask",
     "thinking": "…",
+    "thinkingSlow": "{name} pauses, choosing every word carefully…",
+    "thinkingVerySlow": "Still thinking. On busy evenings an answer can take up to half a minute.",
     "loading": "Opening the interview room…",
     "noQuestionsLeft": "You have used all your questions. Time to make your accusation.",
     "startInterrogation": "Start the interrogation",

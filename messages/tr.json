@@ -72,6 +72,8 @@
     "askPlaceholder": "{name} için bir soru yaz…",
     "ask": "Sor",
     "thinking": "…",
+    "thinkingSlow": "{name} cevap vermeden önce bir süre düşünüyor…",
+    "thinkingVerySlow": "Hâlâ düşünüyor. Yoğun saatlerde bir cevap yarım dakikayı bulabilir.",
     "loading": "Sorgu odası açılıyor…",
     "noQuestionsLeft": "Tüm soru haklarını kullandın. Suçlamanı yapma zamanı.",
     "startInterrogation": "Sorguya başla",
