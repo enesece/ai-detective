@@ -148,6 +148,13 @@ export function createGeminiJsonModel(apiKey: string, model: string): JsonModel 
             ...(request.streamThoughts ? { thinkingConfig: { includeThoughts: true } } : {}),
           },
         }),
+      }).catch((error: unknown) => {
+        if (request.signal?.aborted) throw error; // our own deadline: don't retry
+        // An overloaded Gemini can send nothing, not even headers, for 300 s (Node then
+        // fails with UND_ERR_HEADERS_TIMEOUT). Treat it like a 503 so withRetry tries again.
+        const cause =
+          error instanceof Error && error.cause instanceof Error ? error.cause.message : "";
+        throw new ChatModelError(`Gemini did not respond (${cause || String(error)})`, 503);
       });
 
       if (!response.ok) {
